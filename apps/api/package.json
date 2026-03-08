@@ -3,7 +3,10 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "build": "nest build",
+    "build": "prisma generate && nest build",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:studio": "prisma studio",
     "dev": "nest start --watch",
     "start": "node dist/main.js",
     "start:dev": "nest start --watch",
@@ -11,20 +14,34 @@
     "start:prod": "node dist/main.js",
     "clean": "git clean -xdf .cache .turbo dist node_modules",
     "typecheck": "tsc --noEmit",
-    "test": "echo 0"
+    "test": "echo 0",
+    "get-token": "tsx scripts/get-clerk-token.ts"
   },
   "dependencies": {
+    "@clerk/backend": "^3.0.1",
     "@nestjs/common": "^11.0.0",
+    "@nestjs/config": "^4.0.3",
     "@nestjs/core": "^11.0.0",
     "@nestjs/platform-express": "^11.0.0",
+    "@prisma/adapter-neon": "7.1.0",
+    "@prisma/adapter-pg": "7.1.0",
+    "@prisma/client": "7.1.0",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.1",
+    "dotenv": "^16.4.5",
+    "pg": "^8.16.0",
     "reflect-metadata": "^0.2.2",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@nestjs/cli": "^11.0.0",
     "@repo/typescript-config": "workspace:*",
     "@types/express": "^5.0.0",
     "@types/node": "24.10.1",
+    "@types/pg": "^8.15.4",
+    "prisma": "7.1.0",
+    "tsx": "^4.19.2",
     "typescript": "^5.9.3"
   },
   "engines": {

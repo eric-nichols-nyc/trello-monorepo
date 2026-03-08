@@ -1,0 +1,95 @@
+# API
+
+NestJS REST API for the Trello-style app. Provides CRUD for boards (and related lists/cards via Prisma).
+
+## Quick start
+
+```bash
+# From repo root
+pnpm --filter api dev
+
+# Or from this directory
+pnpm dev
+```
+
+Requires a Postgres database. Set `DATABASE_URL` in `apps/api/.env`, then run `pnpm db:push` to apply the schema.
+
+### Postman
+
+Import **`postman/Boards.postman_collection.json`** into Postman for ready-made requests:
+
+- **Create board** – `POST /boards` with body `{ "title": "My First Board" }`
+- **Get all boards** – `GET /boards`
+- **Get board by id** – `GET /boards/:id` (set `boardId` in collection variables after creating a board)
+- **Update board** – `PATCH /boards/:id` with body `{ "title": "Updated Title" }`
+- **Delete board** – `DELETE /boards/:id`
+
+Collection variables: `baseUrl` (default `http://localhost:3000`), `boardId` (set from a create response).
+
+**Getting a token for Create board:** Create board requires a Clerk JWT. Create a JWT template (e.g. named `default`) in [Clerk Dashboard → JWT templates](https://dashboard.clerk.com/~/jwt-templates), set `CLERK_USER_ID` in `.env` to a real Clerk user id, then run `pnpm get-token` and use the printed token as `Authorization: Bearer <token>`.
+
+---
+
+## How NestJS works in this app
+
+### Modules, controllers, and services
+
+- **Modules** group the app into features. Each module declares its controllers and providers (e.g. services) and can import other modules.
+- **Controllers** define HTTP routes. They use decorators like `@Controller('boards')`, `@Get()`, `@Post()`, `@Body()`, `@Param()` to map requests to handler methods.
+- **Services** hold business logic and database access. Controllers depend on services via **dependency injection (DI)**: Nest injects the service into the controller constructor.
+
+Example: `BoardsController` has `constructor(private readonly boardsService: BoardsService)`. Nest creates one `BoardsService` (and its dependency `PrismaService`) and passes it in. You never call `new BoardsService()` yourself.
+
+### Project layout
+
+| Path | Purpose |
+|------|--------|
+| `src/main.ts` | Bootstrap: create app, CORS, global pipes, listen on port. |
+| `src/app.module.ts` | Root module: imports `PrismaModule`, `BoardsModule`, registers `AppController` / `AppService`. |
+| `src/prisma/` | `PrismaModule` and `PrismaService` (Prisma client with pg adapter). Global, so any module can inject `PrismaService`. |
+| `src/boards/` | Feature: `BoardsModule`, `BoardsController`, `BoardsService`, DTOs, Zod schema. |
+| `src/common/pipes/` | Shared pipes (e.g. `ZodValidationPipe`). |
+
+Routes are defined in controllers: base path from `@Controller(...)`, method and path from `@Get()`, `@Post()`, `@Patch()`, `@Delete()`, etc.
+
+---
+
+## Validation
+
+We use two validation approaches.
+
+### 1. Global: class-validator + ValidationPipe
+
+In `main.ts` we register a global **ValidationPipe** with:
+
+- **whitelist: true** – strip properties not present on the DTO.
+- **forbidNonWhitelisted: true** – return 400 if the client sends extra properties.
+- **transform: true** – coerce query/body to the types declared on the DTO.
+
+For this to work, request body DTOs must use **class-validator** decorators (e.g. `@IsString()`, `@IsNotEmpty()`, `@IsOptional()`). Only decorated properties are considered “whitelisted.” Example: `UpdateBoardDto` in `src/boards/dto/update-board.dto.ts` uses `@IsOptional()` and `@IsString()` so `PATCH /boards/:id` body is validated and typed.
+
+### 2. Per-route: Zod + ZodValidationPipe
+
+For **create board** we validate with **Zod** instead of class-validator:
+
+- **Schema:** `src/boards/schemas/create-board.schema.ts` defines `createBoardSchema` (e.g. `title: z.string().min(1).trim()`) and exports the type `CreateBoardInput`.
+- **Pipe:** `src/common/pipes/zod-validation.pipe.ts` is a generic pipe that takes a Zod schema, runs `safeParse()` on the incoming value, and throws `BadRequestException` with the first error message if validation fails.
+- **Usage:** The create handler uses `@UsePipes(new ZodValidationPipe(createBoardSchema))` and types the body as `CreateBoardInput`. The global ValidationPipe still runs first, but the Zod pipe runs on the same body and effectively “owns” validation for that route.
+
+So in this app:
+
+- **POST /boards** – validated with **Zod** via `ZodValidationPipe` and `createBoardSchema`.
+- **PATCH /boards/:id** (and any other body DTOs) – validated with **class-validator** via the global **ValidationPipe** and the corresponding DTO class.
+
+---
+
+## Scripts
+
+| Script | Description |
+|--------|-------------|
+| `pnpm dev` | Start in watch mode (default port 3000). |
+| `pnpm build` | Generate Prisma client and build for production. |
+| `pnpm start` | Run production build. |
+| `pnpm db:generate` | Generate Prisma client. |
+| `pnpm db:push` | Push schema to the database (no migrations). |
+| `pnpm db:studio` | Open Prisma Studio. |

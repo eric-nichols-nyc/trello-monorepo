@@ -2,7 +2,10 @@
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
   "extends": ["ultracite/core", "ultracite/react", "ultracite/next"],
   "javascript": {
-    "globals": ["Liveblocks"]
+    "globals": ["Liveblocks"],
+    "parser": {
+      "unsafeParameterDecoratorsEnabled": true
+    }
   },
   "files": {
     "includes": [
@@ -18,5 +21,25 @@
       "!apps/email/.react-email",
       "!packages/cms/basehub-types.d.ts"
     ]
-  }
+  },
+  "overrides": [
+    {
+      "includes": ["apps/api/**/*.ts"],
+      "javascript": {
+        "parser": {
+          "unsafeParameterDecoratorsEnabled": true
+        }
+      },
+      "linter": {
+        "rules": {
+          "correctness": {
+            "noUnusedVariables": "off"
+          },
+          "style": {
+            "noParameterProperties": "off"
+          }
+        }
+      }
+    }
+  ]
 }

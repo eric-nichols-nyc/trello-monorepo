@@ -6,11 +6,11 @@
     "declaration": false,
     "declarationMap": false,
     "outDir": "./dist",
-    "rootDir": "./src",
+    "rootDir": ".",
     "lib": ["es2022"],
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "generated/**/*", "*.d.ts"],
   "exclude": ["node_modules", "dist"]
 }

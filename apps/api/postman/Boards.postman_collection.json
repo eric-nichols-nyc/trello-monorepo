@@ -1,0 +1,67 @@
+{
+  "info": {
+    "name": "Boards",
+    "description": "CRUD requests for the Boards API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000" },
+    { "key": "boardId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Create board",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"My First Board\"\n}"
+        },
+        "url": "{{baseUrl}}/boards",
+        "description": "Create a new board. Body: { \"title\": \"string\" } (required, non-empty)."
+      }
+    },
+    {
+      "name": "Get all boards",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/boards",
+        "description": "List all boards with their lists (ordered by position)."
+      }
+    },
+    {
+      "name": "Get board by id",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/boards/{{boardId}}",
+        "description": "Get one board by id, including lists and cards. Set boardId (e.g. from Create board response) in collection variables."
+      }
+    },
+    {
+      "name": "Update board",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Updated Board Title\"\n}"
+        },
+        "url": "{{baseUrl}}/boards/{{boardId}}",
+        "description": "Update a board. Body: { \"title\": \"string\" } (optional)."
+      }
+    },
+    {
+      "name": "Delete board",
+      "request": {
+        "method": "DELETE",
+        "url": "{{baseUrl}}/boards/{{boardId}}",
+        "description": "Delete a board and its lists/cards (cascade)."
+      }
+    }
+  ]
+}

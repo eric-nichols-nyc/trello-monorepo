@@ -10,6 +10,7 @@ dist/
 .next/
 out/
 *.tsbuildinfo
+prisma.config.js
 
 # Environment
 .env
