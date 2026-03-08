@@ -1,0 +1,30 @@
+# Dependencies (explicit at every level)
+node_modules
+**/node_modules
+**/node_modules/
+/node_modules/
+
+# Build and cache
+.turbo/
+dist/
+.next/
+out/
+*.tsbuildinfo
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE and OS
+.idea/
+.vscode/
+.DS_Store
+*.log
+
+# Package manager
+.pnpm-store/
+
+# Prisma / DB (optional: uncomment if you don't want generated/migrations in repo)
+# packages/database/generated/
+# packages/database/prisma/migrations/
