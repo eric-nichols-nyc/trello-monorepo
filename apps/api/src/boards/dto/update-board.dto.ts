@@ -1,7 +1,15 @@
-import { IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsOptional, IsString } from "class-validator";
 
 export class UpdateBoardDto {
   @IsOptional()
   @IsString()
-  title?: string;
+  name?: string;
+
+  @IsOptional()
+  @IsString()
+  background?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  closed?: boolean;
 }

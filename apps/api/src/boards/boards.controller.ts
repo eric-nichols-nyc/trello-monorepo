@@ -14,9 +14,8 @@ import { CurrentUser } from "../auth/current-user.decorator";
 import { ClerkAuthGuard } from "../auth/clerk-auth.guard";
 // biome-ignore lint/style/useImportType: Nest DI needs the BoardsService class reference
 import { BoardsService } from "./boards.service";
-// biome-ignore lint/style/useImportType: DTO class required at runtime for ValidationPipe metadata
-import { CreateBoardDto } from "./dto";
-import type { UpdateBoardDto } from "./dto";
+// biome-ignore lint/style/useImportType: DTO classes required at runtime for ValidationPipe metadata
+import { CreateBoardDto, UpdateBoardDto } from "./dto";
 import { createBoardSchema } from "./schemas/create-board.schema";
 // biome-ignore lint/style/useImportType: Nest DI needs the UsersService class reference
 import { UsersService } from "../users/users.service";
@@ -50,7 +49,7 @@ export class BoardsController {
         "User not found. Sync the Clerk user to the database first.",
       );
     }
-    return this.boardsService.create({ ...body, ownerId: user.id });
+    return this.boardsService.create({ ...body, userId: user.id });
   }
 
   @Patch(":id")

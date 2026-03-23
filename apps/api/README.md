@@ -14,19 +14,43 @@ pnpm dev
 
 Requires a Postgres database. Set `DATABASE_URL` in `apps/api/.env`, then run `pnpm db:push` to apply the schema.
 
-### Postman
+### Postman / local testing
 
-Import **`postman/Boards.postman_collection.json`** into Postman for ready-made requests:
+Import **`postman/Boards.postman_collection.json`** into Postman for ready-made requests (update bodies if the collection still uses older field names).
 
-- **Create board** – `POST /boards` with body `{ "title": "My First Board" }`
-- **Get all boards** – `GET /boards`
-- **Get board by id** – `GET /boards/:id` (set `boardId` in collection variables after creating a board)
-- **Update board** – `PATCH /boards/:id` with body `{ "title": "Updated Title" }`
-- **Delete board** – `DELETE /boards/:id`
+**Auth:** Protected routes need a Clerk session JWT: `Authorization: Bearer <token>`.
+
+1. Create a JWT template (e.g. named `default`) in [Clerk Dashboard → JWT templates](https://dashboard.clerk.com/~/jwt-templates).
+2. Set `CLERK_SECRET_KEY` and `CLERK_USER_ID` (a real Clerk user id) in `.env`, then run `pnpm get-token` and copy the printed token.
+
+**Handy flow:**
+
+- **`GET /users/me`** – Returns the current DB user and **`workspaces`** (includes the default **"My workspace"** after the first authed request). Use a workspace **`id`** as **`workspaceId`** when creating a board.
+- **`POST /boards`** – Body: `{ "name": "My First Board", "workspaceId": "<uuid from /users/me>" }`
+- **`GET /boards`** – List boards
+- **`GET /boards/:id`** – Board by id (set `boardId` in collection variables after creating)
+- **`PATCH /boards/:id`** – Body: `{ "name": "...", "background": "...", "closed": false }` (fields optional)
+- **`DELETE /boards/:id`**
 
 Collection variables: `baseUrl` (default `http://localhost:3000`), `boardId` (set from a create response).
 
-**Getting a token for Create board:** Create board requires a Clerk JWT. Create a JWT template (e.g. named `default`) in [Clerk Dashboard → JWT templates](https://dashboard.clerk.com/~/jwt-templates), set `CLERK_USER_ID` in `.env` to a real Clerk user id, then run `pnpm get-token` and use the printed token as `Authorization: Bearer <token>`.
+### User & default workspace provisioning
+
+Provisioning runs on **every** request that uses **`ClerkAuthGuard`** (after the JWT is verified). Implementation: `src/auth/clerk-auth.guard.ts` → `UsersService.ensureUserAndDefaultWorkspace()` in `src/users/users.service.ts`.
+
+**User**
+
+- The app **upserts** a `User` row keyed by **`clerkUserId`** (from the JWT `sub`).
+- If this Clerk user is **new** → **insert**.
+- If they **already exist** → **update** profile fields from the token when present (email, first/last name, image).
+
+**Workspace**
+
+- After the user row is settled, the app checks whether **any** `Workspace` exists with **`ownerId`** equal to that user’s id.
+- If **none** → creates **one** default workspace named **`"My workspace"`** with that **`ownerId`**.
+- If **at least one** already exists → **does not** create another default (you can still add more via **`POST /workspaces`**).
+
+This is **not** tied to Clerk’s “sign up” event in the dashboard; it runs on the **first authenticated API call** (and keeps the user row updated on later calls). For provisioning at signup without hitting the API, use a **Clerk webhook** instead.
 
 ---
 
@@ -47,6 +71,8 @@ Example: `BoardsController` has `constructor(private readonly boardsService: Boa
 | `src/main.ts` | Bootstrap: create app, CORS, global pipes, listen on port. |
 | `src/app.module.ts` | Root module: imports `PrismaModule`, `BoardsModule`, registers `AppController` / `AppService`. |
 | `src/prisma/` | `PrismaModule` and `PrismaService` (Prisma client with pg adapter). Global, so any module can inject `PrismaService`. |
+| `src/users/` | `UsersModule`, `UsersService`. |
+| `src/app.controller.ts` | Root routes + **`GET /users/me`** (current user + workspaces). |
 | `src/boards/` | Feature: `BoardsModule`, `BoardsController`, `BoardsService`, DTOs, Zod schema. |
 | `src/common/pipes/` | Shared pipes (e.g. `ZodValidationPipe`). |
 
@@ -72,7 +98,7 @@ For this to work, request body DTOs must use **class-validator** decorators (e.g
 
 For **create board** we validate with **Zod** instead of class-validator:
 
-- **Schema:** `src/boards/schemas/create-board.schema.ts` defines `createBoardSchema` (e.g. `title: z.string().min(1).trim()`) and exports the type `CreateBoardInput`.
+- **Schema:** `src/boards/schemas/create-board.schema.ts` defines `createBoardSchema` (`name`, `workspaceId`, …) and exports the type `CreateBoardInput`.
 - **Pipe:** `src/common/pipes/zod-validation.pipe.ts` is a generic pipe that takes a Zod schema, runs `safeParse()` on the incoming value, and throws `BadRequestException` with the first error message if validation fails.
 - **Usage:** The create handler uses `@UsePipes(new ZodValidationPipe(createBoardSchema))` and types the body as `CreateBoardInput`. The global ValidationPipe still runs first, but the Zod pipe runs on the same body and effectively “owns” validation for that route.
 

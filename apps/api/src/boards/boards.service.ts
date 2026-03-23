@@ -11,7 +11,7 @@ export class BoardsService {
   findAll() {
     return this.prisma.board.findMany({
       orderBy: { createdAt: 'desc' },
-      include: { lists: { orderBy: { position: 'asc' } } },
+      include: { lists: { orderBy: { pos: 'asc' } } },
     });
   }
 
@@ -20,16 +20,20 @@ export class BoardsService {
       where: { id },
       include: {
         lists: {
-          orderBy: { position: 'asc' },
-          include: { cards: { orderBy: { position: 'asc' } } },
+          orderBy: { pos: 'asc' },
+          include: { cards: { orderBy: { pos: 'asc' } } },
         },
       },
     });
   }
 
-  create(data: CreateBoardInput & { ownerId: string }) {
+  create(data: CreateBoardInput & { userId: string }) {
     return this.prisma.board.create({
-      data: { title: data.title, ownerId: data.ownerId },
+      data: {
+        name: data.name,
+        workspaceId: data.workspaceId,
+        userId: data.userId,
+      },
     });
   }
 

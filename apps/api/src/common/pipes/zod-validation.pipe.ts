@@ -9,7 +9,7 @@ export class ZodValidationPipe implements PipeTransform {
   transform(value: unknown) {
     if (value === undefined || value === null) {
       throw new BadRequestException(
-        'Request body is required. Send JSON with a "title" field and header: Content-Type: application/json',
+        'Request body is required. Send JSON with "name", "workspaceId" (UUID), and header: Content-Type: application/json',
       );
     }
     const result = this.schema.safeParse(value);
