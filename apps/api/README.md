@@ -1,6 +1,6 @@
 # API
 
-NestJS REST API for the Trello-style app. Provides CRUD for boards (and related lists/cards via Prisma).
+NestJS REST API for a Trello-style app: **boards**, **lists**, **cards**, **comments**, **checklists**, and **checklist items** (plus **workspaces** and **users/me**).
 
 ## Quick start
 
@@ -14,9 +14,21 @@ pnpm dev
 
 Requires a Postgres database. Set `DATABASE_URL` in `apps/api/.env`, then run `pnpm db:push` to apply the schema.
 
+**Demo data:** `pnpm db:seed` creates a synthetic user (`user_seed_local_demo`) plus workspace + **Seed board** graph. Use `pnpm db:seed -- --fresh` to wipe and recreate that synthetic user.
+
+**Your real Clerk user:** if you already have a row (e.g. from `GET /users/me`), attach the same demo board to that account:
+
+```bash
+SEED_CLERK_USER_ID=user_3AeBqoeILoFdovPUTlE0rvg1sYX pnpm db:seed
+```
+
+Optional: `SEED_WORKSPACE_ID=<uuid>` (defaults to your oldest workspace). `pnpm db:seed -- --fresh` with a real `SEED_CLERK_USER_ID` only removes boards named **Seed board** for that user—not the user itself.
+
 ### Postman / local testing
 
-Import **`postman/Boards.postman_collection.json`** into Postman for ready-made requests (update bodies if the collection still uses older field names).
+Import **`postman/Trello-API.postman_collection.json`** into Postman or **HTTPie Desktop** (Import → Postman collection). Set collection variables: **`token`** (Clerk JWT), then **`workspaceId`**, **`boardId`**, **`listId`**, **`cardId`**, etc., from API responses.
+
+The older **`postman/Boards.postman_collection.json`** is outdated (e.g. `title` vs `name`); prefer **`Trello-API.postman_collection.json`**.
 
 **Auth:** Protected routes need a Clerk session JWT: `Authorization: Bearer <token>`.
 
@@ -31,6 +43,51 @@ Import **`postman/Boards.postman_collection.json`** into Postman for ready-made 
 - **`GET /boards/:id`** – Board by id (set `boardId` in collection variables after creating)
 - **`PATCH /boards/:id`** – Body: `{ "name": "...", "background": "...", "closed": false }` (fields optional)
 - **`DELETE /boards/:id`**
+
+**Lists** (nested under a board)
+
+| Method | Path | Auth (Bearer) |
+|--------|------|-----------------|
+| `GET` | `/boards/:boardId/lists` | Yes |
+| `POST` | `/boards/:boardId/lists` | Yes — body: `{ "name": "…", "pos"?: number, "closed"?: boolean }` |
+| `GET` | `/lists/:id` | Yes |
+| `PATCH` | `/lists/:id` | Yes |
+| `DELETE` | `/lists/:id` | Yes |
+
+**Cards** (nested under a list)
+
+| Method | Path | Auth |
+|--------|------|------|
+| `GET` | `/lists/:listId/cards` | Yes |
+| `POST` | `/lists/:listId/cards` | Yes — body: `name`, optional `description`, `pos`, `closed`, `dueDate`, `assigneeId` |
+| `GET` | `/cards/:id` | Yes |
+| `PATCH` | `/cards/:id` | Yes — optional `listId` (same board only), `assigneeId`, etc. |
+| `DELETE` | `/cards/:id` | Yes |
+
+**Comments** (on a card; **POST** sets **`authorId`** from the JWT user)
+
+| Method | Path | Auth |
+|--------|------|------|
+| `GET` | `/cards/:cardId/comments` | Yes |
+| `POST` | `/cards/:cardId/comments` | Yes — body: `{ "text": "…" }` |
+| `GET` | `/comments/:id` | Yes |
+| `PATCH` | `/comments/:id` | Yes |
+| `DELETE` | `/comments/:id` | Yes |
+
+**Checklists & items**
+
+| Method | Path | Auth |
+|--------|------|------|
+| `GET` | `/cards/:cardId/checklists` | Yes |
+| `POST` | `/cards/:cardId/checklists` | Yes — body: `{ "name": "…", "pos"?: number }` |
+| `GET` | `/checklists/:id` | Yes |
+| `PATCH` | `/checklists/:id` | Yes |
+| `DELETE` | `/checklists/:id` | Yes |
+| `GET` | `/checklists/:checklistId/items` | Yes |
+| `POST` | `/checklists/:checklistId/items` | Yes — body: `name`, optional `pos`, `completed` |
+| `GET` | `/checklist-items/:id` | Yes |
+| `PATCH` | `/checklist-items/:id` | Yes |
+| `DELETE` | `/checklist-items/:id` | Yes |
 
 Collection variables: `baseUrl` (default `http://localhost:3000`), `boardId` (set from a create response).
 
@@ -104,11 +161,17 @@ Example: `BoardsController` has `constructor(private readonly boardsService: Boa
 | Path | Purpose |
 |------|--------|
 | `src/main.ts` | Bootstrap: create app, CORS, global pipes, listen on port. |
-| `src/app.module.ts` | Root module: imports `PrismaModule`, `BoardsModule`, registers `AppController` / `AppService`. |
+| `src/app.module.ts` | Root module: imports feature modules, registers `AppController` / `AppService`. |
 | `src/prisma/` | `PrismaModule` and `PrismaService` (Prisma client with pg adapter). Global, so any module can inject `PrismaService`. |
 | `src/users/` | `UsersModule`, `UsersService`. |
 | `src/app.controller.ts` | Root routes + **`GET /users/me`** (current user + workspaces). |
-| `src/boards/` | Feature: `BoardsModule`, `BoardsController`, `BoardsService`, DTOs, Zod schema. |
+| `src/boards/` | `BoardsModule`, board CRUD. |
+| `src/lists/` | `ListsModule`, **`boards/:boardId/lists`** + **`/lists/:id`**. |
+| `src/cards/` | `CardsModule`, **`lists/:listId/cards`** + **`/cards/:id`**. |
+| `src/comments/` | `CommentsModule`, **`cards/:cardId/comments`** + **`/comments/:id`**. |
+| `src/checklists/` | `ChecklistsModule`, card checklists, **`/checklists`**, **`checklist-items`**. |
+| `src/workspaces/` | `WorkspacesModule`. |
+| `src/webhooks/` | Clerk webhook handler. |
 | `src/common/pipes/` | Shared pipes (e.g. `ZodValidationPipe`). |
 
 Routes are defined in controllers: base path from `@Controller(...)`, method and path from `@Get()`, `@Post()`, `@Patch()`, `@Delete()`, etc.
@@ -139,8 +202,8 @@ For **create board** we validate with **Zod** instead of class-validator:
 
 So in this app:
 
-- **POST /boards** – validated with **Zod** via `ZodValidationPipe` and `createBoardSchema`.
-- **PATCH /boards/:id** (and any other body DTOs) – validated with **class-validator** via the global **ValidationPipe** and the corresponding DTO class.
+- **POST** bodies for boards, lists, cards, comments, checklists, and checklist items – validated with **Zod** via `ZodValidationPipe` and the matching `create*.schema.ts`.
+- **PATCH** routes – validated with **class-validator** via the global **ValidationPipe** and the corresponding `Update*Dto` class.
 
 ---
 
@@ -154,3 +217,4 @@ So in this app:
 | `pnpm db:generate` | Generate Prisma client. |
 | `pnpm db:push` | Push schema to the database (no migrations). |
 | `pnpm db:studio` | Open Prisma Studio. |
+| `pnpm db:seed` | Insert demo user + board data (`-- --fresh` to reset). |

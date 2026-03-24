@@ -1,0 +1,41 @@
+import { Type } from "class-transformer";
+import {
+  IsBoolean,
+  IsDate,
+  IsNumber,
+  IsOptional,
+  IsString,
+  IsUUID,
+} from "class-validator";
+
+export class UpdateCardDto {
+  @IsOptional()
+  @IsString()
+  name?: string;
+
+  @IsOptional()
+  @IsString()
+  description?: string;
+
+  @IsOptional()
+  @IsNumber()
+  pos?: number;
+
+  @IsOptional()
+  @IsBoolean()
+  closed?: boolean;
+
+  @IsOptional()
+  @Type(() => Date)
+  @IsDate()
+  dueDate?: Date | null;
+
+  /** Move card to another list (same board). */
+  @IsOptional()
+  @IsUUID()
+  listId?: string;
+
+  @IsOptional()
+  @IsUUID()
+  assigneeId?: string | null;
+}

@@ -1,5 +1,6 @@
 import {
   Controller,
+  Delete,
   Get,
   NotFoundException,
   UseGuards,
@@ -41,5 +42,16 @@ export class AppController {
       );
     }
     return user;
+  }
+
+  @Delete("users/me")
+  @UseGuards(ClerkAuthGuard)
+  async deleteCurrentUser(@CurrentUser("sub") clerkUserId: string) {
+    const deleted = await this.usersService.deleteByClerkId(clerkUserId);
+    return {
+      ok: true,
+      deletedUserId: deleted.id,
+      clerkUserId: deleted.clerkUserId,
+    };
   }
 }

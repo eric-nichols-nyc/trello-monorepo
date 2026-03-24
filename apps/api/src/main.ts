@@ -1,7 +1,9 @@
 import 'dotenv/config';
 import { ValidationPipe } from '@nestjs/common';
-import { NestFactory } from '@nestjs/core';
+import { HttpAdapterHost, NestFactory } from '@nestjs/core';
+import type { NextFunction, Request, Response } from "express";
 import { AppModule } from './app.module';
+import { AllExceptionsFilter } from './all-exceptions.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -9,7 +11,20 @@ async function bootstrap() {
     rawBody: true,
   });
 
-  app.enableCors();
+  app.setGlobalPrefix("api");
+  app.enableCors({
+    origin: true,
+    credentials: true,
+  });
+  // Basic security headers (helmet package install is blocked by workspace config)
+  app.use((_: Request, res: Response, next: NextFunction) => {
+    res.setHeader("X-Content-Type-Options", "nosniff");
+    res.setHeader("X-Frame-Options", "DENY");
+    res.setHeader("Referrer-Policy", "no-referrer");
+    res.setHeader("X-DNS-Prefetch-Control", "off");
+    res.setHeader("Permissions-Policy", "geolocation=(), microphone=(), camera=()");
+    next();
+  });
 
   // biome-ignore lint/correctness/useHookAtTopLevel: NestJS method, not a React hook
   app.useGlobalPipes(
@@ -19,6 +34,9 @@ async function bootstrap() {
       transform: true,
     }),
   );
+  const { httpAdapter } = app.get(HttpAdapterHost)
+    // biome-ignore lint/correctness/useHookAtTopLevel: NestJS method, not a React hook
+  app.useGlobalFilters(new AllExceptionsFilter(httpAdapter))
 
   const port = process.env.PORT ?? 3000;
   await app.listen(port);

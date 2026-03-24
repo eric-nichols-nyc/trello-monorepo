@@ -23,6 +23,12 @@ export class UsersService {
     });
   }
 
+  deleteByClerkId(clerkUserId: string) {
+    return this.prisma.user.delete({
+      where: { clerkUserId },
+    });
+  }
+
   findById(id: string) {
     return this.prisma.user.findUniqueOrThrow({
       where: { id },

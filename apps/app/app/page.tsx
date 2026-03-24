@@ -1,3 +1,4 @@
+import { ModeToggle } from "@repo/design-system/components/mode-toggle";
 import { Button } from "@repo/design-system/components/ui/button";
 import {
   Card,
@@ -6,28 +7,61 @@ import {
   CardHeader,
   CardTitle,
 } from "@repo/design-system/components/ui/card";
-import { Rocket } from "lucide-react";
+import { LayoutDashboard } from "lucide-react";
+import Link from "next/link";
+import {
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  UserButton,
+} from "@repo/clerk/client";
 
 const HomePage = () => (
-  <main className="flex min-h-screen items-center justify-center bg-background p-8">
-    <Card className="w-full max-w-md">
-      <CardHeader className="text-center">
-        <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-          <Rocket className="h-6 w-6 text-primary" />
+  <main className="min-h-screen bg-background p-8">
+    <div className="mx-auto max-w-4xl">
+      <div className="mb-8 flex items-center justify-between">
+        <div>
+          <h1 className="font-bold text-4xl">App</h1>
+          <p className="mt-2 text-muted-foreground">
+            Next.js with @repo/clerk and the design system
+          </p>
         </div>
-        <CardTitle className="text-2xl">Client App</CardTitle>
-        <CardDescription>
-          A minimal Next.js app with no environment dependencies
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="flex flex-col gap-4">
-        <p className="text-center text-muted-foreground text-sm">
-          This app uses the shared design system but doesn&apos;t require any
-          environment variables to run.
-        </p>
-        <Button className="w-full">Get Started</Button>
-      </CardContent>
-    </Card>
+        <div className="flex items-center gap-2">
+          <SignedOut>
+            <SignInButton mode="modal">
+              <Button>Sign in</Button>
+            </SignInButton>
+          </SignedOut>
+          <SignedIn>
+            <UserButton />
+          </SignedIn>
+          <ModeToggle />
+        </div>
+      </div>
+
+      <div className="grid gap-6 md:grid-cols-2">
+        <Link href="/dashboard">
+          <Card className="h-full transition-all hover:shadow-lg">
+            <CardHeader>
+              <div className="mb-4 flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                  <LayoutDashboard className="h-5 w-5" />
+                </div>
+                <CardTitle className="text-lg">Dashboard</CardTitle>
+              </div>
+              <CardDescription>
+                Protected route — requires a signed-in user
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button className="w-full" variant="outline">
+                Open dashboard
+              </Button>
+            </CardContent>
+          </Card>
+        </Link>
+      </div>
+    </div>
   </main>
 );
 

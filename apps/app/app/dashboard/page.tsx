@@ -1,10 +1,27 @@
-export default function DashboardPage() {
+import { Button } from "@repo/design-system/components/ui/button";
+import { currentUser } from "@repo/clerk/server";
+import Link from "next/link";
+
+const DashboardPage = async () => {
+  const user = await currentUser();
+
   return (
-    <main className="flex min-h-screen items-center justify-center bg-background p-4">
-      <div className="text-center">
-        <h1 className="mb-4 font-bold text-4xl">Dashboard</h1>
-        <p className="text-muted-foreground">Welcome! You are logged in.</p>
+    <main className="min-h-screen bg-background p-8">
+      <div className="mx-auto max-w-2xl space-y-6">
+        <div className="flex items-center justify-between">
+          <h1 className="font-bold text-3xl">Dashboard</h1>
+          <Button asChild variant="outline">
+            <Link href="/">Home</Link>
+          </Button>
+        </div>
+        <p className="text-muted-foreground">
+          {user?.firstName
+            ? `Signed in as ${user.firstName}.`
+            : "You are signed in."}
+        </p>
       </div>
     </main>
   );
-}
+};
+
+export default DashboardPage;

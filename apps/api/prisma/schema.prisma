@@ -21,8 +21,11 @@ model User {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  boards     Board[]
-  workspaces Workspace[]
+  boards              Board[]
+  workspaces          Workspace[]
+  comments            Comment[]
+  uploadedAttachments Attachment[]
+  assignedCards       Card[]          @relation("CardAssignee")
 }
 
 model Workspace {
@@ -34,6 +37,8 @@ model Workspace {
   boards      Board[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  @@index([ownerId])
 }
 
 model Board {
@@ -44,11 +49,15 @@ model Board {
   userId      String
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   workspaceId String
-  workspace   Workspace @relation(fields: [workspaceId], references: [id])
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   lists       List[]
   cards       Card[] // Redundant but useful for board-wide card queries
+  labels      Label[]
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+
+  @@index([workspaceId])
+  @@index([userId])
 }
 
 model List {
@@ -61,6 +70,8 @@ model List {
   cards     Card[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([boardId])
 }
 
 model Card {
@@ -74,11 +85,30 @@ model Card {
   list        List         @relation(fields: [listId], references: [id], onDelete: Cascade)
   boardId     String
   board       Board        @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  assigneeId  String?
+  assignee    User?        @relation("CardAssignee", fields: [assigneeId], references: [id], onDelete: SetNull)
   checklists  Checklist[]
   comments    Comment[]
+  labels      Label[]
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
   attachments Attachment[]
+
+  @@index([boardId])
+  @@index([listId])
+  @@index([assigneeId])
+}
+
+/// Board-scoped tags; cards link via implicit many-to-many.
+model Label {
+  id      String @id @default(uuid())
+  name    String
+  color   String? // e.g. hex or preset key
+  boardId String
+  board   Board  @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  cards   Card[]
+
+  @@index([boardId])
 }
 
 model Checklist {
@@ -88,6 +118,8 @@ model Checklist {
   cardId String
   card   Card        @relation(fields: [cardId], references: [id], onDelete: Cascade)
   items  CheckItem[]
+
+  @@index([cardId])
 }
 
 model CheckItem {
@@ -97,6 +129,8 @@ model CheckItem {
   completed   Boolean   @default(false)
   checklistId String
   checklist   Checklist @relation(fields: [checklistId], references: [id], onDelete: Cascade)
+
+  @@index([checklistId])
 }
 
 model Comment {
@@ -104,15 +138,26 @@ model Comment {
   text      String   @db.Text
   cardId    String
   card      Card     @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([cardId])
+  @@index([authorId])
 }
 
 model Attachment {
-  id        String   @id @default(uuid())
-  name      String // File name or display name
-  url       String // S3 link, Cloudinary URL, or external link
-  edgeColor String? // Trello uses this to theme the card cover
-  cardId    String
-  card      Card     @relation(fields: [cardId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
+  id           String   @id @default(uuid())
+  name         String // File name or display name
+  url          String // S3 link, Cloudinary URL, or external link
+  edgeColor    String? // Trello uses this to theme the card cover
+  cardId       String
+  card         Card     @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  uploadedById String?
+  uploadedBy   User?    @relation(fields: [uploadedById], references: [id], onDelete: SetNull)
+  createdAt    DateTime @default(now())
+
+  @@index([cardId])
+  @@index([uploadedById])
 }

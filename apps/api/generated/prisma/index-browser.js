@@ -170,8 +170,16 @@ exports.Prisma.CardScalarFieldEnum = {
   dueDate: 'dueDate',
   listId: 'listId',
   boardId: 'boardId',
+  assigneeId: 'assigneeId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.LabelScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  color: 'color',
+  boardId: 'boardId'
 };
 
 exports.Prisma.ChecklistScalarFieldEnum = {
@@ -193,7 +201,9 @@ exports.Prisma.CommentScalarFieldEnum = {
   id: 'id',
   text: 'text',
   cardId: 'cardId',
-  createdAt: 'createdAt'
+  authorId: 'authorId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.AttachmentScalarFieldEnum = {
@@ -202,6 +212,7 @@ exports.Prisma.AttachmentScalarFieldEnum = {
   url: 'url',
   edgeColor: 'edgeColor',
   cardId: 'cardId',
+  uploadedById: 'uploadedById',
   createdAt: 'createdAt'
 };
 
@@ -227,6 +238,7 @@ exports.Prisma.ModelName = {
   Board: 'Board',
   List: 'List',
   Card: 'Card',
+  Label: 'Label',
   Checklist: 'Checklist',
   CheckItem: 'CheckItem',
   Comment: 'Comment',

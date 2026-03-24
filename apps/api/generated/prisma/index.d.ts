@@ -39,6 +39,11 @@ export type List = $Result.DefaultSelection<Prisma.$ListPayload>
  */
 export type Card = $Result.DefaultSelection<Prisma.$CardPayload>
 /**
+ * Model Label
+ * Board-scoped tags; cards link via implicit many-to-many.
+ */
+export type Label = $Result.DefaultSelection<Prisma.$LabelPayload>
+/**
  * Model Checklist
  * 
  */
@@ -225,6 +230,16 @@ export class PrismaClient<
     * ```
     */
   get card(): Prisma.CardDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.label`: Exposes CRUD operations for the **Label** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Labels
+    * const labels = await prisma.label.findMany()
+    * ```
+    */
+  get label(): Prisma.LabelDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.checklist`: Exposes CRUD operations for the **Checklist** model.
@@ -704,6 +719,7 @@ export namespace Prisma {
     Board: 'Board',
     List: 'List',
     Card: 'Card',
+    Label: 'Label',
     Checklist: 'Checklist',
     CheckItem: 'CheckItem',
     Comment: 'Comment',
@@ -723,7 +739,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "workspace" | "board" | "list" | "card" | "checklist" | "checkItem" | "comment" | "attachment"
+      modelProps: "user" | "workspace" | "board" | "list" | "card" | "label" | "checklist" | "checkItem" | "comment" | "attachment"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1094,6 +1110,80 @@ export namespace Prisma {
           count: {
             args: Prisma.CardCountArgs<ExtArgs>
             result: $Utils.Optional<CardCountAggregateOutputType> | number
+          }
+        }
+      }
+      Label: {
+        payload: Prisma.$LabelPayload<ExtArgs>
+        fields: Prisma.LabelFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.LabelFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LabelPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.LabelFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LabelPayload>
+          }
+          findFirst: {
+            args: Prisma.LabelFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LabelPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.LabelFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LabelPayload>
+          }
+          findMany: {
+            args: Prisma.LabelFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LabelPayload>[]
+          }
+          create: {
+            args: Prisma.LabelCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LabelPayload>
+          }
+          createMany: {
+            args: Prisma.LabelCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.LabelCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LabelPayload>[]
+          }
+          delete: {
+            args: Prisma.LabelDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LabelPayload>
+          }
+          update: {
+            args: Prisma.LabelUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LabelPayload>
+          }
+          deleteMany: {
+            args: Prisma.LabelDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.LabelUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.LabelUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LabelPayload>[]
+          }
+          upsert: {
+            args: Prisma.LabelUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LabelPayload>
+          }
+          aggregate: {
+            args: Prisma.LabelAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateLabel>
+          }
+          groupBy: {
+            args: Prisma.LabelGroupByArgs<ExtArgs>
+            result: $Utils.Optional<LabelGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.LabelCountArgs<ExtArgs>
+            result: $Utils.Optional<LabelCountAggregateOutputType> | number
           }
         }
       }
@@ -1506,6 +1596,7 @@ export namespace Prisma {
     board?: BoardOmit
     list?: ListOmit
     card?: CardOmit
+    label?: LabelOmit
     checklist?: ChecklistOmit
     checkItem?: CheckItemOmit
     comment?: CommentOmit
@@ -1592,11 +1683,17 @@ export namespace Prisma {
   export type UserCountOutputType = {
     boards: number
     workspaces: number
+    comments: number
+    uploadedAttachments: number
+    assignedCards: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     boards?: boolean | UserCountOutputTypeCountBoardsArgs
     workspaces?: boolean | UserCountOutputTypeCountWorkspacesArgs
+    comments?: boolean | UserCountOutputTypeCountCommentsArgs
+    uploadedAttachments?: boolean | UserCountOutputTypeCountUploadedAttachmentsArgs
+    assignedCards?: boolean | UserCountOutputTypeCountAssignedCardsArgs
   }
 
   // Custom InputTypes
@@ -1622,6 +1719,27 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountWorkspacesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: WorkspaceWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountCommentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CommentWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountUploadedAttachmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AttachmentWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountAssignedCardsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CardWhereInput
   }
 
 
@@ -1663,11 +1781,13 @@ export namespace Prisma {
   export type BoardCountOutputType = {
     lists: number
     cards: number
+    labels: number
   }
 
   export type BoardCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     lists?: boolean | BoardCountOutputTypeCountListsArgs
     cards?: boolean | BoardCountOutputTypeCountCardsArgs
+    labels?: boolean | BoardCountOutputTypeCountLabelsArgs
   }
 
   // Custom InputTypes
@@ -1693,6 +1813,13 @@ export namespace Prisma {
    */
   export type BoardCountOutputTypeCountCardsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: CardWhereInput
+  }
+
+  /**
+   * BoardCountOutputType without action
+   */
+  export type BoardCountOutputTypeCountLabelsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: LabelWhereInput
   }
 
 
@@ -1734,12 +1861,14 @@ export namespace Prisma {
   export type CardCountOutputType = {
     checklists: number
     comments: number
+    labels: number
     attachments: number
   }
 
   export type CardCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     checklists?: boolean | CardCountOutputTypeCountChecklistsArgs
     comments?: boolean | CardCountOutputTypeCountCommentsArgs
+    labels?: boolean | CardCountOutputTypeCountLabelsArgs
     attachments?: boolean | CardCountOutputTypeCountAttachmentsArgs
   }
 
@@ -1771,8 +1900,46 @@ export namespace Prisma {
   /**
    * CardCountOutputType without action
    */
+  export type CardCountOutputTypeCountLabelsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: LabelWhereInput
+  }
+
+  /**
+   * CardCountOutputType without action
+   */
   export type CardCountOutputTypeCountAttachmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: AttachmentWhereInput
+  }
+
+
+  /**
+   * Count Type LabelCountOutputType
+   */
+
+  export type LabelCountOutputType = {
+    cards: number
+  }
+
+  export type LabelCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    cards?: boolean | LabelCountOutputTypeCountCardsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * LabelCountOutputType without action
+   */
+  export type LabelCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the LabelCountOutputType
+     */
+    select?: LabelCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * LabelCountOutputType without action
+   */
+  export type LabelCountOutputTypeCountCardsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CardWhereInput
   }
 
 
@@ -2001,6 +2168,9 @@ export namespace Prisma {
     updatedAt?: boolean
     boards?: boolean | User$boardsArgs<ExtArgs>
     workspaces?: boolean | User$workspacesArgs<ExtArgs>
+    comments?: boolean | User$commentsArgs<ExtArgs>
+    uploadedAttachments?: boolean | User$uploadedAttachmentsArgs<ExtArgs>
+    assignedCards?: boolean | User$assignedCardsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -2041,6 +2211,9 @@ export namespace Prisma {
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     boards?: boolean | User$boardsArgs<ExtArgs>
     workspaces?: boolean | User$workspacesArgs<ExtArgs>
+    comments?: boolean | User$commentsArgs<ExtArgs>
+    uploadedAttachments?: boolean | User$uploadedAttachmentsArgs<ExtArgs>
+    assignedCards?: boolean | User$assignedCardsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -2051,6 +2224,9 @@ export namespace Prisma {
     objects: {
       boards: Prisma.$BoardPayload<ExtArgs>[]
       workspaces: Prisma.$WorkspacePayload<ExtArgs>[]
+      comments: Prisma.$CommentPayload<ExtArgs>[]
+      uploadedAttachments: Prisma.$AttachmentPayload<ExtArgs>[]
+      assignedCards: Prisma.$CardPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -2457,6 +2633,9 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     boards<T extends User$boardsArgs<ExtArgs> = {}>(args?: Subset<T, User$boardsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BoardPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     workspaces<T extends User$workspacesArgs<ExtArgs> = {}>(args?: Subset<T, User$workspacesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkspacePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    comments<T extends User$commentsArgs<ExtArgs> = {}>(args?: Subset<T, User$commentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    uploadedAttachments<T extends User$uploadedAttachmentsArgs<ExtArgs> = {}>(args?: Subset<T, User$uploadedAttachmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AttachmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    assignedCards<T extends User$assignedCardsArgs<ExtArgs> = {}>(args?: Subset<T, User$assignedCardsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CardPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2927,6 +3106,78 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: WorkspaceScalarFieldEnum | WorkspaceScalarFieldEnum[]
+  }
+
+  /**
+   * User.comments
+   */
+  export type User$commentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Comment
+     */
+    select?: CommentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Comment
+     */
+    omit?: CommentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CommentInclude<ExtArgs> | null
+    where?: CommentWhereInput
+    orderBy?: CommentOrderByWithRelationInput | CommentOrderByWithRelationInput[]
+    cursor?: CommentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CommentScalarFieldEnum | CommentScalarFieldEnum[]
+  }
+
+  /**
+   * User.uploadedAttachments
+   */
+  export type User$uploadedAttachmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Attachment
+     */
+    select?: AttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Attachment
+     */
+    omit?: AttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AttachmentInclude<ExtArgs> | null
+    where?: AttachmentWhereInput
+    orderBy?: AttachmentOrderByWithRelationInput | AttachmentOrderByWithRelationInput[]
+    cursor?: AttachmentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AttachmentScalarFieldEnum | AttachmentScalarFieldEnum[]
+  }
+
+  /**
+   * User.assignedCards
+   */
+  export type User$assignedCardsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Card
+     */
+    select?: CardSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Card
+     */
+    omit?: CardOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CardInclude<ExtArgs> | null
+    where?: CardWhereInput
+    orderBy?: CardOrderByWithRelationInput | CardOrderByWithRelationInput[]
+    cursor?: CardWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CardScalarFieldEnum | CardScalarFieldEnum[]
   }
 
   /**
@@ -4241,6 +4492,7 @@ export namespace Prisma {
     workspace?: boolean | WorkspaceDefaultArgs<ExtArgs>
     lists?: boolean | Board$listsArgs<ExtArgs>
     cards?: boolean | Board$cardsArgs<ExtArgs>
+    labels?: boolean | Board$labelsArgs<ExtArgs>
     _count?: boolean | BoardCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["board"]>
 
@@ -4287,6 +4539,7 @@ export namespace Prisma {
     workspace?: boolean | WorkspaceDefaultArgs<ExtArgs>
     lists?: boolean | Board$listsArgs<ExtArgs>
     cards?: boolean | Board$cardsArgs<ExtArgs>
+    labels?: boolean | Board$labelsArgs<ExtArgs>
     _count?: boolean | BoardCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type BoardIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4305,6 +4558,7 @@ export namespace Prisma {
       workspace: Prisma.$WorkspacePayload<ExtArgs>
       lists: Prisma.$ListPayload<ExtArgs>[]
       cards: Prisma.$CardPayload<ExtArgs>[]
+      labels: Prisma.$LabelPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -4713,6 +4967,7 @@ export namespace Prisma {
     workspace<T extends WorkspaceDefaultArgs<ExtArgs> = {}>(args?: Subset<T, WorkspaceDefaultArgs<ExtArgs>>): Prisma__WorkspaceClient<$Result.GetResult<Prisma.$WorkspacePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     lists<T extends Board$listsArgs<ExtArgs> = {}>(args?: Subset<T, Board$listsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ListPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     cards<T extends Board$cardsArgs<ExtArgs> = {}>(args?: Subset<T, Board$cardsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CardPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    labels<T extends Board$labelsArgs<ExtArgs> = {}>(args?: Subset<T, Board$labelsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LabelPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5191,6 +5446,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: CardScalarFieldEnum | CardScalarFieldEnum[]
+  }
+
+  /**
+   * Board.labels
+   */
+  export type Board$labelsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Label
+     */
+    select?: LabelSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Label
+     */
+    omit?: LabelOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LabelInclude<ExtArgs> | null
+    where?: LabelWhereInput
+    orderBy?: LabelOrderByWithRelationInput | LabelOrderByWithRelationInput[]
+    cursor?: LabelWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: LabelScalarFieldEnum | LabelScalarFieldEnum[]
   }
 
   /**
@@ -6389,6 +6668,7 @@ export namespace Prisma {
     dueDate: Date | null
     listId: string | null
     boardId: string | null
+    assigneeId: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -6402,6 +6682,7 @@ export namespace Prisma {
     dueDate: Date | null
     listId: string | null
     boardId: string | null
+    assigneeId: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -6415,6 +6696,7 @@ export namespace Prisma {
     dueDate: number
     listId: number
     boardId: number
+    assigneeId: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -6438,6 +6720,7 @@ export namespace Prisma {
     dueDate?: true
     listId?: true
     boardId?: true
+    assigneeId?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -6451,6 +6734,7 @@ export namespace Prisma {
     dueDate?: true
     listId?: true
     boardId?: true
+    assigneeId?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -6464,6 +6748,7 @@ export namespace Prisma {
     dueDate?: true
     listId?: true
     boardId?: true
+    assigneeId?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -6564,6 +6849,7 @@ export namespace Prisma {
     dueDate: Date | null
     listId: string
     boardId: string
+    assigneeId: string | null
     createdAt: Date
     updatedAt: Date
     _count: CardCountAggregateOutputType | null
@@ -6596,12 +6882,15 @@ export namespace Prisma {
     dueDate?: boolean
     listId?: boolean
     boardId?: boolean
+    assigneeId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     list?: boolean | ListDefaultArgs<ExtArgs>
     board?: boolean | BoardDefaultArgs<ExtArgs>
+    assignee?: boolean | Card$assigneeArgs<ExtArgs>
     checklists?: boolean | Card$checklistsArgs<ExtArgs>
     comments?: boolean | Card$commentsArgs<ExtArgs>
+    labels?: boolean | Card$labelsArgs<ExtArgs>
     attachments?: boolean | Card$attachmentsArgs<ExtArgs>
     _count?: boolean | CardCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["card"]>
@@ -6615,10 +6904,12 @@ export namespace Prisma {
     dueDate?: boolean
     listId?: boolean
     boardId?: boolean
+    assigneeId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     list?: boolean | ListDefaultArgs<ExtArgs>
     board?: boolean | BoardDefaultArgs<ExtArgs>
+    assignee?: boolean | Card$assigneeArgs<ExtArgs>
   }, ExtArgs["result"]["card"]>
 
   export type CardSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -6630,10 +6921,12 @@ export namespace Prisma {
     dueDate?: boolean
     listId?: boolean
     boardId?: boolean
+    assigneeId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     list?: boolean | ListDefaultArgs<ExtArgs>
     board?: boolean | BoardDefaultArgs<ExtArgs>
+    assignee?: boolean | Card$assigneeArgs<ExtArgs>
   }, ExtArgs["result"]["card"]>
 
   export type CardSelectScalar = {
@@ -6645,26 +6938,31 @@ export namespace Prisma {
     dueDate?: boolean
     listId?: boolean
     boardId?: boolean
+    assigneeId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type CardOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "pos" | "closed" | "dueDate" | "listId" | "boardId" | "createdAt" | "updatedAt", ExtArgs["result"]["card"]>
+  export type CardOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "pos" | "closed" | "dueDate" | "listId" | "boardId" | "assigneeId" | "createdAt" | "updatedAt", ExtArgs["result"]["card"]>
   export type CardInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     list?: boolean | ListDefaultArgs<ExtArgs>
     board?: boolean | BoardDefaultArgs<ExtArgs>
+    assignee?: boolean | Card$assigneeArgs<ExtArgs>
     checklists?: boolean | Card$checklistsArgs<ExtArgs>
     comments?: boolean | Card$commentsArgs<ExtArgs>
+    labels?: boolean | Card$labelsArgs<ExtArgs>
     attachments?: boolean | Card$attachmentsArgs<ExtArgs>
     _count?: boolean | CardCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type CardIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     list?: boolean | ListDefaultArgs<ExtArgs>
     board?: boolean | BoardDefaultArgs<ExtArgs>
+    assignee?: boolean | Card$assigneeArgs<ExtArgs>
   }
   export type CardIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     list?: boolean | ListDefaultArgs<ExtArgs>
     board?: boolean | BoardDefaultArgs<ExtArgs>
+    assignee?: boolean | Card$assigneeArgs<ExtArgs>
   }
 
   export type $CardPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6672,8 +6970,10 @@ export namespace Prisma {
     objects: {
       list: Prisma.$ListPayload<ExtArgs>
       board: Prisma.$BoardPayload<ExtArgs>
+      assignee: Prisma.$UserPayload<ExtArgs> | null
       checklists: Prisma.$ChecklistPayload<ExtArgs>[]
       comments: Prisma.$CommentPayload<ExtArgs>[]
+      labels: Prisma.$LabelPayload<ExtArgs>[]
       attachments: Prisma.$AttachmentPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -6685,6 +6985,7 @@ export namespace Prisma {
       dueDate: Date | null
       listId: string
       boardId: string
+      assigneeId: string | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["card"]>
@@ -7083,8 +7384,10 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     list<T extends ListDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ListDefaultArgs<ExtArgs>>): Prisma__ListClient<$Result.GetResult<Prisma.$ListPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     board<T extends BoardDefaultArgs<ExtArgs> = {}>(args?: Subset<T, BoardDefaultArgs<ExtArgs>>): Prisma__BoardClient<$Result.GetResult<Prisma.$BoardPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    assignee<T extends Card$assigneeArgs<ExtArgs> = {}>(args?: Subset<T, Card$assigneeArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     checklists<T extends Card$checklistsArgs<ExtArgs> = {}>(args?: Subset<T, Card$checklistsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChecklistPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     comments<T extends Card$commentsArgs<ExtArgs> = {}>(args?: Subset<T, Card$commentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    labels<T extends Card$labelsArgs<ExtArgs> = {}>(args?: Subset<T, Card$labelsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LabelPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     attachments<T extends Card$attachmentsArgs<ExtArgs> = {}>(args?: Subset<T, Card$attachmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AttachmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -7123,6 +7426,7 @@ export namespace Prisma {
     readonly dueDate: FieldRef<"Card", 'DateTime'>
     readonly listId: FieldRef<"Card", 'String'>
     readonly boardId: FieldRef<"Card", 'String'>
+    readonly assigneeId: FieldRef<"Card", 'String'>
     readonly createdAt: FieldRef<"Card", 'DateTime'>
     readonly updatedAt: FieldRef<"Card", 'DateTime'>
   }
@@ -7521,6 +7825,25 @@ export namespace Prisma {
   }
 
   /**
+   * Card.assignee
+   */
+  export type Card$assigneeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
    * Card.checklists
    */
   export type Card$checklistsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7569,6 +7892,30 @@ export namespace Prisma {
   }
 
   /**
+   * Card.labels
+   */
+  export type Card$labelsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Label
+     */
+    select?: LabelSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Label
+     */
+    omit?: LabelOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LabelInclude<ExtArgs> | null
+    where?: LabelWhereInput
+    orderBy?: LabelOrderByWithRelationInput | LabelOrderByWithRelationInput[]
+    cursor?: LabelWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: LabelScalarFieldEnum | LabelScalarFieldEnum[]
+  }
+
+  /**
    * Card.attachments
    */
   export type Card$attachmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7608,6 +7955,1081 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: CardInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Label
+   */
+
+  export type AggregateLabel = {
+    _count: LabelCountAggregateOutputType | null
+    _min: LabelMinAggregateOutputType | null
+    _max: LabelMaxAggregateOutputType | null
+  }
+
+  export type LabelMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    color: string | null
+    boardId: string | null
+  }
+
+  export type LabelMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    color: string | null
+    boardId: string | null
+  }
+
+  export type LabelCountAggregateOutputType = {
+    id: number
+    name: number
+    color: number
+    boardId: number
+    _all: number
+  }
+
+
+  export type LabelMinAggregateInputType = {
+    id?: true
+    name?: true
+    color?: true
+    boardId?: true
+  }
+
+  export type LabelMaxAggregateInputType = {
+    id?: true
+    name?: true
+    color?: true
+    boardId?: true
+  }
+
+  export type LabelCountAggregateInputType = {
+    id?: true
+    name?: true
+    color?: true
+    boardId?: true
+    _all?: true
+  }
+
+  export type LabelAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Label to aggregate.
+     */
+    where?: LabelWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Labels to fetch.
+     */
+    orderBy?: LabelOrderByWithRelationInput | LabelOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: LabelWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Labels from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Labels.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Labels
+    **/
+    _count?: true | LabelCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: LabelMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: LabelMaxAggregateInputType
+  }
+
+  export type GetLabelAggregateType<T extends LabelAggregateArgs> = {
+        [P in keyof T & keyof AggregateLabel]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateLabel[P]>
+      : GetScalarType<T[P], AggregateLabel[P]>
+  }
+
+
+
+
+  export type LabelGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: LabelWhereInput
+    orderBy?: LabelOrderByWithAggregationInput | LabelOrderByWithAggregationInput[]
+    by: LabelScalarFieldEnum[] | LabelScalarFieldEnum
+    having?: LabelScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: LabelCountAggregateInputType | true
+    _min?: LabelMinAggregateInputType
+    _max?: LabelMaxAggregateInputType
+  }
+
+  export type LabelGroupByOutputType = {
+    id: string
+    name: string
+    color: string | null
+    boardId: string
+    _count: LabelCountAggregateOutputType | null
+    _min: LabelMinAggregateOutputType | null
+    _max: LabelMaxAggregateOutputType | null
+  }
+
+  type GetLabelGroupByPayload<T extends LabelGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<LabelGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof LabelGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], LabelGroupByOutputType[P]>
+            : GetScalarType<T[P], LabelGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type LabelSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    color?: boolean
+    boardId?: boolean
+    board?: boolean | BoardDefaultArgs<ExtArgs>
+    cards?: boolean | Label$cardsArgs<ExtArgs>
+    _count?: boolean | LabelCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["label"]>
+
+  export type LabelSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    color?: boolean
+    boardId?: boolean
+    board?: boolean | BoardDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["label"]>
+
+  export type LabelSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    color?: boolean
+    boardId?: boolean
+    board?: boolean | BoardDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["label"]>
+
+  export type LabelSelectScalar = {
+    id?: boolean
+    name?: boolean
+    color?: boolean
+    boardId?: boolean
+  }
+
+  export type LabelOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "color" | "boardId", ExtArgs["result"]["label"]>
+  export type LabelInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    board?: boolean | BoardDefaultArgs<ExtArgs>
+    cards?: boolean | Label$cardsArgs<ExtArgs>
+    _count?: boolean | LabelCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type LabelIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    board?: boolean | BoardDefaultArgs<ExtArgs>
+  }
+  export type LabelIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    board?: boolean | BoardDefaultArgs<ExtArgs>
+  }
+
+  export type $LabelPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Label"
+    objects: {
+      board: Prisma.$BoardPayload<ExtArgs>
+      cards: Prisma.$CardPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      color: string | null
+      boardId: string
+    }, ExtArgs["result"]["label"]>
+    composites: {}
+  }
+
+  type LabelGetPayload<S extends boolean | null | undefined | LabelDefaultArgs> = $Result.GetResult<Prisma.$LabelPayload, S>
+
+  type LabelCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<LabelFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: LabelCountAggregateInputType | true
+    }
+
+  export interface LabelDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Label'], meta: { name: 'Label' } }
+    /**
+     * Find zero or one Label that matches the filter.
+     * @param {LabelFindUniqueArgs} args - Arguments to find a Label
+     * @example
+     * // Get one Label
+     * const label = await prisma.label.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends LabelFindUniqueArgs>(args: SelectSubset<T, LabelFindUniqueArgs<ExtArgs>>): Prisma__LabelClient<$Result.GetResult<Prisma.$LabelPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Label that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {LabelFindUniqueOrThrowArgs} args - Arguments to find a Label
+     * @example
+     * // Get one Label
+     * const label = await prisma.label.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends LabelFindUniqueOrThrowArgs>(args: SelectSubset<T, LabelFindUniqueOrThrowArgs<ExtArgs>>): Prisma__LabelClient<$Result.GetResult<Prisma.$LabelPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Label that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LabelFindFirstArgs} args - Arguments to find a Label
+     * @example
+     * // Get one Label
+     * const label = await prisma.label.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends LabelFindFirstArgs>(args?: SelectSubset<T, LabelFindFirstArgs<ExtArgs>>): Prisma__LabelClient<$Result.GetResult<Prisma.$LabelPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Label that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LabelFindFirstOrThrowArgs} args - Arguments to find a Label
+     * @example
+     * // Get one Label
+     * const label = await prisma.label.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends LabelFindFirstOrThrowArgs>(args?: SelectSubset<T, LabelFindFirstOrThrowArgs<ExtArgs>>): Prisma__LabelClient<$Result.GetResult<Prisma.$LabelPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Labels that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LabelFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Labels
+     * const labels = await prisma.label.findMany()
+     * 
+     * // Get first 10 Labels
+     * const labels = await prisma.label.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const labelWithIdOnly = await prisma.label.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends LabelFindManyArgs>(args?: SelectSubset<T, LabelFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LabelPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Label.
+     * @param {LabelCreateArgs} args - Arguments to create a Label.
+     * @example
+     * // Create one Label
+     * const Label = await prisma.label.create({
+     *   data: {
+     *     // ... data to create a Label
+     *   }
+     * })
+     * 
+     */
+    create<T extends LabelCreateArgs>(args: SelectSubset<T, LabelCreateArgs<ExtArgs>>): Prisma__LabelClient<$Result.GetResult<Prisma.$LabelPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Labels.
+     * @param {LabelCreateManyArgs} args - Arguments to create many Labels.
+     * @example
+     * // Create many Labels
+     * const label = await prisma.label.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends LabelCreateManyArgs>(args?: SelectSubset<T, LabelCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Labels and returns the data saved in the database.
+     * @param {LabelCreateManyAndReturnArgs} args - Arguments to create many Labels.
+     * @example
+     * // Create many Labels
+     * const label = await prisma.label.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Labels and only return the `id`
+     * const labelWithIdOnly = await prisma.label.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends LabelCreateManyAndReturnArgs>(args?: SelectSubset<T, LabelCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LabelPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Label.
+     * @param {LabelDeleteArgs} args - Arguments to delete one Label.
+     * @example
+     * // Delete one Label
+     * const Label = await prisma.label.delete({
+     *   where: {
+     *     // ... filter to delete one Label
+     *   }
+     * })
+     * 
+     */
+    delete<T extends LabelDeleteArgs>(args: SelectSubset<T, LabelDeleteArgs<ExtArgs>>): Prisma__LabelClient<$Result.GetResult<Prisma.$LabelPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Label.
+     * @param {LabelUpdateArgs} args - Arguments to update one Label.
+     * @example
+     * // Update one Label
+     * const label = await prisma.label.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends LabelUpdateArgs>(args: SelectSubset<T, LabelUpdateArgs<ExtArgs>>): Prisma__LabelClient<$Result.GetResult<Prisma.$LabelPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Labels.
+     * @param {LabelDeleteManyArgs} args - Arguments to filter Labels to delete.
+     * @example
+     * // Delete a few Labels
+     * const { count } = await prisma.label.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends LabelDeleteManyArgs>(args?: SelectSubset<T, LabelDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Labels.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LabelUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Labels
+     * const label = await prisma.label.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends LabelUpdateManyArgs>(args: SelectSubset<T, LabelUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Labels and returns the data updated in the database.
+     * @param {LabelUpdateManyAndReturnArgs} args - Arguments to update many Labels.
+     * @example
+     * // Update many Labels
+     * const label = await prisma.label.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Labels and only return the `id`
+     * const labelWithIdOnly = await prisma.label.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends LabelUpdateManyAndReturnArgs>(args: SelectSubset<T, LabelUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LabelPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Label.
+     * @param {LabelUpsertArgs} args - Arguments to update or create a Label.
+     * @example
+     * // Update or create a Label
+     * const label = await prisma.label.upsert({
+     *   create: {
+     *     // ... data to create a Label
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Label we want to update
+     *   }
+     * })
+     */
+    upsert<T extends LabelUpsertArgs>(args: SelectSubset<T, LabelUpsertArgs<ExtArgs>>): Prisma__LabelClient<$Result.GetResult<Prisma.$LabelPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Labels.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LabelCountArgs} args - Arguments to filter Labels to count.
+     * @example
+     * // Count the number of Labels
+     * const count = await prisma.label.count({
+     *   where: {
+     *     // ... the filter for the Labels we want to count
+     *   }
+     * })
+    **/
+    count<T extends LabelCountArgs>(
+      args?: Subset<T, LabelCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], LabelCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Label.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LabelAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends LabelAggregateArgs>(args: Subset<T, LabelAggregateArgs>): Prisma.PrismaPromise<GetLabelAggregateType<T>>
+
+    /**
+     * Group by Label.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LabelGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends LabelGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: LabelGroupByArgs['orderBy'] }
+        : { orderBy?: LabelGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, LabelGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetLabelGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Label model
+   */
+  readonly fields: LabelFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Label.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__LabelClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    board<T extends BoardDefaultArgs<ExtArgs> = {}>(args?: Subset<T, BoardDefaultArgs<ExtArgs>>): Prisma__BoardClient<$Result.GetResult<Prisma.$BoardPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    cards<T extends Label$cardsArgs<ExtArgs> = {}>(args?: Subset<T, Label$cardsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CardPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Label model
+   */
+  interface LabelFieldRefs {
+    readonly id: FieldRef<"Label", 'String'>
+    readonly name: FieldRef<"Label", 'String'>
+    readonly color: FieldRef<"Label", 'String'>
+    readonly boardId: FieldRef<"Label", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Label findUnique
+   */
+  export type LabelFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Label
+     */
+    select?: LabelSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Label
+     */
+    omit?: LabelOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LabelInclude<ExtArgs> | null
+    /**
+     * Filter, which Label to fetch.
+     */
+    where: LabelWhereUniqueInput
+  }
+
+  /**
+   * Label findUniqueOrThrow
+   */
+  export type LabelFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Label
+     */
+    select?: LabelSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Label
+     */
+    omit?: LabelOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LabelInclude<ExtArgs> | null
+    /**
+     * Filter, which Label to fetch.
+     */
+    where: LabelWhereUniqueInput
+  }
+
+  /**
+   * Label findFirst
+   */
+  export type LabelFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Label
+     */
+    select?: LabelSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Label
+     */
+    omit?: LabelOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LabelInclude<ExtArgs> | null
+    /**
+     * Filter, which Label to fetch.
+     */
+    where?: LabelWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Labels to fetch.
+     */
+    orderBy?: LabelOrderByWithRelationInput | LabelOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Labels.
+     */
+    cursor?: LabelWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Labels from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Labels.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Labels.
+     */
+    distinct?: LabelScalarFieldEnum | LabelScalarFieldEnum[]
+  }
+
+  /**
+   * Label findFirstOrThrow
+   */
+  export type LabelFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Label
+     */
+    select?: LabelSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Label
+     */
+    omit?: LabelOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LabelInclude<ExtArgs> | null
+    /**
+     * Filter, which Label to fetch.
+     */
+    where?: LabelWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Labels to fetch.
+     */
+    orderBy?: LabelOrderByWithRelationInput | LabelOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Labels.
+     */
+    cursor?: LabelWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Labels from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Labels.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Labels.
+     */
+    distinct?: LabelScalarFieldEnum | LabelScalarFieldEnum[]
+  }
+
+  /**
+   * Label findMany
+   */
+  export type LabelFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Label
+     */
+    select?: LabelSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Label
+     */
+    omit?: LabelOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LabelInclude<ExtArgs> | null
+    /**
+     * Filter, which Labels to fetch.
+     */
+    where?: LabelWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Labels to fetch.
+     */
+    orderBy?: LabelOrderByWithRelationInput | LabelOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Labels.
+     */
+    cursor?: LabelWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Labels from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Labels.
+     */
+    skip?: number
+    distinct?: LabelScalarFieldEnum | LabelScalarFieldEnum[]
+  }
+
+  /**
+   * Label create
+   */
+  export type LabelCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Label
+     */
+    select?: LabelSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Label
+     */
+    omit?: LabelOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LabelInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Label.
+     */
+    data: XOR<LabelCreateInput, LabelUncheckedCreateInput>
+  }
+
+  /**
+   * Label createMany
+   */
+  export type LabelCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Labels.
+     */
+    data: LabelCreateManyInput | LabelCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Label createManyAndReturn
+   */
+  export type LabelCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Label
+     */
+    select?: LabelSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Label
+     */
+    omit?: LabelOmit<ExtArgs> | null
+    /**
+     * The data used to create many Labels.
+     */
+    data: LabelCreateManyInput | LabelCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LabelIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Label update
+   */
+  export type LabelUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Label
+     */
+    select?: LabelSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Label
+     */
+    omit?: LabelOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LabelInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Label.
+     */
+    data: XOR<LabelUpdateInput, LabelUncheckedUpdateInput>
+    /**
+     * Choose, which Label to update.
+     */
+    where: LabelWhereUniqueInput
+  }
+
+  /**
+   * Label updateMany
+   */
+  export type LabelUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Labels.
+     */
+    data: XOR<LabelUpdateManyMutationInput, LabelUncheckedUpdateManyInput>
+    /**
+     * Filter which Labels to update
+     */
+    where?: LabelWhereInput
+    /**
+     * Limit how many Labels to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Label updateManyAndReturn
+   */
+  export type LabelUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Label
+     */
+    select?: LabelSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Label
+     */
+    omit?: LabelOmit<ExtArgs> | null
+    /**
+     * The data used to update Labels.
+     */
+    data: XOR<LabelUpdateManyMutationInput, LabelUncheckedUpdateManyInput>
+    /**
+     * Filter which Labels to update
+     */
+    where?: LabelWhereInput
+    /**
+     * Limit how many Labels to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LabelIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Label upsert
+   */
+  export type LabelUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Label
+     */
+    select?: LabelSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Label
+     */
+    omit?: LabelOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LabelInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Label to update in case it exists.
+     */
+    where: LabelWhereUniqueInput
+    /**
+     * In case the Label found by the `where` argument doesn't exist, create a new Label with this data.
+     */
+    create: XOR<LabelCreateInput, LabelUncheckedCreateInput>
+    /**
+     * In case the Label was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<LabelUpdateInput, LabelUncheckedUpdateInput>
+  }
+
+  /**
+   * Label delete
+   */
+  export type LabelDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Label
+     */
+    select?: LabelSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Label
+     */
+    omit?: LabelOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LabelInclude<ExtArgs> | null
+    /**
+     * Filter which Label to delete.
+     */
+    where: LabelWhereUniqueInput
+  }
+
+  /**
+   * Label deleteMany
+   */
+  export type LabelDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Labels to delete
+     */
+    where?: LabelWhereInput
+    /**
+     * Limit how many Labels to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Label.cards
+   */
+  export type Label$cardsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Card
+     */
+    select?: CardSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Card
+     */
+    omit?: CardOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CardInclude<ExtArgs> | null
+    where?: CardWhereInput
+    orderBy?: CardOrderByWithRelationInput | CardOrderByWithRelationInput[]
+    cursor?: CardWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CardScalarFieldEnum | CardScalarFieldEnum[]
+  }
+
+  /**
+   * Label without action
+   */
+  export type LabelDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Label
+     */
+    select?: LabelSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Label
+     */
+    omit?: LabelOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LabelInclude<ExtArgs> | null
   }
 
 
@@ -9826,21 +11248,27 @@ export namespace Prisma {
     id: string | null
     text: string | null
     cardId: string | null
+    authorId: string | null
     createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type CommentMaxAggregateOutputType = {
     id: string | null
     text: string | null
     cardId: string | null
+    authorId: string | null
     createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type CommentCountAggregateOutputType = {
     id: number
     text: number
     cardId: number
+    authorId: number
     createdAt: number
+    updatedAt: number
     _all: number
   }
 
@@ -9849,21 +11277,27 @@ export namespace Prisma {
     id?: true
     text?: true
     cardId?: true
+    authorId?: true
     createdAt?: true
+    updatedAt?: true
   }
 
   export type CommentMaxAggregateInputType = {
     id?: true
     text?: true
     cardId?: true
+    authorId?: true
     createdAt?: true
+    updatedAt?: true
   }
 
   export type CommentCountAggregateInputType = {
     id?: true
     text?: true
     cardId?: true
+    authorId?: true
     createdAt?: true
+    updatedAt?: true
     _all?: true
   }
 
@@ -9943,7 +11377,9 @@ export namespace Prisma {
     id: string
     text: string
     cardId: string
+    authorId: string
     createdAt: Date
+    updatedAt: Date
     _count: CommentCountAggregateOutputType | null
     _min: CommentMinAggregateOutputType | null
     _max: CommentMaxAggregateOutputType | null
@@ -9967,54 +11403,71 @@ export namespace Prisma {
     id?: boolean
     text?: boolean
     cardId?: boolean
+    authorId?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
     card?: boolean | CardDefaultArgs<ExtArgs>
+    author?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["comment"]>
 
   export type CommentSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     text?: boolean
     cardId?: boolean
+    authorId?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
     card?: boolean | CardDefaultArgs<ExtArgs>
+    author?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["comment"]>
 
   export type CommentSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     text?: boolean
     cardId?: boolean
+    authorId?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
     card?: boolean | CardDefaultArgs<ExtArgs>
+    author?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["comment"]>
 
   export type CommentSelectScalar = {
     id?: boolean
     text?: boolean
     cardId?: boolean
+    authorId?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
   }
 
-  export type CommentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "text" | "cardId" | "createdAt", ExtArgs["result"]["comment"]>
+  export type CommentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "text" | "cardId" | "authorId" | "createdAt" | "updatedAt", ExtArgs["result"]["comment"]>
   export type CommentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     card?: boolean | CardDefaultArgs<ExtArgs>
+    author?: boolean | UserDefaultArgs<ExtArgs>
   }
   export type CommentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     card?: boolean | CardDefaultArgs<ExtArgs>
+    author?: boolean | UserDefaultArgs<ExtArgs>
   }
   export type CommentIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     card?: boolean | CardDefaultArgs<ExtArgs>
+    author?: boolean | UserDefaultArgs<ExtArgs>
   }
 
   export type $CommentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Comment"
     objects: {
       card: Prisma.$CardPayload<ExtArgs>
+      author: Prisma.$UserPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       text: string
       cardId: string
+      authorId: string
       createdAt: Date
+      updatedAt: Date
     }, ExtArgs["result"]["comment"]>
     composites: {}
   }
@@ -10410,6 +11863,7 @@ export namespace Prisma {
   export interface Prisma__CommentClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     card<T extends CardDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CardDefaultArgs<ExtArgs>>): Prisma__CardClient<$Result.GetResult<Prisma.$CardPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    author<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -10442,7 +11896,9 @@ export namespace Prisma {
     readonly id: FieldRef<"Comment", 'String'>
     readonly text: FieldRef<"Comment", 'String'>
     readonly cardId: FieldRef<"Comment", 'String'>
+    readonly authorId: FieldRef<"Comment", 'String'>
     readonly createdAt: FieldRef<"Comment", 'DateTime'>
+    readonly updatedAt: FieldRef<"Comment", 'DateTime'>
   }
     
 
@@ -10873,6 +12329,7 @@ export namespace Prisma {
     url: string | null
     edgeColor: string | null
     cardId: string | null
+    uploadedById: string | null
     createdAt: Date | null
   }
 
@@ -10882,6 +12339,7 @@ export namespace Prisma {
     url: string | null
     edgeColor: string | null
     cardId: string | null
+    uploadedById: string | null
     createdAt: Date | null
   }
 
@@ -10891,6 +12349,7 @@ export namespace Prisma {
     url: number
     edgeColor: number
     cardId: number
+    uploadedById: number
     createdAt: number
     _all: number
   }
@@ -10902,6 +12361,7 @@ export namespace Prisma {
     url?: true
     edgeColor?: true
     cardId?: true
+    uploadedById?: true
     createdAt?: true
   }
 
@@ -10911,6 +12371,7 @@ export namespace Prisma {
     url?: true
     edgeColor?: true
     cardId?: true
+    uploadedById?: true
     createdAt?: true
   }
 
@@ -10920,6 +12381,7 @@ export namespace Prisma {
     url?: true
     edgeColor?: true
     cardId?: true
+    uploadedById?: true
     createdAt?: true
     _all?: true
   }
@@ -11002,6 +12464,7 @@ export namespace Prisma {
     url: string
     edgeColor: string | null
     cardId: string
+    uploadedById: string | null
     createdAt: Date
     _count: AttachmentCountAggregateOutputType | null
     _min: AttachmentMinAggregateOutputType | null
@@ -11028,8 +12491,10 @@ export namespace Prisma {
     url?: boolean
     edgeColor?: boolean
     cardId?: boolean
+    uploadedById?: boolean
     createdAt?: boolean
     card?: boolean | CardDefaultArgs<ExtArgs>
+    uploadedBy?: boolean | Attachment$uploadedByArgs<ExtArgs>
   }, ExtArgs["result"]["attachment"]>
 
   export type AttachmentSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -11038,8 +12503,10 @@ export namespace Prisma {
     url?: boolean
     edgeColor?: boolean
     cardId?: boolean
+    uploadedById?: boolean
     createdAt?: boolean
     card?: boolean | CardDefaultArgs<ExtArgs>
+    uploadedBy?: boolean | Attachment$uploadedByArgs<ExtArgs>
   }, ExtArgs["result"]["attachment"]>
 
   export type AttachmentSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -11048,8 +12515,10 @@ export namespace Prisma {
     url?: boolean
     edgeColor?: boolean
     cardId?: boolean
+    uploadedById?: boolean
     createdAt?: boolean
     card?: boolean | CardDefaultArgs<ExtArgs>
+    uploadedBy?: boolean | Attachment$uploadedByArgs<ExtArgs>
   }, ExtArgs["result"]["attachment"]>
 
   export type AttachmentSelectScalar = {
@@ -11058,24 +12527,29 @@ export namespace Prisma {
     url?: boolean
     edgeColor?: boolean
     cardId?: boolean
+    uploadedById?: boolean
     createdAt?: boolean
   }
 
-  export type AttachmentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "url" | "edgeColor" | "cardId" | "createdAt", ExtArgs["result"]["attachment"]>
+  export type AttachmentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "url" | "edgeColor" | "cardId" | "uploadedById" | "createdAt", ExtArgs["result"]["attachment"]>
   export type AttachmentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     card?: boolean | CardDefaultArgs<ExtArgs>
+    uploadedBy?: boolean | Attachment$uploadedByArgs<ExtArgs>
   }
   export type AttachmentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     card?: boolean | CardDefaultArgs<ExtArgs>
+    uploadedBy?: boolean | Attachment$uploadedByArgs<ExtArgs>
   }
   export type AttachmentIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     card?: boolean | CardDefaultArgs<ExtArgs>
+    uploadedBy?: boolean | Attachment$uploadedByArgs<ExtArgs>
   }
 
   export type $AttachmentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Attachment"
     objects: {
       card: Prisma.$CardPayload<ExtArgs>
+      uploadedBy: Prisma.$UserPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -11083,6 +12557,7 @@ export namespace Prisma {
       url: string
       edgeColor: string | null
       cardId: string
+      uploadedById: string | null
       createdAt: Date
     }, ExtArgs["result"]["attachment"]>
     composites: {}
@@ -11479,6 +12954,7 @@ export namespace Prisma {
   export interface Prisma__AttachmentClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     card<T extends CardDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CardDefaultArgs<ExtArgs>>): Prisma__CardClient<$Result.GetResult<Prisma.$CardPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    uploadedBy<T extends Attachment$uploadedByArgs<ExtArgs> = {}>(args?: Subset<T, Attachment$uploadedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -11513,6 +12989,7 @@ export namespace Prisma {
     readonly url: FieldRef<"Attachment", 'String'>
     readonly edgeColor: FieldRef<"Attachment", 'String'>
     readonly cardId: FieldRef<"Attachment", 'String'>
+    readonly uploadedById: FieldRef<"Attachment", 'String'>
     readonly createdAt: FieldRef<"Attachment", 'DateTime'>
   }
     
@@ -11910,6 +13387,25 @@ export namespace Prisma {
   }
 
   /**
+   * Attachment.uploadedBy
+   */
+  export type Attachment$uploadedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
    * Attachment without action
    */
   export type AttachmentDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -12004,11 +13500,22 @@ export namespace Prisma {
     dueDate: 'dueDate',
     listId: 'listId',
     boardId: 'boardId',
+    assigneeId: 'assigneeId',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
 
   export type CardScalarFieldEnum = (typeof CardScalarFieldEnum)[keyof typeof CardScalarFieldEnum]
+
+
+  export const LabelScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    color: 'color',
+    boardId: 'boardId'
+  };
+
+  export type LabelScalarFieldEnum = (typeof LabelScalarFieldEnum)[keyof typeof LabelScalarFieldEnum]
 
 
   export const ChecklistScalarFieldEnum: {
@@ -12036,7 +13543,9 @@ export namespace Prisma {
     id: 'id',
     text: 'text',
     cardId: 'cardId',
-    createdAt: 'createdAt'
+    authorId: 'authorId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
   };
 
   export type CommentScalarFieldEnum = (typeof CommentScalarFieldEnum)[keyof typeof CommentScalarFieldEnum]
@@ -12048,6 +13557,7 @@ export namespace Prisma {
     url: 'url',
     edgeColor: 'edgeColor',
     cardId: 'cardId',
+    uploadedById: 'uploadedById',
     createdAt: 'createdAt'
   };
 
@@ -12163,6 +13673,9 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"User"> | Date | string
     boards?: BoardListRelationFilter
     workspaces?: WorkspaceListRelationFilter
+    comments?: CommentListRelationFilter
+    uploadedAttachments?: AttachmentListRelationFilter
+    assignedCards?: CardListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -12176,6 +13689,9 @@ export namespace Prisma {
     updatedAt?: SortOrder
     boards?: BoardOrderByRelationAggregateInput
     workspaces?: WorkspaceOrderByRelationAggregateInput
+    comments?: CommentOrderByRelationAggregateInput
+    uploadedAttachments?: AttachmentOrderByRelationAggregateInput
+    assignedCards?: CardOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -12192,6 +13708,9 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"User"> | Date | string
     boards?: BoardListRelationFilter
     workspaces?: WorkspaceListRelationFilter
+    comments?: CommentListRelationFilter
+    uploadedAttachments?: AttachmentListRelationFilter
+    assignedCards?: CardListRelationFilter
   }, "id" | "clerkUserId" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -12301,6 +13820,7 @@ export namespace Prisma {
     workspace?: XOR<WorkspaceScalarRelationFilter, WorkspaceWhereInput>
     lists?: ListListRelationFilter
     cards?: CardListRelationFilter
+    labels?: LabelListRelationFilter
   }
 
   export type BoardOrderByWithRelationInput = {
@@ -12316,6 +13836,7 @@ export namespace Prisma {
     workspace?: WorkspaceOrderByWithRelationInput
     lists?: ListOrderByRelationAggregateInput
     cards?: CardOrderByRelationAggregateInput
+    labels?: LabelOrderByRelationAggregateInput
   }
 
   export type BoardWhereUniqueInput = Prisma.AtLeast<{
@@ -12334,6 +13855,7 @@ export namespace Prisma {
     workspace?: XOR<WorkspaceScalarRelationFilter, WorkspaceWhereInput>
     lists?: ListListRelationFilter
     cards?: CardListRelationFilter
+    labels?: LabelListRelationFilter
   }, "id">
 
   export type BoardOrderByWithAggregationInput = {
@@ -12446,12 +13968,15 @@ export namespace Prisma {
     dueDate?: DateTimeNullableFilter<"Card"> | Date | string | null
     listId?: StringFilter<"Card"> | string
     boardId?: StringFilter<"Card"> | string
+    assigneeId?: StringNullableFilter<"Card"> | string | null
     createdAt?: DateTimeFilter<"Card"> | Date | string
     updatedAt?: DateTimeFilter<"Card"> | Date | string
     list?: XOR<ListScalarRelationFilter, ListWhereInput>
     board?: XOR<BoardScalarRelationFilter, BoardWhereInput>
+    assignee?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     checklists?: ChecklistListRelationFilter
     comments?: CommentListRelationFilter
+    labels?: LabelListRelationFilter
     attachments?: AttachmentListRelationFilter
   }
 
@@ -12464,12 +13989,15 @@ export namespace Prisma {
     dueDate?: SortOrderInput | SortOrder
     listId?: SortOrder
     boardId?: SortOrder
+    assigneeId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     list?: ListOrderByWithRelationInput
     board?: BoardOrderByWithRelationInput
+    assignee?: UserOrderByWithRelationInput
     checklists?: ChecklistOrderByRelationAggregateInput
     comments?: CommentOrderByRelationAggregateInput
+    labels?: LabelOrderByRelationAggregateInput
     attachments?: AttachmentOrderByRelationAggregateInput
   }
 
@@ -12485,12 +14013,15 @@ export namespace Prisma {
     dueDate?: DateTimeNullableFilter<"Card"> | Date | string | null
     listId?: StringFilter<"Card"> | string
     boardId?: StringFilter<"Card"> | string
+    assigneeId?: StringNullableFilter<"Card"> | string | null
     createdAt?: DateTimeFilter<"Card"> | Date | string
     updatedAt?: DateTimeFilter<"Card"> | Date | string
     list?: XOR<ListScalarRelationFilter, ListWhereInput>
     board?: XOR<BoardScalarRelationFilter, BoardWhereInput>
+    assignee?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     checklists?: ChecklistListRelationFilter
     comments?: CommentListRelationFilter
+    labels?: LabelListRelationFilter
     attachments?: AttachmentListRelationFilter
   }, "id">
 
@@ -12503,6 +14034,7 @@ export namespace Prisma {
     dueDate?: SortOrderInput | SortOrder
     listId?: SortOrder
     boardId?: SortOrder
+    assigneeId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: CardCountOrderByAggregateInput
@@ -12524,8 +14056,62 @@ export namespace Prisma {
     dueDate?: DateTimeNullableWithAggregatesFilter<"Card"> | Date | string | null
     listId?: StringWithAggregatesFilter<"Card"> | string
     boardId?: StringWithAggregatesFilter<"Card"> | string
+    assigneeId?: StringNullableWithAggregatesFilter<"Card"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Card"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Card"> | Date | string
+  }
+
+  export type LabelWhereInput = {
+    AND?: LabelWhereInput | LabelWhereInput[]
+    OR?: LabelWhereInput[]
+    NOT?: LabelWhereInput | LabelWhereInput[]
+    id?: StringFilter<"Label"> | string
+    name?: StringFilter<"Label"> | string
+    color?: StringNullableFilter<"Label"> | string | null
+    boardId?: StringFilter<"Label"> | string
+    board?: XOR<BoardScalarRelationFilter, BoardWhereInput>
+    cards?: CardListRelationFilter
+  }
+
+  export type LabelOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    color?: SortOrderInput | SortOrder
+    boardId?: SortOrder
+    board?: BoardOrderByWithRelationInput
+    cards?: CardOrderByRelationAggregateInput
+  }
+
+  export type LabelWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: LabelWhereInput | LabelWhereInput[]
+    OR?: LabelWhereInput[]
+    NOT?: LabelWhereInput | LabelWhereInput[]
+    name?: StringFilter<"Label"> | string
+    color?: StringNullableFilter<"Label"> | string | null
+    boardId?: StringFilter<"Label"> | string
+    board?: XOR<BoardScalarRelationFilter, BoardWhereInput>
+    cards?: CardListRelationFilter
+  }, "id">
+
+  export type LabelOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    color?: SortOrderInput | SortOrder
+    boardId?: SortOrder
+    _count?: LabelCountOrderByAggregateInput
+    _max?: LabelMaxOrderByAggregateInput
+    _min?: LabelMinOrderByAggregateInput
+  }
+
+  export type LabelScalarWhereWithAggregatesInput = {
+    AND?: LabelScalarWhereWithAggregatesInput | LabelScalarWhereWithAggregatesInput[]
+    OR?: LabelScalarWhereWithAggregatesInput[]
+    NOT?: LabelScalarWhereWithAggregatesInput | LabelScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Label"> | string
+    name?: StringWithAggregatesFilter<"Label"> | string
+    color?: StringNullableWithAggregatesFilter<"Label"> | string | null
+    boardId?: StringWithAggregatesFilter<"Label"> | string
   }
 
   export type ChecklistWhereInput = {
@@ -12647,16 +14233,22 @@ export namespace Prisma {
     id?: StringFilter<"Comment"> | string
     text?: StringFilter<"Comment"> | string
     cardId?: StringFilter<"Comment"> | string
+    authorId?: StringFilter<"Comment"> | string
     createdAt?: DateTimeFilter<"Comment"> | Date | string
+    updatedAt?: DateTimeFilter<"Comment"> | Date | string
     card?: XOR<CardScalarRelationFilter, CardWhereInput>
+    author?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
 
   export type CommentOrderByWithRelationInput = {
     id?: SortOrder
     text?: SortOrder
     cardId?: SortOrder
+    authorId?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
     card?: CardOrderByWithRelationInput
+    author?: UserOrderByWithRelationInput
   }
 
   export type CommentWhereUniqueInput = Prisma.AtLeast<{
@@ -12666,15 +14258,20 @@ export namespace Prisma {
     NOT?: CommentWhereInput | CommentWhereInput[]
     text?: StringFilter<"Comment"> | string
     cardId?: StringFilter<"Comment"> | string
+    authorId?: StringFilter<"Comment"> | string
     createdAt?: DateTimeFilter<"Comment"> | Date | string
+    updatedAt?: DateTimeFilter<"Comment"> | Date | string
     card?: XOR<CardScalarRelationFilter, CardWhereInput>
+    author?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id">
 
   export type CommentOrderByWithAggregationInput = {
     id?: SortOrder
     text?: SortOrder
     cardId?: SortOrder
+    authorId?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
     _count?: CommentCountOrderByAggregateInput
     _max?: CommentMaxOrderByAggregateInput
     _min?: CommentMinOrderByAggregateInput
@@ -12687,7 +14284,9 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Comment"> | string
     text?: StringWithAggregatesFilter<"Comment"> | string
     cardId?: StringWithAggregatesFilter<"Comment"> | string
+    authorId?: StringWithAggregatesFilter<"Comment"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Comment"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Comment"> | Date | string
   }
 
   export type AttachmentWhereInput = {
@@ -12699,8 +14298,10 @@ export namespace Prisma {
     url?: StringFilter<"Attachment"> | string
     edgeColor?: StringNullableFilter<"Attachment"> | string | null
     cardId?: StringFilter<"Attachment"> | string
+    uploadedById?: StringNullableFilter<"Attachment"> | string | null
     createdAt?: DateTimeFilter<"Attachment"> | Date | string
     card?: XOR<CardScalarRelationFilter, CardWhereInput>
+    uploadedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
   }
 
   export type AttachmentOrderByWithRelationInput = {
@@ -12709,8 +14310,10 @@ export namespace Prisma {
     url?: SortOrder
     edgeColor?: SortOrderInput | SortOrder
     cardId?: SortOrder
+    uploadedById?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     card?: CardOrderByWithRelationInput
+    uploadedBy?: UserOrderByWithRelationInput
   }
 
   export type AttachmentWhereUniqueInput = Prisma.AtLeast<{
@@ -12722,8 +14325,10 @@ export namespace Prisma {
     url?: StringFilter<"Attachment"> | string
     edgeColor?: StringNullableFilter<"Attachment"> | string | null
     cardId?: StringFilter<"Attachment"> | string
+    uploadedById?: StringNullableFilter<"Attachment"> | string | null
     createdAt?: DateTimeFilter<"Attachment"> | Date | string
     card?: XOR<CardScalarRelationFilter, CardWhereInput>
+    uploadedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
   }, "id">
 
   export type AttachmentOrderByWithAggregationInput = {
@@ -12732,6 +14337,7 @@ export namespace Prisma {
     url?: SortOrder
     edgeColor?: SortOrderInput | SortOrder
     cardId?: SortOrder
+    uploadedById?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     _count?: AttachmentCountOrderByAggregateInput
     _max?: AttachmentMaxOrderByAggregateInput
@@ -12747,6 +14353,7 @@ export namespace Prisma {
     url?: StringWithAggregatesFilter<"Attachment"> | string
     edgeColor?: StringNullableWithAggregatesFilter<"Attachment"> | string | null
     cardId?: StringWithAggregatesFilter<"Attachment"> | string
+    uploadedById?: StringNullableWithAggregatesFilter<"Attachment"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Attachment"> | Date | string
   }
 
@@ -12761,6 +14368,9 @@ export namespace Prisma {
     updatedAt?: Date | string
     boards?: BoardCreateNestedManyWithoutUserInput
     workspaces?: WorkspaceCreateNestedManyWithoutOwnerInput
+    comments?: CommentCreateNestedManyWithoutAuthorInput
+    uploadedAttachments?: AttachmentCreateNestedManyWithoutUploadedByInput
+    assignedCards?: CardCreateNestedManyWithoutAssigneeInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -12774,6 +14384,9 @@ export namespace Prisma {
     updatedAt?: Date | string
     boards?: BoardUncheckedCreateNestedManyWithoutUserInput
     workspaces?: WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
+    comments?: CommentUncheckedCreateNestedManyWithoutAuthorInput
+    uploadedAttachments?: AttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+    assignedCards?: CardUncheckedCreateNestedManyWithoutAssigneeInput
   }
 
   export type UserUpdateInput = {
@@ -12787,6 +14400,9 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     boards?: BoardUpdateManyWithoutUserNestedInput
     workspaces?: WorkspaceUpdateManyWithoutOwnerNestedInput
+    comments?: CommentUpdateManyWithoutAuthorNestedInput
+    uploadedAttachments?: AttachmentUpdateManyWithoutUploadedByNestedInput
+    assignedCards?: CardUpdateManyWithoutAssigneeNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -12800,6 +14416,9 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     boards?: BoardUncheckedUpdateManyWithoutUserNestedInput
     workspaces?: WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
+    comments?: CommentUncheckedUpdateManyWithoutAuthorNestedInput
+    uploadedAttachments?: AttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+    assignedCards?: CardUncheckedUpdateManyWithoutAssigneeNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -12912,6 +14531,7 @@ export namespace Prisma {
     workspace: WorkspaceCreateNestedOneWithoutBoardsInput
     lists?: ListCreateNestedManyWithoutBoardInput
     cards?: CardCreateNestedManyWithoutBoardInput
+    labels?: LabelCreateNestedManyWithoutBoardInput
   }
 
   export type BoardUncheckedCreateInput = {
@@ -12925,6 +14545,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     lists?: ListUncheckedCreateNestedManyWithoutBoardInput
     cards?: CardUncheckedCreateNestedManyWithoutBoardInput
+    labels?: LabelUncheckedCreateNestedManyWithoutBoardInput
   }
 
   export type BoardUpdateInput = {
@@ -12938,6 +14559,7 @@ export namespace Prisma {
     workspace?: WorkspaceUpdateOneRequiredWithoutBoardsNestedInput
     lists?: ListUpdateManyWithoutBoardNestedInput
     cards?: CardUpdateManyWithoutBoardNestedInput
+    labels?: LabelUpdateManyWithoutBoardNestedInput
   }
 
   export type BoardUncheckedUpdateInput = {
@@ -12951,6 +14573,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lists?: ListUncheckedUpdateManyWithoutBoardNestedInput
     cards?: CardUncheckedUpdateManyWithoutBoardNestedInput
+    labels?: LabelUncheckedUpdateManyWithoutBoardNestedInput
   }
 
   export type BoardCreateManyInput = {
@@ -13068,8 +14691,10 @@ export namespace Prisma {
     updatedAt?: Date | string
     list: ListCreateNestedOneWithoutCardsInput
     board: BoardCreateNestedOneWithoutCardsInput
+    assignee?: UserCreateNestedOneWithoutAssignedCardsInput
     checklists?: ChecklistCreateNestedManyWithoutCardInput
     comments?: CommentCreateNestedManyWithoutCardInput
+    labels?: LabelCreateNestedManyWithoutCardsInput
     attachments?: AttachmentCreateNestedManyWithoutCardInput
   }
 
@@ -13082,10 +14707,12 @@ export namespace Prisma {
     dueDate?: Date | string | null
     listId: string
     boardId: string
+    assigneeId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     checklists?: ChecklistUncheckedCreateNestedManyWithoutCardInput
     comments?: CommentUncheckedCreateNestedManyWithoutCardInput
+    labels?: LabelUncheckedCreateNestedManyWithoutCardsInput
     attachments?: AttachmentUncheckedCreateNestedManyWithoutCardInput
   }
 
@@ -13100,8 +14727,10 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     list?: ListUpdateOneRequiredWithoutCardsNestedInput
     board?: BoardUpdateOneRequiredWithoutCardsNestedInput
+    assignee?: UserUpdateOneWithoutAssignedCardsNestedInput
     checklists?: ChecklistUpdateManyWithoutCardNestedInput
     comments?: CommentUpdateManyWithoutCardNestedInput
+    labels?: LabelUpdateManyWithoutCardsNestedInput
     attachments?: AttachmentUpdateManyWithoutCardNestedInput
   }
 
@@ -13114,10 +14743,12 @@ export namespace Prisma {
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     listId?: StringFieldUpdateOperationsInput | string
     boardId?: StringFieldUpdateOperationsInput | string
+    assigneeId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     checklists?: ChecklistUncheckedUpdateManyWithoutCardNestedInput
     comments?: CommentUncheckedUpdateManyWithoutCardNestedInput
+    labels?: LabelUncheckedUpdateManyWithoutCardsNestedInput
     attachments?: AttachmentUncheckedUpdateManyWithoutCardNestedInput
   }
 
@@ -13130,6 +14761,7 @@ export namespace Prisma {
     dueDate?: Date | string | null
     listId: string
     boardId: string
+    assigneeId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -13154,8 +14786,61 @@ export namespace Prisma {
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     listId?: StringFieldUpdateOperationsInput | string
     boardId?: StringFieldUpdateOperationsInput | string
+    assigneeId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LabelCreateInput = {
+    id?: string
+    name: string
+    color?: string | null
+    board: BoardCreateNestedOneWithoutLabelsInput
+    cards?: CardCreateNestedManyWithoutLabelsInput
+  }
+
+  export type LabelUncheckedCreateInput = {
+    id?: string
+    name: string
+    color?: string | null
+    boardId: string
+    cards?: CardUncheckedCreateNestedManyWithoutLabelsInput
+  }
+
+  export type LabelUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    color?: NullableStringFieldUpdateOperationsInput | string | null
+    board?: BoardUpdateOneRequiredWithoutLabelsNestedInput
+    cards?: CardUpdateManyWithoutLabelsNestedInput
+  }
+
+  export type LabelUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    color?: NullableStringFieldUpdateOperationsInput | string | null
+    boardId?: StringFieldUpdateOperationsInput | string
+    cards?: CardUncheckedUpdateManyWithoutLabelsNestedInput
+  }
+
+  export type LabelCreateManyInput = {
+    id?: string
+    name: string
+    color?: string | null
+    boardId: string
+  }
+
+  export type LabelUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    color?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type LabelUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    color?: NullableStringFieldUpdateOperationsInput | string | null
+    boardId?: StringFieldUpdateOperationsInput | string
   }
 
   export type ChecklistCreateInput = {
@@ -13269,48 +14954,61 @@ export namespace Prisma {
     id?: string
     text: string
     createdAt?: Date | string
+    updatedAt?: Date | string
     card: CardCreateNestedOneWithoutCommentsInput
+    author: UserCreateNestedOneWithoutCommentsInput
   }
 
   export type CommentUncheckedCreateInput = {
     id?: string
     text: string
     cardId: string
+    authorId: string
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type CommentUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     text?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     card?: CardUpdateOneRequiredWithoutCommentsNestedInput
+    author?: UserUpdateOneRequiredWithoutCommentsNestedInput
   }
 
   export type CommentUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     text?: StringFieldUpdateOperationsInput | string
     cardId?: StringFieldUpdateOperationsInput | string
+    authorId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CommentCreateManyInput = {
     id?: string
     text: string
     cardId: string
+    authorId: string
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type CommentUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     text?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CommentUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     text?: StringFieldUpdateOperationsInput | string
     cardId?: StringFieldUpdateOperationsInput | string
+    authorId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AttachmentCreateInput = {
@@ -13320,6 +15018,7 @@ export namespace Prisma {
     edgeColor?: string | null
     createdAt?: Date | string
     card: CardCreateNestedOneWithoutAttachmentsInput
+    uploadedBy?: UserCreateNestedOneWithoutUploadedAttachmentsInput
   }
 
   export type AttachmentUncheckedCreateInput = {
@@ -13328,6 +15027,7 @@ export namespace Prisma {
     url: string
     edgeColor?: string | null
     cardId: string
+    uploadedById?: string | null
     createdAt?: Date | string
   }
 
@@ -13338,6 +15038,7 @@ export namespace Prisma {
     edgeColor?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     card?: CardUpdateOneRequiredWithoutAttachmentsNestedInput
+    uploadedBy?: UserUpdateOneWithoutUploadedAttachmentsNestedInput
   }
 
   export type AttachmentUncheckedUpdateInput = {
@@ -13346,6 +15047,7 @@ export namespace Prisma {
     url?: StringFieldUpdateOperationsInput | string
     edgeColor?: NullableStringFieldUpdateOperationsInput | string | null
     cardId?: StringFieldUpdateOperationsInput | string
+    uploadedById?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -13355,6 +15057,7 @@ export namespace Prisma {
     url: string
     edgeColor?: string | null
     cardId: string
+    uploadedById?: string | null
     createdAt?: Date | string
   }
 
@@ -13372,6 +15075,7 @@ export namespace Prisma {
     url?: StringFieldUpdateOperationsInput | string
     edgeColor?: NullableStringFieldUpdateOperationsInput | string | null
     cardId?: StringFieldUpdateOperationsInput | string
+    uploadedById?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -13428,6 +15132,24 @@ export namespace Prisma {
     none?: WorkspaceWhereInput
   }
 
+  export type CommentListRelationFilter = {
+    every?: CommentWhereInput
+    some?: CommentWhereInput
+    none?: CommentWhereInput
+  }
+
+  export type AttachmentListRelationFilter = {
+    every?: AttachmentWhereInput
+    some?: AttachmentWhereInput
+    none?: AttachmentWhereInput
+  }
+
+  export type CardListRelationFilter = {
+    every?: CardWhereInput
+    some?: CardWhereInput
+    none?: CardWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -13438,6 +15160,18 @@ export namespace Prisma {
   }
 
   export type WorkspaceOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type CommentOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type AttachmentOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type CardOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -13572,17 +15306,17 @@ export namespace Prisma {
     none?: ListWhereInput
   }
 
-  export type CardListRelationFilter = {
-    every?: CardWhereInput
-    some?: CardWhereInput
-    none?: CardWhereInput
+  export type LabelListRelationFilter = {
+    every?: LabelWhereInput
+    some?: LabelWhereInput
+    none?: LabelWhereInput
   }
 
   export type ListOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
-  export type CardOrderByRelationAggregateInput = {
+  export type LabelOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -13713,33 +15447,18 @@ export namespace Prisma {
     isNot?: ListWhereInput
   }
 
+  export type UserNullableScalarRelationFilter = {
+    is?: UserWhereInput | null
+    isNot?: UserWhereInput | null
+  }
+
   export type ChecklistListRelationFilter = {
     every?: ChecklistWhereInput
     some?: ChecklistWhereInput
     none?: ChecklistWhereInput
   }
 
-  export type CommentListRelationFilter = {
-    every?: CommentWhereInput
-    some?: CommentWhereInput
-    none?: CommentWhereInput
-  }
-
-  export type AttachmentListRelationFilter = {
-    every?: AttachmentWhereInput
-    some?: AttachmentWhereInput
-    none?: AttachmentWhereInput
-  }
-
   export type ChecklistOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type CommentOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type AttachmentOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -13752,6 +15471,7 @@ export namespace Prisma {
     dueDate?: SortOrder
     listId?: SortOrder
     boardId?: SortOrder
+    assigneeId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -13769,6 +15489,7 @@ export namespace Prisma {
     dueDate?: SortOrder
     listId?: SortOrder
     boardId?: SortOrder
+    assigneeId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -13782,6 +15503,7 @@ export namespace Prisma {
     dueDate?: SortOrder
     listId?: SortOrder
     boardId?: SortOrder
+    assigneeId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -13802,6 +15524,27 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type LabelCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    color?: SortOrder
+    boardId?: SortOrder
+  }
+
+  export type LabelMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    color?: SortOrder
+    boardId?: SortOrder
+  }
+
+  export type LabelMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    color?: SortOrder
+    boardId?: SortOrder
   }
 
   export type CardScalarRelationFilter = {
@@ -13889,21 +15632,27 @@ export namespace Prisma {
     id?: SortOrder
     text?: SortOrder
     cardId?: SortOrder
+    authorId?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type CommentMaxOrderByAggregateInput = {
     id?: SortOrder
     text?: SortOrder
     cardId?: SortOrder
+    authorId?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type CommentMinOrderByAggregateInput = {
     id?: SortOrder
     text?: SortOrder
     cardId?: SortOrder
+    authorId?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type AttachmentCountOrderByAggregateInput = {
@@ -13912,6 +15661,7 @@ export namespace Prisma {
     url?: SortOrder
     edgeColor?: SortOrder
     cardId?: SortOrder
+    uploadedById?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -13921,6 +15671,7 @@ export namespace Prisma {
     url?: SortOrder
     edgeColor?: SortOrder
     cardId?: SortOrder
+    uploadedById?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -13930,6 +15681,7 @@ export namespace Prisma {
     url?: SortOrder
     edgeColor?: SortOrder
     cardId?: SortOrder
+    uploadedById?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -13947,6 +15699,27 @@ export namespace Prisma {
     connect?: WorkspaceWhereUniqueInput | WorkspaceWhereUniqueInput[]
   }
 
+  export type CommentCreateNestedManyWithoutAuthorInput = {
+    create?: XOR<CommentCreateWithoutAuthorInput, CommentUncheckedCreateWithoutAuthorInput> | CommentCreateWithoutAuthorInput[] | CommentUncheckedCreateWithoutAuthorInput[]
+    connectOrCreate?: CommentCreateOrConnectWithoutAuthorInput | CommentCreateOrConnectWithoutAuthorInput[]
+    createMany?: CommentCreateManyAuthorInputEnvelope
+    connect?: CommentWhereUniqueInput | CommentWhereUniqueInput[]
+  }
+
+  export type AttachmentCreateNestedManyWithoutUploadedByInput = {
+    create?: XOR<AttachmentCreateWithoutUploadedByInput, AttachmentUncheckedCreateWithoutUploadedByInput> | AttachmentCreateWithoutUploadedByInput[] | AttachmentUncheckedCreateWithoutUploadedByInput[]
+    connectOrCreate?: AttachmentCreateOrConnectWithoutUploadedByInput | AttachmentCreateOrConnectWithoutUploadedByInput[]
+    createMany?: AttachmentCreateManyUploadedByInputEnvelope
+    connect?: AttachmentWhereUniqueInput | AttachmentWhereUniqueInput[]
+  }
+
+  export type CardCreateNestedManyWithoutAssigneeInput = {
+    create?: XOR<CardCreateWithoutAssigneeInput, CardUncheckedCreateWithoutAssigneeInput> | CardCreateWithoutAssigneeInput[] | CardUncheckedCreateWithoutAssigneeInput[]
+    connectOrCreate?: CardCreateOrConnectWithoutAssigneeInput | CardCreateOrConnectWithoutAssigneeInput[]
+    createMany?: CardCreateManyAssigneeInputEnvelope
+    connect?: CardWhereUniqueInput | CardWhereUniqueInput[]
+  }
+
   export type BoardUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<BoardCreateWithoutUserInput, BoardUncheckedCreateWithoutUserInput> | BoardCreateWithoutUserInput[] | BoardUncheckedCreateWithoutUserInput[]
     connectOrCreate?: BoardCreateOrConnectWithoutUserInput | BoardCreateOrConnectWithoutUserInput[]
@@ -13959,6 +15732,27 @@ export namespace Prisma {
     connectOrCreate?: WorkspaceCreateOrConnectWithoutOwnerInput | WorkspaceCreateOrConnectWithoutOwnerInput[]
     createMany?: WorkspaceCreateManyOwnerInputEnvelope
     connect?: WorkspaceWhereUniqueInput | WorkspaceWhereUniqueInput[]
+  }
+
+  export type CommentUncheckedCreateNestedManyWithoutAuthorInput = {
+    create?: XOR<CommentCreateWithoutAuthorInput, CommentUncheckedCreateWithoutAuthorInput> | CommentCreateWithoutAuthorInput[] | CommentUncheckedCreateWithoutAuthorInput[]
+    connectOrCreate?: CommentCreateOrConnectWithoutAuthorInput | CommentCreateOrConnectWithoutAuthorInput[]
+    createMany?: CommentCreateManyAuthorInputEnvelope
+    connect?: CommentWhereUniqueInput | CommentWhereUniqueInput[]
+  }
+
+  export type AttachmentUncheckedCreateNestedManyWithoutUploadedByInput = {
+    create?: XOR<AttachmentCreateWithoutUploadedByInput, AttachmentUncheckedCreateWithoutUploadedByInput> | AttachmentCreateWithoutUploadedByInput[] | AttachmentUncheckedCreateWithoutUploadedByInput[]
+    connectOrCreate?: AttachmentCreateOrConnectWithoutUploadedByInput | AttachmentCreateOrConnectWithoutUploadedByInput[]
+    createMany?: AttachmentCreateManyUploadedByInputEnvelope
+    connect?: AttachmentWhereUniqueInput | AttachmentWhereUniqueInput[]
+  }
+
+  export type CardUncheckedCreateNestedManyWithoutAssigneeInput = {
+    create?: XOR<CardCreateWithoutAssigneeInput, CardUncheckedCreateWithoutAssigneeInput> | CardCreateWithoutAssigneeInput[] | CardUncheckedCreateWithoutAssigneeInput[]
+    connectOrCreate?: CardCreateOrConnectWithoutAssigneeInput | CardCreateOrConnectWithoutAssigneeInput[]
+    createMany?: CardCreateManyAssigneeInputEnvelope
+    connect?: CardWhereUniqueInput | CardWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -14001,6 +15795,48 @@ export namespace Prisma {
     deleteMany?: WorkspaceScalarWhereInput | WorkspaceScalarWhereInput[]
   }
 
+  export type CommentUpdateManyWithoutAuthorNestedInput = {
+    create?: XOR<CommentCreateWithoutAuthorInput, CommentUncheckedCreateWithoutAuthorInput> | CommentCreateWithoutAuthorInput[] | CommentUncheckedCreateWithoutAuthorInput[]
+    connectOrCreate?: CommentCreateOrConnectWithoutAuthorInput | CommentCreateOrConnectWithoutAuthorInput[]
+    upsert?: CommentUpsertWithWhereUniqueWithoutAuthorInput | CommentUpsertWithWhereUniqueWithoutAuthorInput[]
+    createMany?: CommentCreateManyAuthorInputEnvelope
+    set?: CommentWhereUniqueInput | CommentWhereUniqueInput[]
+    disconnect?: CommentWhereUniqueInput | CommentWhereUniqueInput[]
+    delete?: CommentWhereUniqueInput | CommentWhereUniqueInput[]
+    connect?: CommentWhereUniqueInput | CommentWhereUniqueInput[]
+    update?: CommentUpdateWithWhereUniqueWithoutAuthorInput | CommentUpdateWithWhereUniqueWithoutAuthorInput[]
+    updateMany?: CommentUpdateManyWithWhereWithoutAuthorInput | CommentUpdateManyWithWhereWithoutAuthorInput[]
+    deleteMany?: CommentScalarWhereInput | CommentScalarWhereInput[]
+  }
+
+  export type AttachmentUpdateManyWithoutUploadedByNestedInput = {
+    create?: XOR<AttachmentCreateWithoutUploadedByInput, AttachmentUncheckedCreateWithoutUploadedByInput> | AttachmentCreateWithoutUploadedByInput[] | AttachmentUncheckedCreateWithoutUploadedByInput[]
+    connectOrCreate?: AttachmentCreateOrConnectWithoutUploadedByInput | AttachmentCreateOrConnectWithoutUploadedByInput[]
+    upsert?: AttachmentUpsertWithWhereUniqueWithoutUploadedByInput | AttachmentUpsertWithWhereUniqueWithoutUploadedByInput[]
+    createMany?: AttachmentCreateManyUploadedByInputEnvelope
+    set?: AttachmentWhereUniqueInput | AttachmentWhereUniqueInput[]
+    disconnect?: AttachmentWhereUniqueInput | AttachmentWhereUniqueInput[]
+    delete?: AttachmentWhereUniqueInput | AttachmentWhereUniqueInput[]
+    connect?: AttachmentWhereUniqueInput | AttachmentWhereUniqueInput[]
+    update?: AttachmentUpdateWithWhereUniqueWithoutUploadedByInput | AttachmentUpdateWithWhereUniqueWithoutUploadedByInput[]
+    updateMany?: AttachmentUpdateManyWithWhereWithoutUploadedByInput | AttachmentUpdateManyWithWhereWithoutUploadedByInput[]
+    deleteMany?: AttachmentScalarWhereInput | AttachmentScalarWhereInput[]
+  }
+
+  export type CardUpdateManyWithoutAssigneeNestedInput = {
+    create?: XOR<CardCreateWithoutAssigneeInput, CardUncheckedCreateWithoutAssigneeInput> | CardCreateWithoutAssigneeInput[] | CardUncheckedCreateWithoutAssigneeInput[]
+    connectOrCreate?: CardCreateOrConnectWithoutAssigneeInput | CardCreateOrConnectWithoutAssigneeInput[]
+    upsert?: CardUpsertWithWhereUniqueWithoutAssigneeInput | CardUpsertWithWhereUniqueWithoutAssigneeInput[]
+    createMany?: CardCreateManyAssigneeInputEnvelope
+    set?: CardWhereUniqueInput | CardWhereUniqueInput[]
+    disconnect?: CardWhereUniqueInput | CardWhereUniqueInput[]
+    delete?: CardWhereUniqueInput | CardWhereUniqueInput[]
+    connect?: CardWhereUniqueInput | CardWhereUniqueInput[]
+    update?: CardUpdateWithWhereUniqueWithoutAssigneeInput | CardUpdateWithWhereUniqueWithoutAssigneeInput[]
+    updateMany?: CardUpdateManyWithWhereWithoutAssigneeInput | CardUpdateManyWithWhereWithoutAssigneeInput[]
+    deleteMany?: CardScalarWhereInput | CardScalarWhereInput[]
+  }
+
   export type BoardUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<BoardCreateWithoutUserInput, BoardUncheckedCreateWithoutUserInput> | BoardCreateWithoutUserInput[] | BoardUncheckedCreateWithoutUserInput[]
     connectOrCreate?: BoardCreateOrConnectWithoutUserInput | BoardCreateOrConnectWithoutUserInput[]
@@ -14027,6 +15863,48 @@ export namespace Prisma {
     update?: WorkspaceUpdateWithWhereUniqueWithoutOwnerInput | WorkspaceUpdateWithWhereUniqueWithoutOwnerInput[]
     updateMany?: WorkspaceUpdateManyWithWhereWithoutOwnerInput | WorkspaceUpdateManyWithWhereWithoutOwnerInput[]
     deleteMany?: WorkspaceScalarWhereInput | WorkspaceScalarWhereInput[]
+  }
+
+  export type CommentUncheckedUpdateManyWithoutAuthorNestedInput = {
+    create?: XOR<CommentCreateWithoutAuthorInput, CommentUncheckedCreateWithoutAuthorInput> | CommentCreateWithoutAuthorInput[] | CommentUncheckedCreateWithoutAuthorInput[]
+    connectOrCreate?: CommentCreateOrConnectWithoutAuthorInput | CommentCreateOrConnectWithoutAuthorInput[]
+    upsert?: CommentUpsertWithWhereUniqueWithoutAuthorInput | CommentUpsertWithWhereUniqueWithoutAuthorInput[]
+    createMany?: CommentCreateManyAuthorInputEnvelope
+    set?: CommentWhereUniqueInput | CommentWhereUniqueInput[]
+    disconnect?: CommentWhereUniqueInput | CommentWhereUniqueInput[]
+    delete?: CommentWhereUniqueInput | CommentWhereUniqueInput[]
+    connect?: CommentWhereUniqueInput | CommentWhereUniqueInput[]
+    update?: CommentUpdateWithWhereUniqueWithoutAuthorInput | CommentUpdateWithWhereUniqueWithoutAuthorInput[]
+    updateMany?: CommentUpdateManyWithWhereWithoutAuthorInput | CommentUpdateManyWithWhereWithoutAuthorInput[]
+    deleteMany?: CommentScalarWhereInput | CommentScalarWhereInput[]
+  }
+
+  export type AttachmentUncheckedUpdateManyWithoutUploadedByNestedInput = {
+    create?: XOR<AttachmentCreateWithoutUploadedByInput, AttachmentUncheckedCreateWithoutUploadedByInput> | AttachmentCreateWithoutUploadedByInput[] | AttachmentUncheckedCreateWithoutUploadedByInput[]
+    connectOrCreate?: AttachmentCreateOrConnectWithoutUploadedByInput | AttachmentCreateOrConnectWithoutUploadedByInput[]
+    upsert?: AttachmentUpsertWithWhereUniqueWithoutUploadedByInput | AttachmentUpsertWithWhereUniqueWithoutUploadedByInput[]
+    createMany?: AttachmentCreateManyUploadedByInputEnvelope
+    set?: AttachmentWhereUniqueInput | AttachmentWhereUniqueInput[]
+    disconnect?: AttachmentWhereUniqueInput | AttachmentWhereUniqueInput[]
+    delete?: AttachmentWhereUniqueInput | AttachmentWhereUniqueInput[]
+    connect?: AttachmentWhereUniqueInput | AttachmentWhereUniqueInput[]
+    update?: AttachmentUpdateWithWhereUniqueWithoutUploadedByInput | AttachmentUpdateWithWhereUniqueWithoutUploadedByInput[]
+    updateMany?: AttachmentUpdateManyWithWhereWithoutUploadedByInput | AttachmentUpdateManyWithWhereWithoutUploadedByInput[]
+    deleteMany?: AttachmentScalarWhereInput | AttachmentScalarWhereInput[]
+  }
+
+  export type CardUncheckedUpdateManyWithoutAssigneeNestedInput = {
+    create?: XOR<CardCreateWithoutAssigneeInput, CardUncheckedCreateWithoutAssigneeInput> | CardCreateWithoutAssigneeInput[] | CardUncheckedCreateWithoutAssigneeInput[]
+    connectOrCreate?: CardCreateOrConnectWithoutAssigneeInput | CardCreateOrConnectWithoutAssigneeInput[]
+    upsert?: CardUpsertWithWhereUniqueWithoutAssigneeInput | CardUpsertWithWhereUniqueWithoutAssigneeInput[]
+    createMany?: CardCreateManyAssigneeInputEnvelope
+    set?: CardWhereUniqueInput | CardWhereUniqueInput[]
+    disconnect?: CardWhereUniqueInput | CardWhereUniqueInput[]
+    delete?: CardWhereUniqueInput | CardWhereUniqueInput[]
+    connect?: CardWhereUniqueInput | CardWhereUniqueInput[]
+    update?: CardUpdateWithWhereUniqueWithoutAssigneeInput | CardUpdateWithWhereUniqueWithoutAssigneeInput[]
+    updateMany?: CardUpdateManyWithWhereWithoutAssigneeInput | CardUpdateManyWithWhereWithoutAssigneeInput[]
+    deleteMany?: CardScalarWhereInput | CardScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutWorkspacesInput = {
@@ -14111,6 +15989,13 @@ export namespace Prisma {
     connect?: CardWhereUniqueInput | CardWhereUniqueInput[]
   }
 
+  export type LabelCreateNestedManyWithoutBoardInput = {
+    create?: XOR<LabelCreateWithoutBoardInput, LabelUncheckedCreateWithoutBoardInput> | LabelCreateWithoutBoardInput[] | LabelUncheckedCreateWithoutBoardInput[]
+    connectOrCreate?: LabelCreateOrConnectWithoutBoardInput | LabelCreateOrConnectWithoutBoardInput[]
+    createMany?: LabelCreateManyBoardInputEnvelope
+    connect?: LabelWhereUniqueInput | LabelWhereUniqueInput[]
+  }
+
   export type ListUncheckedCreateNestedManyWithoutBoardInput = {
     create?: XOR<ListCreateWithoutBoardInput, ListUncheckedCreateWithoutBoardInput> | ListCreateWithoutBoardInput[] | ListUncheckedCreateWithoutBoardInput[]
     connectOrCreate?: ListCreateOrConnectWithoutBoardInput | ListCreateOrConnectWithoutBoardInput[]
@@ -14123,6 +16008,13 @@ export namespace Prisma {
     connectOrCreate?: CardCreateOrConnectWithoutBoardInput | CardCreateOrConnectWithoutBoardInput[]
     createMany?: CardCreateManyBoardInputEnvelope
     connect?: CardWhereUniqueInput | CardWhereUniqueInput[]
+  }
+
+  export type LabelUncheckedCreateNestedManyWithoutBoardInput = {
+    create?: XOR<LabelCreateWithoutBoardInput, LabelUncheckedCreateWithoutBoardInput> | LabelCreateWithoutBoardInput[] | LabelUncheckedCreateWithoutBoardInput[]
+    connectOrCreate?: LabelCreateOrConnectWithoutBoardInput | LabelCreateOrConnectWithoutBoardInput[]
+    createMany?: LabelCreateManyBoardInputEnvelope
+    connect?: LabelWhereUniqueInput | LabelWhereUniqueInput[]
   }
 
   export type BoolFieldUpdateOperationsInput = {
@@ -14173,6 +16065,20 @@ export namespace Prisma {
     deleteMany?: CardScalarWhereInput | CardScalarWhereInput[]
   }
 
+  export type LabelUpdateManyWithoutBoardNestedInput = {
+    create?: XOR<LabelCreateWithoutBoardInput, LabelUncheckedCreateWithoutBoardInput> | LabelCreateWithoutBoardInput[] | LabelUncheckedCreateWithoutBoardInput[]
+    connectOrCreate?: LabelCreateOrConnectWithoutBoardInput | LabelCreateOrConnectWithoutBoardInput[]
+    upsert?: LabelUpsertWithWhereUniqueWithoutBoardInput | LabelUpsertWithWhereUniqueWithoutBoardInput[]
+    createMany?: LabelCreateManyBoardInputEnvelope
+    set?: LabelWhereUniqueInput | LabelWhereUniqueInput[]
+    disconnect?: LabelWhereUniqueInput | LabelWhereUniqueInput[]
+    delete?: LabelWhereUniqueInput | LabelWhereUniqueInput[]
+    connect?: LabelWhereUniqueInput | LabelWhereUniqueInput[]
+    update?: LabelUpdateWithWhereUniqueWithoutBoardInput | LabelUpdateWithWhereUniqueWithoutBoardInput[]
+    updateMany?: LabelUpdateManyWithWhereWithoutBoardInput | LabelUpdateManyWithWhereWithoutBoardInput[]
+    deleteMany?: LabelScalarWhereInput | LabelScalarWhereInput[]
+  }
+
   export type ListUncheckedUpdateManyWithoutBoardNestedInput = {
     create?: XOR<ListCreateWithoutBoardInput, ListUncheckedCreateWithoutBoardInput> | ListCreateWithoutBoardInput[] | ListUncheckedCreateWithoutBoardInput[]
     connectOrCreate?: ListCreateOrConnectWithoutBoardInput | ListCreateOrConnectWithoutBoardInput[]
@@ -14199,6 +16105,20 @@ export namespace Prisma {
     update?: CardUpdateWithWhereUniqueWithoutBoardInput | CardUpdateWithWhereUniqueWithoutBoardInput[]
     updateMany?: CardUpdateManyWithWhereWithoutBoardInput | CardUpdateManyWithWhereWithoutBoardInput[]
     deleteMany?: CardScalarWhereInput | CardScalarWhereInput[]
+  }
+
+  export type LabelUncheckedUpdateManyWithoutBoardNestedInput = {
+    create?: XOR<LabelCreateWithoutBoardInput, LabelUncheckedCreateWithoutBoardInput> | LabelCreateWithoutBoardInput[] | LabelUncheckedCreateWithoutBoardInput[]
+    connectOrCreate?: LabelCreateOrConnectWithoutBoardInput | LabelCreateOrConnectWithoutBoardInput[]
+    upsert?: LabelUpsertWithWhereUniqueWithoutBoardInput | LabelUpsertWithWhereUniqueWithoutBoardInput[]
+    createMany?: LabelCreateManyBoardInputEnvelope
+    set?: LabelWhereUniqueInput | LabelWhereUniqueInput[]
+    disconnect?: LabelWhereUniqueInput | LabelWhereUniqueInput[]
+    delete?: LabelWhereUniqueInput | LabelWhereUniqueInput[]
+    connect?: LabelWhereUniqueInput | LabelWhereUniqueInput[]
+    update?: LabelUpdateWithWhereUniqueWithoutBoardInput | LabelUpdateWithWhereUniqueWithoutBoardInput[]
+    updateMany?: LabelUpdateManyWithWhereWithoutBoardInput | LabelUpdateManyWithWhereWithoutBoardInput[]
+    deleteMany?: LabelScalarWhereInput | LabelScalarWhereInput[]
   }
 
   export type BoardCreateNestedOneWithoutListsInput = {
@@ -14277,6 +16197,12 @@ export namespace Prisma {
     connect?: BoardWhereUniqueInput
   }
 
+  export type UserCreateNestedOneWithoutAssignedCardsInput = {
+    create?: XOR<UserCreateWithoutAssignedCardsInput, UserUncheckedCreateWithoutAssignedCardsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAssignedCardsInput
+    connect?: UserWhereUniqueInput
+  }
+
   export type ChecklistCreateNestedManyWithoutCardInput = {
     create?: XOR<ChecklistCreateWithoutCardInput, ChecklistUncheckedCreateWithoutCardInput> | ChecklistCreateWithoutCardInput[] | ChecklistUncheckedCreateWithoutCardInput[]
     connectOrCreate?: ChecklistCreateOrConnectWithoutCardInput | ChecklistCreateOrConnectWithoutCardInput[]
@@ -14289,6 +16215,12 @@ export namespace Prisma {
     connectOrCreate?: CommentCreateOrConnectWithoutCardInput | CommentCreateOrConnectWithoutCardInput[]
     createMany?: CommentCreateManyCardInputEnvelope
     connect?: CommentWhereUniqueInput | CommentWhereUniqueInput[]
+  }
+
+  export type LabelCreateNestedManyWithoutCardsInput = {
+    create?: XOR<LabelCreateWithoutCardsInput, LabelUncheckedCreateWithoutCardsInput> | LabelCreateWithoutCardsInput[] | LabelUncheckedCreateWithoutCardsInput[]
+    connectOrCreate?: LabelCreateOrConnectWithoutCardsInput | LabelCreateOrConnectWithoutCardsInput[]
+    connect?: LabelWhereUniqueInput | LabelWhereUniqueInput[]
   }
 
   export type AttachmentCreateNestedManyWithoutCardInput = {
@@ -14310,6 +16242,12 @@ export namespace Prisma {
     connectOrCreate?: CommentCreateOrConnectWithoutCardInput | CommentCreateOrConnectWithoutCardInput[]
     createMany?: CommentCreateManyCardInputEnvelope
     connect?: CommentWhereUniqueInput | CommentWhereUniqueInput[]
+  }
+
+  export type LabelUncheckedCreateNestedManyWithoutCardsInput = {
+    create?: XOR<LabelCreateWithoutCardsInput, LabelUncheckedCreateWithoutCardsInput> | LabelCreateWithoutCardsInput[] | LabelUncheckedCreateWithoutCardsInput[]
+    connectOrCreate?: LabelCreateOrConnectWithoutCardsInput | LabelCreateOrConnectWithoutCardsInput[]
+    connect?: LabelWhereUniqueInput | LabelWhereUniqueInput[]
   }
 
   export type AttachmentUncheckedCreateNestedManyWithoutCardInput = {
@@ -14339,6 +16277,16 @@ export namespace Prisma {
     update?: XOR<XOR<BoardUpdateToOneWithWhereWithoutCardsInput, BoardUpdateWithoutCardsInput>, BoardUncheckedUpdateWithoutCardsInput>
   }
 
+  export type UserUpdateOneWithoutAssignedCardsNestedInput = {
+    create?: XOR<UserCreateWithoutAssignedCardsInput, UserUncheckedCreateWithoutAssignedCardsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutAssignedCardsInput
+    upsert?: UserUpsertWithoutAssignedCardsInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAssignedCardsInput, UserUpdateWithoutAssignedCardsInput>, UserUncheckedUpdateWithoutAssignedCardsInput>
+  }
+
   export type ChecklistUpdateManyWithoutCardNestedInput = {
     create?: XOR<ChecklistCreateWithoutCardInput, ChecklistUncheckedCreateWithoutCardInput> | ChecklistCreateWithoutCardInput[] | ChecklistUncheckedCreateWithoutCardInput[]
     connectOrCreate?: ChecklistCreateOrConnectWithoutCardInput | ChecklistCreateOrConnectWithoutCardInput[]
@@ -14365,6 +16313,19 @@ export namespace Prisma {
     update?: CommentUpdateWithWhereUniqueWithoutCardInput | CommentUpdateWithWhereUniqueWithoutCardInput[]
     updateMany?: CommentUpdateManyWithWhereWithoutCardInput | CommentUpdateManyWithWhereWithoutCardInput[]
     deleteMany?: CommentScalarWhereInput | CommentScalarWhereInput[]
+  }
+
+  export type LabelUpdateManyWithoutCardsNestedInput = {
+    create?: XOR<LabelCreateWithoutCardsInput, LabelUncheckedCreateWithoutCardsInput> | LabelCreateWithoutCardsInput[] | LabelUncheckedCreateWithoutCardsInput[]
+    connectOrCreate?: LabelCreateOrConnectWithoutCardsInput | LabelCreateOrConnectWithoutCardsInput[]
+    upsert?: LabelUpsertWithWhereUniqueWithoutCardsInput | LabelUpsertWithWhereUniqueWithoutCardsInput[]
+    set?: LabelWhereUniqueInput | LabelWhereUniqueInput[]
+    disconnect?: LabelWhereUniqueInput | LabelWhereUniqueInput[]
+    delete?: LabelWhereUniqueInput | LabelWhereUniqueInput[]
+    connect?: LabelWhereUniqueInput | LabelWhereUniqueInput[]
+    update?: LabelUpdateWithWhereUniqueWithoutCardsInput | LabelUpdateWithWhereUniqueWithoutCardsInput[]
+    updateMany?: LabelUpdateManyWithWhereWithoutCardsInput | LabelUpdateManyWithWhereWithoutCardsInput[]
+    deleteMany?: LabelScalarWhereInput | LabelScalarWhereInput[]
   }
 
   export type AttachmentUpdateManyWithoutCardNestedInput = {
@@ -14409,6 +16370,19 @@ export namespace Prisma {
     deleteMany?: CommentScalarWhereInput | CommentScalarWhereInput[]
   }
 
+  export type LabelUncheckedUpdateManyWithoutCardsNestedInput = {
+    create?: XOR<LabelCreateWithoutCardsInput, LabelUncheckedCreateWithoutCardsInput> | LabelCreateWithoutCardsInput[] | LabelUncheckedCreateWithoutCardsInput[]
+    connectOrCreate?: LabelCreateOrConnectWithoutCardsInput | LabelCreateOrConnectWithoutCardsInput[]
+    upsert?: LabelUpsertWithWhereUniqueWithoutCardsInput | LabelUpsertWithWhereUniqueWithoutCardsInput[]
+    set?: LabelWhereUniqueInput | LabelWhereUniqueInput[]
+    disconnect?: LabelWhereUniqueInput | LabelWhereUniqueInput[]
+    delete?: LabelWhereUniqueInput | LabelWhereUniqueInput[]
+    connect?: LabelWhereUniqueInput | LabelWhereUniqueInput[]
+    update?: LabelUpdateWithWhereUniqueWithoutCardsInput | LabelUpdateWithWhereUniqueWithoutCardsInput[]
+    updateMany?: LabelUpdateManyWithWhereWithoutCardsInput | LabelUpdateManyWithWhereWithoutCardsInput[]
+    deleteMany?: LabelScalarWhereInput | LabelScalarWhereInput[]
+  }
+
   export type AttachmentUncheckedUpdateManyWithoutCardNestedInput = {
     create?: XOR<AttachmentCreateWithoutCardInput, AttachmentUncheckedCreateWithoutCardInput> | AttachmentCreateWithoutCardInput[] | AttachmentUncheckedCreateWithoutCardInput[]
     connectOrCreate?: AttachmentCreateOrConnectWithoutCardInput | AttachmentCreateOrConnectWithoutCardInput[]
@@ -14421,6 +16395,58 @@ export namespace Prisma {
     update?: AttachmentUpdateWithWhereUniqueWithoutCardInput | AttachmentUpdateWithWhereUniqueWithoutCardInput[]
     updateMany?: AttachmentUpdateManyWithWhereWithoutCardInput | AttachmentUpdateManyWithWhereWithoutCardInput[]
     deleteMany?: AttachmentScalarWhereInput | AttachmentScalarWhereInput[]
+  }
+
+  export type BoardCreateNestedOneWithoutLabelsInput = {
+    create?: XOR<BoardCreateWithoutLabelsInput, BoardUncheckedCreateWithoutLabelsInput>
+    connectOrCreate?: BoardCreateOrConnectWithoutLabelsInput
+    connect?: BoardWhereUniqueInput
+  }
+
+  export type CardCreateNestedManyWithoutLabelsInput = {
+    create?: XOR<CardCreateWithoutLabelsInput, CardUncheckedCreateWithoutLabelsInput> | CardCreateWithoutLabelsInput[] | CardUncheckedCreateWithoutLabelsInput[]
+    connectOrCreate?: CardCreateOrConnectWithoutLabelsInput | CardCreateOrConnectWithoutLabelsInput[]
+    connect?: CardWhereUniqueInput | CardWhereUniqueInput[]
+  }
+
+  export type CardUncheckedCreateNestedManyWithoutLabelsInput = {
+    create?: XOR<CardCreateWithoutLabelsInput, CardUncheckedCreateWithoutLabelsInput> | CardCreateWithoutLabelsInput[] | CardUncheckedCreateWithoutLabelsInput[]
+    connectOrCreate?: CardCreateOrConnectWithoutLabelsInput | CardCreateOrConnectWithoutLabelsInput[]
+    connect?: CardWhereUniqueInput | CardWhereUniqueInput[]
+  }
+
+  export type BoardUpdateOneRequiredWithoutLabelsNestedInput = {
+    create?: XOR<BoardCreateWithoutLabelsInput, BoardUncheckedCreateWithoutLabelsInput>
+    connectOrCreate?: BoardCreateOrConnectWithoutLabelsInput
+    upsert?: BoardUpsertWithoutLabelsInput
+    connect?: BoardWhereUniqueInput
+    update?: XOR<XOR<BoardUpdateToOneWithWhereWithoutLabelsInput, BoardUpdateWithoutLabelsInput>, BoardUncheckedUpdateWithoutLabelsInput>
+  }
+
+  export type CardUpdateManyWithoutLabelsNestedInput = {
+    create?: XOR<CardCreateWithoutLabelsInput, CardUncheckedCreateWithoutLabelsInput> | CardCreateWithoutLabelsInput[] | CardUncheckedCreateWithoutLabelsInput[]
+    connectOrCreate?: CardCreateOrConnectWithoutLabelsInput | CardCreateOrConnectWithoutLabelsInput[]
+    upsert?: CardUpsertWithWhereUniqueWithoutLabelsInput | CardUpsertWithWhereUniqueWithoutLabelsInput[]
+    set?: CardWhereUniqueInput | CardWhereUniqueInput[]
+    disconnect?: CardWhereUniqueInput | CardWhereUniqueInput[]
+    delete?: CardWhereUniqueInput | CardWhereUniqueInput[]
+    connect?: CardWhereUniqueInput | CardWhereUniqueInput[]
+    update?: CardUpdateWithWhereUniqueWithoutLabelsInput | CardUpdateWithWhereUniqueWithoutLabelsInput[]
+    updateMany?: CardUpdateManyWithWhereWithoutLabelsInput | CardUpdateManyWithWhereWithoutLabelsInput[]
+    deleteMany?: CardScalarWhereInput | CardScalarWhereInput[]
+  }
+
+  export type CardUncheckedUpdateManyWithoutLabelsNestedInput = {
+    create?: XOR<CardCreateWithoutLabelsInput, CardUncheckedCreateWithoutLabelsInput> | CardCreateWithoutLabelsInput[] | CardUncheckedCreateWithoutLabelsInput[]
+    connectOrCreate?: CardCreateOrConnectWithoutLabelsInput | CardCreateOrConnectWithoutLabelsInput[]
+    upsert?: CardUpsertWithWhereUniqueWithoutLabelsInput | CardUpsertWithWhereUniqueWithoutLabelsInput[]
+    set?: CardWhereUniqueInput | CardWhereUniqueInput[]
+    disconnect?: CardWhereUniqueInput | CardWhereUniqueInput[]
+    delete?: CardWhereUniqueInput | CardWhereUniqueInput[]
+    connect?: CardWhereUniqueInput | CardWhereUniqueInput[]
+    update?: CardUpdateWithWhereUniqueWithoutLabelsInput | CardUpdateWithWhereUniqueWithoutLabelsInput[]
+    updateMany?: CardUpdateManyWithWhereWithoutLabelsInput | CardUpdateManyWithWhereWithoutLabelsInput[]
+    deleteMany?: CardScalarWhereInput | CardScalarWhereInput[]
   }
 
   export type CardCreateNestedOneWithoutChecklistsInput = {
@@ -14499,6 +16525,12 @@ export namespace Prisma {
     connect?: CardWhereUniqueInput
   }
 
+  export type UserCreateNestedOneWithoutCommentsInput = {
+    create?: XOR<UserCreateWithoutCommentsInput, UserUncheckedCreateWithoutCommentsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCommentsInput
+    connect?: UserWhereUniqueInput
+  }
+
   export type CardUpdateOneRequiredWithoutCommentsNestedInput = {
     create?: XOR<CardCreateWithoutCommentsInput, CardUncheckedCreateWithoutCommentsInput>
     connectOrCreate?: CardCreateOrConnectWithoutCommentsInput
@@ -14507,10 +16539,24 @@ export namespace Prisma {
     update?: XOR<XOR<CardUpdateToOneWithWhereWithoutCommentsInput, CardUpdateWithoutCommentsInput>, CardUncheckedUpdateWithoutCommentsInput>
   }
 
+  export type UserUpdateOneRequiredWithoutCommentsNestedInput = {
+    create?: XOR<UserCreateWithoutCommentsInput, UserUncheckedCreateWithoutCommentsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCommentsInput
+    upsert?: UserUpsertWithoutCommentsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCommentsInput, UserUpdateWithoutCommentsInput>, UserUncheckedUpdateWithoutCommentsInput>
+  }
+
   export type CardCreateNestedOneWithoutAttachmentsInput = {
     create?: XOR<CardCreateWithoutAttachmentsInput, CardUncheckedCreateWithoutAttachmentsInput>
     connectOrCreate?: CardCreateOrConnectWithoutAttachmentsInput
     connect?: CardWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutUploadedAttachmentsInput = {
+    create?: XOR<UserCreateWithoutUploadedAttachmentsInput, UserUncheckedCreateWithoutUploadedAttachmentsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutUploadedAttachmentsInput
+    connect?: UserWhereUniqueInput
   }
 
   export type CardUpdateOneRequiredWithoutAttachmentsNestedInput = {
@@ -14519,6 +16565,16 @@ export namespace Prisma {
     upsert?: CardUpsertWithoutAttachmentsInput
     connect?: CardWhereUniqueInput
     update?: XOR<XOR<CardUpdateToOneWithWhereWithoutAttachmentsInput, CardUpdateWithoutAttachmentsInput>, CardUncheckedUpdateWithoutAttachmentsInput>
+  }
+
+  export type UserUpdateOneWithoutUploadedAttachmentsNestedInput = {
+    create?: XOR<UserCreateWithoutUploadedAttachmentsInput, UserUncheckedCreateWithoutUploadedAttachmentsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutUploadedAttachmentsInput
+    upsert?: UserUpsertWithoutUploadedAttachmentsInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutUploadedAttachmentsInput, UserUpdateWithoutUploadedAttachmentsInput>, UserUncheckedUpdateWithoutUploadedAttachmentsInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -14705,6 +16761,7 @@ export namespace Prisma {
     workspace: WorkspaceCreateNestedOneWithoutBoardsInput
     lists?: ListCreateNestedManyWithoutBoardInput
     cards?: CardCreateNestedManyWithoutBoardInput
+    labels?: LabelCreateNestedManyWithoutBoardInput
   }
 
   export type BoardUncheckedCreateWithoutUserInput = {
@@ -14717,6 +16774,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     lists?: ListUncheckedCreateNestedManyWithoutBoardInput
     cards?: CardUncheckedCreateNestedManyWithoutBoardInput
+    labels?: LabelUncheckedCreateNestedManyWithoutBoardInput
   }
 
   export type BoardCreateOrConnectWithoutUserInput = {
@@ -14754,6 +16812,104 @@ export namespace Prisma {
 
   export type WorkspaceCreateManyOwnerInputEnvelope = {
     data: WorkspaceCreateManyOwnerInput | WorkspaceCreateManyOwnerInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CommentCreateWithoutAuthorInput = {
+    id?: string
+    text: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    card: CardCreateNestedOneWithoutCommentsInput
+  }
+
+  export type CommentUncheckedCreateWithoutAuthorInput = {
+    id?: string
+    text: string
+    cardId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CommentCreateOrConnectWithoutAuthorInput = {
+    where: CommentWhereUniqueInput
+    create: XOR<CommentCreateWithoutAuthorInput, CommentUncheckedCreateWithoutAuthorInput>
+  }
+
+  export type CommentCreateManyAuthorInputEnvelope = {
+    data: CommentCreateManyAuthorInput | CommentCreateManyAuthorInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type AttachmentCreateWithoutUploadedByInput = {
+    id?: string
+    name: string
+    url: string
+    edgeColor?: string | null
+    createdAt?: Date | string
+    card: CardCreateNestedOneWithoutAttachmentsInput
+  }
+
+  export type AttachmentUncheckedCreateWithoutUploadedByInput = {
+    id?: string
+    name: string
+    url: string
+    edgeColor?: string | null
+    cardId: string
+    createdAt?: Date | string
+  }
+
+  export type AttachmentCreateOrConnectWithoutUploadedByInput = {
+    where: AttachmentWhereUniqueInput
+    create: XOR<AttachmentCreateWithoutUploadedByInput, AttachmentUncheckedCreateWithoutUploadedByInput>
+  }
+
+  export type AttachmentCreateManyUploadedByInputEnvelope = {
+    data: AttachmentCreateManyUploadedByInput | AttachmentCreateManyUploadedByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CardCreateWithoutAssigneeInput = {
+    id?: string
+    name: string
+    description?: string | null
+    pos: number
+    closed?: boolean
+    dueDate?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    list: ListCreateNestedOneWithoutCardsInput
+    board: BoardCreateNestedOneWithoutCardsInput
+    checklists?: ChecklistCreateNestedManyWithoutCardInput
+    comments?: CommentCreateNestedManyWithoutCardInput
+    labels?: LabelCreateNestedManyWithoutCardsInput
+    attachments?: AttachmentCreateNestedManyWithoutCardInput
+  }
+
+  export type CardUncheckedCreateWithoutAssigneeInput = {
+    id?: string
+    name: string
+    description?: string | null
+    pos: number
+    closed?: boolean
+    dueDate?: Date | string | null
+    listId: string
+    boardId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    checklists?: ChecklistUncheckedCreateNestedManyWithoutCardInput
+    comments?: CommentUncheckedCreateNestedManyWithoutCardInput
+    labels?: LabelUncheckedCreateNestedManyWithoutCardsInput
+    attachments?: AttachmentUncheckedCreateNestedManyWithoutCardInput
+  }
+
+  export type CardCreateOrConnectWithoutAssigneeInput = {
+    where: CardWhereUniqueInput
+    create: XOR<CardCreateWithoutAssigneeInput, CardUncheckedCreateWithoutAssigneeInput>
+  }
+
+  export type CardCreateManyAssigneeInputEnvelope = {
+    data: CardCreateManyAssigneeInput | CardCreateManyAssigneeInput[]
     skipDuplicates?: boolean
   }
 
@@ -14815,6 +16971,96 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Workspace"> | Date | string
   }
 
+  export type CommentUpsertWithWhereUniqueWithoutAuthorInput = {
+    where: CommentWhereUniqueInput
+    update: XOR<CommentUpdateWithoutAuthorInput, CommentUncheckedUpdateWithoutAuthorInput>
+    create: XOR<CommentCreateWithoutAuthorInput, CommentUncheckedCreateWithoutAuthorInput>
+  }
+
+  export type CommentUpdateWithWhereUniqueWithoutAuthorInput = {
+    where: CommentWhereUniqueInput
+    data: XOR<CommentUpdateWithoutAuthorInput, CommentUncheckedUpdateWithoutAuthorInput>
+  }
+
+  export type CommentUpdateManyWithWhereWithoutAuthorInput = {
+    where: CommentScalarWhereInput
+    data: XOR<CommentUpdateManyMutationInput, CommentUncheckedUpdateManyWithoutAuthorInput>
+  }
+
+  export type CommentScalarWhereInput = {
+    AND?: CommentScalarWhereInput | CommentScalarWhereInput[]
+    OR?: CommentScalarWhereInput[]
+    NOT?: CommentScalarWhereInput | CommentScalarWhereInput[]
+    id?: StringFilter<"Comment"> | string
+    text?: StringFilter<"Comment"> | string
+    cardId?: StringFilter<"Comment"> | string
+    authorId?: StringFilter<"Comment"> | string
+    createdAt?: DateTimeFilter<"Comment"> | Date | string
+    updatedAt?: DateTimeFilter<"Comment"> | Date | string
+  }
+
+  export type AttachmentUpsertWithWhereUniqueWithoutUploadedByInput = {
+    where: AttachmentWhereUniqueInput
+    update: XOR<AttachmentUpdateWithoutUploadedByInput, AttachmentUncheckedUpdateWithoutUploadedByInput>
+    create: XOR<AttachmentCreateWithoutUploadedByInput, AttachmentUncheckedCreateWithoutUploadedByInput>
+  }
+
+  export type AttachmentUpdateWithWhereUniqueWithoutUploadedByInput = {
+    where: AttachmentWhereUniqueInput
+    data: XOR<AttachmentUpdateWithoutUploadedByInput, AttachmentUncheckedUpdateWithoutUploadedByInput>
+  }
+
+  export type AttachmentUpdateManyWithWhereWithoutUploadedByInput = {
+    where: AttachmentScalarWhereInput
+    data: XOR<AttachmentUpdateManyMutationInput, AttachmentUncheckedUpdateManyWithoutUploadedByInput>
+  }
+
+  export type AttachmentScalarWhereInput = {
+    AND?: AttachmentScalarWhereInput | AttachmentScalarWhereInput[]
+    OR?: AttachmentScalarWhereInput[]
+    NOT?: AttachmentScalarWhereInput | AttachmentScalarWhereInput[]
+    id?: StringFilter<"Attachment"> | string
+    name?: StringFilter<"Attachment"> | string
+    url?: StringFilter<"Attachment"> | string
+    edgeColor?: StringNullableFilter<"Attachment"> | string | null
+    cardId?: StringFilter<"Attachment"> | string
+    uploadedById?: StringNullableFilter<"Attachment"> | string | null
+    createdAt?: DateTimeFilter<"Attachment"> | Date | string
+  }
+
+  export type CardUpsertWithWhereUniqueWithoutAssigneeInput = {
+    where: CardWhereUniqueInput
+    update: XOR<CardUpdateWithoutAssigneeInput, CardUncheckedUpdateWithoutAssigneeInput>
+    create: XOR<CardCreateWithoutAssigneeInput, CardUncheckedCreateWithoutAssigneeInput>
+  }
+
+  export type CardUpdateWithWhereUniqueWithoutAssigneeInput = {
+    where: CardWhereUniqueInput
+    data: XOR<CardUpdateWithoutAssigneeInput, CardUncheckedUpdateWithoutAssigneeInput>
+  }
+
+  export type CardUpdateManyWithWhereWithoutAssigneeInput = {
+    where: CardScalarWhereInput
+    data: XOR<CardUpdateManyMutationInput, CardUncheckedUpdateManyWithoutAssigneeInput>
+  }
+
+  export type CardScalarWhereInput = {
+    AND?: CardScalarWhereInput | CardScalarWhereInput[]
+    OR?: CardScalarWhereInput[]
+    NOT?: CardScalarWhereInput | CardScalarWhereInput[]
+    id?: StringFilter<"Card"> | string
+    name?: StringFilter<"Card"> | string
+    description?: StringNullableFilter<"Card"> | string | null
+    pos?: FloatFilter<"Card"> | number
+    closed?: BoolFilter<"Card"> | boolean
+    dueDate?: DateTimeNullableFilter<"Card"> | Date | string | null
+    listId?: StringFilter<"Card"> | string
+    boardId?: StringFilter<"Card"> | string
+    assigneeId?: StringNullableFilter<"Card"> | string | null
+    createdAt?: DateTimeFilter<"Card"> | Date | string
+    updatedAt?: DateTimeFilter<"Card"> | Date | string
+  }
+
   export type UserCreateWithoutWorkspacesInput = {
     id?: string
     clerkUserId: string
@@ -14825,6 +17071,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     boards?: BoardCreateNestedManyWithoutUserInput
+    comments?: CommentCreateNestedManyWithoutAuthorInput
+    uploadedAttachments?: AttachmentCreateNestedManyWithoutUploadedByInput
+    assignedCards?: CardCreateNestedManyWithoutAssigneeInput
   }
 
   export type UserUncheckedCreateWithoutWorkspacesInput = {
@@ -14837,6 +17086,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     boards?: BoardUncheckedCreateNestedManyWithoutUserInput
+    comments?: CommentUncheckedCreateNestedManyWithoutAuthorInput
+    uploadedAttachments?: AttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+    assignedCards?: CardUncheckedCreateNestedManyWithoutAssigneeInput
   }
 
   export type UserCreateOrConnectWithoutWorkspacesInput = {
@@ -14854,6 +17106,7 @@ export namespace Prisma {
     user: UserCreateNestedOneWithoutBoardsInput
     lists?: ListCreateNestedManyWithoutBoardInput
     cards?: CardCreateNestedManyWithoutBoardInput
+    labels?: LabelCreateNestedManyWithoutBoardInput
   }
 
   export type BoardUncheckedCreateWithoutWorkspaceInput = {
@@ -14866,6 +17119,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     lists?: ListUncheckedCreateNestedManyWithoutBoardInput
     cards?: CardUncheckedCreateNestedManyWithoutBoardInput
+    labels?: LabelUncheckedCreateNestedManyWithoutBoardInput
   }
 
   export type BoardCreateOrConnectWithoutWorkspaceInput = {
@@ -14899,6 +17153,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     boards?: BoardUpdateManyWithoutUserNestedInput
+    comments?: CommentUpdateManyWithoutAuthorNestedInput
+    uploadedAttachments?: AttachmentUpdateManyWithoutUploadedByNestedInput
+    assignedCards?: CardUpdateManyWithoutAssigneeNestedInput
   }
 
   export type UserUncheckedUpdateWithoutWorkspacesInput = {
@@ -14911,6 +17168,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     boards?: BoardUncheckedUpdateManyWithoutUserNestedInput
+    comments?: CommentUncheckedUpdateManyWithoutAuthorNestedInput
+    uploadedAttachments?: AttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+    assignedCards?: CardUncheckedUpdateManyWithoutAssigneeNestedInput
   }
 
   export type BoardUpsertWithWhereUniqueWithoutWorkspaceInput = {
@@ -14939,6 +17199,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     workspaces?: WorkspaceCreateNestedManyWithoutOwnerInput
+    comments?: CommentCreateNestedManyWithoutAuthorInput
+    uploadedAttachments?: AttachmentCreateNestedManyWithoutUploadedByInput
+    assignedCards?: CardCreateNestedManyWithoutAssigneeInput
   }
 
   export type UserUncheckedCreateWithoutBoardsInput = {
@@ -14951,6 +17214,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     workspaces?: WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
+    comments?: CommentUncheckedCreateNestedManyWithoutAuthorInput
+    uploadedAttachments?: AttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+    assignedCards?: CardUncheckedCreateNestedManyWithoutAssigneeInput
   }
 
   export type UserCreateOrConnectWithoutBoardsInput = {
@@ -15021,8 +17287,10 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     list: ListCreateNestedOneWithoutCardsInput
+    assignee?: UserCreateNestedOneWithoutAssignedCardsInput
     checklists?: ChecklistCreateNestedManyWithoutCardInput
     comments?: CommentCreateNestedManyWithoutCardInput
+    labels?: LabelCreateNestedManyWithoutCardsInput
     attachments?: AttachmentCreateNestedManyWithoutCardInput
   }
 
@@ -15034,10 +17302,12 @@ export namespace Prisma {
     closed?: boolean
     dueDate?: Date | string | null
     listId: string
+    assigneeId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     checklists?: ChecklistUncheckedCreateNestedManyWithoutCardInput
     comments?: CommentUncheckedCreateNestedManyWithoutCardInput
+    labels?: LabelUncheckedCreateNestedManyWithoutCardsInput
     attachments?: AttachmentUncheckedCreateNestedManyWithoutCardInput
   }
 
@@ -15048,6 +17318,30 @@ export namespace Prisma {
 
   export type CardCreateManyBoardInputEnvelope = {
     data: CardCreateManyBoardInput | CardCreateManyBoardInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type LabelCreateWithoutBoardInput = {
+    id?: string
+    name: string
+    color?: string | null
+    cards?: CardCreateNestedManyWithoutLabelsInput
+  }
+
+  export type LabelUncheckedCreateWithoutBoardInput = {
+    id?: string
+    name: string
+    color?: string | null
+    cards?: CardUncheckedCreateNestedManyWithoutLabelsInput
+  }
+
+  export type LabelCreateOrConnectWithoutBoardInput = {
+    where: LabelWhereUniqueInput
+    create: XOR<LabelCreateWithoutBoardInput, LabelUncheckedCreateWithoutBoardInput>
+  }
+
+  export type LabelCreateManyBoardInputEnvelope = {
+    data: LabelCreateManyBoardInput | LabelCreateManyBoardInput[]
     skipDuplicates?: boolean
   }
 
@@ -15072,6 +17366,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     workspaces?: WorkspaceUpdateManyWithoutOwnerNestedInput
+    comments?: CommentUpdateManyWithoutAuthorNestedInput
+    uploadedAttachments?: AttachmentUpdateManyWithoutUploadedByNestedInput
+    assignedCards?: CardUpdateManyWithoutAssigneeNestedInput
   }
 
   export type UserUncheckedUpdateWithoutBoardsInput = {
@@ -15084,6 +17381,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     workspaces?: WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
+    comments?: CommentUncheckedUpdateManyWithoutAuthorNestedInput
+    uploadedAttachments?: AttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+    assignedCards?: CardUncheckedUpdateManyWithoutAssigneeNestedInput
   }
 
   export type WorkspaceUpsertWithoutBoardsInput = {
@@ -15160,20 +17460,30 @@ export namespace Prisma {
     data: XOR<CardUpdateManyMutationInput, CardUncheckedUpdateManyWithoutBoardInput>
   }
 
-  export type CardScalarWhereInput = {
-    AND?: CardScalarWhereInput | CardScalarWhereInput[]
-    OR?: CardScalarWhereInput[]
-    NOT?: CardScalarWhereInput | CardScalarWhereInput[]
-    id?: StringFilter<"Card"> | string
-    name?: StringFilter<"Card"> | string
-    description?: StringNullableFilter<"Card"> | string | null
-    pos?: FloatFilter<"Card"> | number
-    closed?: BoolFilter<"Card"> | boolean
-    dueDate?: DateTimeNullableFilter<"Card"> | Date | string | null
-    listId?: StringFilter<"Card"> | string
-    boardId?: StringFilter<"Card"> | string
-    createdAt?: DateTimeFilter<"Card"> | Date | string
-    updatedAt?: DateTimeFilter<"Card"> | Date | string
+  export type LabelUpsertWithWhereUniqueWithoutBoardInput = {
+    where: LabelWhereUniqueInput
+    update: XOR<LabelUpdateWithoutBoardInput, LabelUncheckedUpdateWithoutBoardInput>
+    create: XOR<LabelCreateWithoutBoardInput, LabelUncheckedCreateWithoutBoardInput>
+  }
+
+  export type LabelUpdateWithWhereUniqueWithoutBoardInput = {
+    where: LabelWhereUniqueInput
+    data: XOR<LabelUpdateWithoutBoardInput, LabelUncheckedUpdateWithoutBoardInput>
+  }
+
+  export type LabelUpdateManyWithWhereWithoutBoardInput = {
+    where: LabelScalarWhereInput
+    data: XOR<LabelUpdateManyMutationInput, LabelUncheckedUpdateManyWithoutBoardInput>
+  }
+
+  export type LabelScalarWhereInput = {
+    AND?: LabelScalarWhereInput | LabelScalarWhereInput[]
+    OR?: LabelScalarWhereInput[]
+    NOT?: LabelScalarWhereInput | LabelScalarWhereInput[]
+    id?: StringFilter<"Label"> | string
+    name?: StringFilter<"Label"> | string
+    color?: StringNullableFilter<"Label"> | string | null
+    boardId?: StringFilter<"Label"> | string
   }
 
   export type BoardCreateWithoutListsInput = {
@@ -15186,6 +17496,7 @@ export namespace Prisma {
     user: UserCreateNestedOneWithoutBoardsInput
     workspace: WorkspaceCreateNestedOneWithoutBoardsInput
     cards?: CardCreateNestedManyWithoutBoardInput
+    labels?: LabelCreateNestedManyWithoutBoardInput
   }
 
   export type BoardUncheckedCreateWithoutListsInput = {
@@ -15198,6 +17509,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     cards?: CardUncheckedCreateNestedManyWithoutBoardInput
+    labels?: LabelUncheckedCreateNestedManyWithoutBoardInput
   }
 
   export type BoardCreateOrConnectWithoutListsInput = {
@@ -15215,8 +17527,10 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     board: BoardCreateNestedOneWithoutCardsInput
+    assignee?: UserCreateNestedOneWithoutAssignedCardsInput
     checklists?: ChecklistCreateNestedManyWithoutCardInput
     comments?: CommentCreateNestedManyWithoutCardInput
+    labels?: LabelCreateNestedManyWithoutCardsInput
     attachments?: AttachmentCreateNestedManyWithoutCardInput
   }
 
@@ -15228,10 +17542,12 @@ export namespace Prisma {
     closed?: boolean
     dueDate?: Date | string | null
     boardId: string
+    assigneeId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     checklists?: ChecklistUncheckedCreateNestedManyWithoutCardInput
     comments?: CommentUncheckedCreateNestedManyWithoutCardInput
+    labels?: LabelUncheckedCreateNestedManyWithoutCardsInput
     attachments?: AttachmentUncheckedCreateNestedManyWithoutCardInput
   }
 
@@ -15266,6 +17582,7 @@ export namespace Prisma {
     user?: UserUpdateOneRequiredWithoutBoardsNestedInput
     workspace?: WorkspaceUpdateOneRequiredWithoutBoardsNestedInput
     cards?: CardUpdateManyWithoutBoardNestedInput
+    labels?: LabelUpdateManyWithoutBoardNestedInput
   }
 
   export type BoardUncheckedUpdateWithoutListsInput = {
@@ -15278,6 +17595,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     cards?: CardUncheckedUpdateManyWithoutBoardNestedInput
+    labels?: LabelUncheckedUpdateManyWithoutBoardNestedInput
   }
 
   export type CardUpsertWithWhereUniqueWithoutListInput = {
@@ -15331,6 +17649,7 @@ export namespace Prisma {
     user: UserCreateNestedOneWithoutBoardsInput
     workspace: WorkspaceCreateNestedOneWithoutBoardsInput
     lists?: ListCreateNestedManyWithoutBoardInput
+    labels?: LabelCreateNestedManyWithoutBoardInput
   }
 
   export type BoardUncheckedCreateWithoutCardsInput = {
@@ -15343,11 +17662,47 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     lists?: ListUncheckedCreateNestedManyWithoutBoardInput
+    labels?: LabelUncheckedCreateNestedManyWithoutBoardInput
   }
 
   export type BoardCreateOrConnectWithoutCardsInput = {
     where: BoardWhereUniqueInput
     create: XOR<BoardCreateWithoutCardsInput, BoardUncheckedCreateWithoutCardsInput>
+  }
+
+  export type UserCreateWithoutAssignedCardsInput = {
+    id?: string
+    clerkUserId: string
+    email: string
+    firstName?: string | null
+    lastName?: string | null
+    imageUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    boards?: BoardCreateNestedManyWithoutUserInput
+    workspaces?: WorkspaceCreateNestedManyWithoutOwnerInput
+    comments?: CommentCreateNestedManyWithoutAuthorInput
+    uploadedAttachments?: AttachmentCreateNestedManyWithoutUploadedByInput
+  }
+
+  export type UserUncheckedCreateWithoutAssignedCardsInput = {
+    id?: string
+    clerkUserId: string
+    email: string
+    firstName?: string | null
+    lastName?: string | null
+    imageUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    boards?: BoardUncheckedCreateNestedManyWithoutUserInput
+    workspaces?: WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
+    comments?: CommentUncheckedCreateNestedManyWithoutAuthorInput
+    uploadedAttachments?: AttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+  }
+
+  export type UserCreateOrConnectWithoutAssignedCardsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutAssignedCardsInput, UserUncheckedCreateWithoutAssignedCardsInput>
   }
 
   export type ChecklistCreateWithoutCardInput = {
@@ -15378,12 +17733,16 @@ export namespace Prisma {
     id?: string
     text: string
     createdAt?: Date | string
+    updatedAt?: Date | string
+    author: UserCreateNestedOneWithoutCommentsInput
   }
 
   export type CommentUncheckedCreateWithoutCardInput = {
     id?: string
     text: string
+    authorId: string
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type CommentCreateOrConnectWithoutCardInput = {
@@ -15396,12 +17755,32 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type LabelCreateWithoutCardsInput = {
+    id?: string
+    name: string
+    color?: string | null
+    board: BoardCreateNestedOneWithoutLabelsInput
+  }
+
+  export type LabelUncheckedCreateWithoutCardsInput = {
+    id?: string
+    name: string
+    color?: string | null
+    boardId: string
+  }
+
+  export type LabelCreateOrConnectWithoutCardsInput = {
+    where: LabelWhereUniqueInput
+    create: XOR<LabelCreateWithoutCardsInput, LabelUncheckedCreateWithoutCardsInput>
+  }
+
   export type AttachmentCreateWithoutCardInput = {
     id?: string
     name: string
     url: string
     edgeColor?: string | null
     createdAt?: Date | string
+    uploadedBy?: UserCreateNestedOneWithoutUploadedAttachmentsInput
   }
 
   export type AttachmentUncheckedCreateWithoutCardInput = {
@@ -15409,6 +17788,7 @@ export namespace Prisma {
     name: string
     url: string
     edgeColor?: string | null
+    uploadedById?: string | null
     createdAt?: Date | string
   }
 
@@ -15474,6 +17854,7 @@ export namespace Prisma {
     user?: UserUpdateOneRequiredWithoutBoardsNestedInput
     workspace?: WorkspaceUpdateOneRequiredWithoutBoardsNestedInput
     lists?: ListUpdateManyWithoutBoardNestedInput
+    labels?: LabelUpdateManyWithoutBoardNestedInput
   }
 
   export type BoardUncheckedUpdateWithoutCardsInput = {
@@ -15486,6 +17867,48 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lists?: ListUncheckedUpdateManyWithoutBoardNestedInput
+    labels?: LabelUncheckedUpdateManyWithoutBoardNestedInput
+  }
+
+  export type UserUpsertWithoutAssignedCardsInput = {
+    update: XOR<UserUpdateWithoutAssignedCardsInput, UserUncheckedUpdateWithoutAssignedCardsInput>
+    create: XOR<UserCreateWithoutAssignedCardsInput, UserUncheckedCreateWithoutAssignedCardsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutAssignedCardsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutAssignedCardsInput, UserUncheckedUpdateWithoutAssignedCardsInput>
+  }
+
+  export type UserUpdateWithoutAssignedCardsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clerkUserId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    boards?: BoardUpdateManyWithoutUserNestedInput
+    workspaces?: WorkspaceUpdateManyWithoutOwnerNestedInput
+    comments?: CommentUpdateManyWithoutAuthorNestedInput
+    uploadedAttachments?: AttachmentUpdateManyWithoutUploadedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutAssignedCardsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clerkUserId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    boards?: BoardUncheckedUpdateManyWithoutUserNestedInput
+    workspaces?: WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
+    comments?: CommentUncheckedUpdateManyWithoutAuthorNestedInput
+    uploadedAttachments?: AttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
   }
 
   export type ChecklistUpsertWithWhereUniqueWithoutCardInput = {
@@ -15530,14 +17953,20 @@ export namespace Prisma {
     data: XOR<CommentUpdateManyMutationInput, CommentUncheckedUpdateManyWithoutCardInput>
   }
 
-  export type CommentScalarWhereInput = {
-    AND?: CommentScalarWhereInput | CommentScalarWhereInput[]
-    OR?: CommentScalarWhereInput[]
-    NOT?: CommentScalarWhereInput | CommentScalarWhereInput[]
-    id?: StringFilter<"Comment"> | string
-    text?: StringFilter<"Comment"> | string
-    cardId?: StringFilter<"Comment"> | string
-    createdAt?: DateTimeFilter<"Comment"> | Date | string
+  export type LabelUpsertWithWhereUniqueWithoutCardsInput = {
+    where: LabelWhereUniqueInput
+    update: XOR<LabelUpdateWithoutCardsInput, LabelUncheckedUpdateWithoutCardsInput>
+    create: XOR<LabelCreateWithoutCardsInput, LabelUncheckedCreateWithoutCardsInput>
+  }
+
+  export type LabelUpdateWithWhereUniqueWithoutCardsInput = {
+    where: LabelWhereUniqueInput
+    data: XOR<LabelUpdateWithoutCardsInput, LabelUncheckedUpdateWithoutCardsInput>
+  }
+
+  export type LabelUpdateManyWithWhereWithoutCardsInput = {
+    where: LabelScalarWhereInput
+    data: XOR<LabelUpdateManyMutationInput, LabelUncheckedUpdateManyWithoutCardsInput>
   }
 
   export type AttachmentUpsertWithWhereUniqueWithoutCardInput = {
@@ -15556,16 +17985,127 @@ export namespace Prisma {
     data: XOR<AttachmentUpdateManyMutationInput, AttachmentUncheckedUpdateManyWithoutCardInput>
   }
 
-  export type AttachmentScalarWhereInput = {
-    AND?: AttachmentScalarWhereInput | AttachmentScalarWhereInput[]
-    OR?: AttachmentScalarWhereInput[]
-    NOT?: AttachmentScalarWhereInput | AttachmentScalarWhereInput[]
-    id?: StringFilter<"Attachment"> | string
-    name?: StringFilter<"Attachment"> | string
-    url?: StringFilter<"Attachment"> | string
-    edgeColor?: StringNullableFilter<"Attachment"> | string | null
-    cardId?: StringFilter<"Attachment"> | string
-    createdAt?: DateTimeFilter<"Attachment"> | Date | string
+  export type BoardCreateWithoutLabelsInput = {
+    id?: string
+    name: string
+    background?: string | null
+    closed?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutBoardsInput
+    workspace: WorkspaceCreateNestedOneWithoutBoardsInput
+    lists?: ListCreateNestedManyWithoutBoardInput
+    cards?: CardCreateNestedManyWithoutBoardInput
+  }
+
+  export type BoardUncheckedCreateWithoutLabelsInput = {
+    id?: string
+    name: string
+    background?: string | null
+    closed?: boolean
+    userId: string
+    workspaceId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    lists?: ListUncheckedCreateNestedManyWithoutBoardInput
+    cards?: CardUncheckedCreateNestedManyWithoutBoardInput
+  }
+
+  export type BoardCreateOrConnectWithoutLabelsInput = {
+    where: BoardWhereUniqueInput
+    create: XOR<BoardCreateWithoutLabelsInput, BoardUncheckedCreateWithoutLabelsInput>
+  }
+
+  export type CardCreateWithoutLabelsInput = {
+    id?: string
+    name: string
+    description?: string | null
+    pos: number
+    closed?: boolean
+    dueDate?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    list: ListCreateNestedOneWithoutCardsInput
+    board: BoardCreateNestedOneWithoutCardsInput
+    assignee?: UserCreateNestedOneWithoutAssignedCardsInput
+    checklists?: ChecklistCreateNestedManyWithoutCardInput
+    comments?: CommentCreateNestedManyWithoutCardInput
+    attachments?: AttachmentCreateNestedManyWithoutCardInput
+  }
+
+  export type CardUncheckedCreateWithoutLabelsInput = {
+    id?: string
+    name: string
+    description?: string | null
+    pos: number
+    closed?: boolean
+    dueDate?: Date | string | null
+    listId: string
+    boardId: string
+    assigneeId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    checklists?: ChecklistUncheckedCreateNestedManyWithoutCardInput
+    comments?: CommentUncheckedCreateNestedManyWithoutCardInput
+    attachments?: AttachmentUncheckedCreateNestedManyWithoutCardInput
+  }
+
+  export type CardCreateOrConnectWithoutLabelsInput = {
+    where: CardWhereUniqueInput
+    create: XOR<CardCreateWithoutLabelsInput, CardUncheckedCreateWithoutLabelsInput>
+  }
+
+  export type BoardUpsertWithoutLabelsInput = {
+    update: XOR<BoardUpdateWithoutLabelsInput, BoardUncheckedUpdateWithoutLabelsInput>
+    create: XOR<BoardCreateWithoutLabelsInput, BoardUncheckedCreateWithoutLabelsInput>
+    where?: BoardWhereInput
+  }
+
+  export type BoardUpdateToOneWithWhereWithoutLabelsInput = {
+    where?: BoardWhereInput
+    data: XOR<BoardUpdateWithoutLabelsInput, BoardUncheckedUpdateWithoutLabelsInput>
+  }
+
+  export type BoardUpdateWithoutLabelsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    background?: NullableStringFieldUpdateOperationsInput | string | null
+    closed?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutBoardsNestedInput
+    workspace?: WorkspaceUpdateOneRequiredWithoutBoardsNestedInput
+    lists?: ListUpdateManyWithoutBoardNestedInput
+    cards?: CardUpdateManyWithoutBoardNestedInput
+  }
+
+  export type BoardUncheckedUpdateWithoutLabelsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    background?: NullableStringFieldUpdateOperationsInput | string | null
+    closed?: BoolFieldUpdateOperationsInput | boolean
+    userId?: StringFieldUpdateOperationsInput | string
+    workspaceId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    lists?: ListUncheckedUpdateManyWithoutBoardNestedInput
+    cards?: CardUncheckedUpdateManyWithoutBoardNestedInput
+  }
+
+  export type CardUpsertWithWhereUniqueWithoutLabelsInput = {
+    where: CardWhereUniqueInput
+    update: XOR<CardUpdateWithoutLabelsInput, CardUncheckedUpdateWithoutLabelsInput>
+    create: XOR<CardCreateWithoutLabelsInput, CardUncheckedCreateWithoutLabelsInput>
+  }
+
+  export type CardUpdateWithWhereUniqueWithoutLabelsInput = {
+    where: CardWhereUniqueInput
+    data: XOR<CardUpdateWithoutLabelsInput, CardUncheckedUpdateWithoutLabelsInput>
+  }
+
+  export type CardUpdateManyWithWhereWithoutLabelsInput = {
+    where: CardScalarWhereInput
+    data: XOR<CardUpdateManyMutationInput, CardUncheckedUpdateManyWithoutLabelsInput>
   }
 
   export type CardCreateWithoutChecklistsInput = {
@@ -15579,7 +18119,9 @@ export namespace Prisma {
     updatedAt?: Date | string
     list: ListCreateNestedOneWithoutCardsInput
     board: BoardCreateNestedOneWithoutCardsInput
+    assignee?: UserCreateNestedOneWithoutAssignedCardsInput
     comments?: CommentCreateNestedManyWithoutCardInput
+    labels?: LabelCreateNestedManyWithoutCardsInput
     attachments?: AttachmentCreateNestedManyWithoutCardInput
   }
 
@@ -15592,9 +18134,11 @@ export namespace Prisma {
     dueDate?: Date | string | null
     listId: string
     boardId: string
+    assigneeId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     comments?: CommentUncheckedCreateNestedManyWithoutCardInput
+    labels?: LabelUncheckedCreateNestedManyWithoutCardsInput
     attachments?: AttachmentUncheckedCreateNestedManyWithoutCardInput
   }
 
@@ -15649,7 +18193,9 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     list?: ListUpdateOneRequiredWithoutCardsNestedInput
     board?: BoardUpdateOneRequiredWithoutCardsNestedInput
+    assignee?: UserUpdateOneWithoutAssignedCardsNestedInput
     comments?: CommentUpdateManyWithoutCardNestedInput
+    labels?: LabelUpdateManyWithoutCardsNestedInput
     attachments?: AttachmentUpdateManyWithoutCardNestedInput
   }
 
@@ -15662,9 +18208,11 @@ export namespace Prisma {
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     listId?: StringFieldUpdateOperationsInput | string
     boardId?: StringFieldUpdateOperationsInput | string
+    assigneeId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     comments?: CommentUncheckedUpdateManyWithoutCardNestedInput
+    labels?: LabelUncheckedUpdateManyWithoutCardsNestedInput
     attachments?: AttachmentUncheckedUpdateManyWithoutCardNestedInput
   }
 
@@ -15750,7 +18298,9 @@ export namespace Prisma {
     updatedAt?: Date | string
     list: ListCreateNestedOneWithoutCardsInput
     board: BoardCreateNestedOneWithoutCardsInput
+    assignee?: UserCreateNestedOneWithoutAssignedCardsInput
     checklists?: ChecklistCreateNestedManyWithoutCardInput
+    labels?: LabelCreateNestedManyWithoutCardsInput
     attachments?: AttachmentCreateNestedManyWithoutCardInput
   }
 
@@ -15763,15 +18313,52 @@ export namespace Prisma {
     dueDate?: Date | string | null
     listId: string
     boardId: string
+    assigneeId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     checklists?: ChecklistUncheckedCreateNestedManyWithoutCardInput
+    labels?: LabelUncheckedCreateNestedManyWithoutCardsInput
     attachments?: AttachmentUncheckedCreateNestedManyWithoutCardInput
   }
 
   export type CardCreateOrConnectWithoutCommentsInput = {
     where: CardWhereUniqueInput
     create: XOR<CardCreateWithoutCommentsInput, CardUncheckedCreateWithoutCommentsInput>
+  }
+
+  export type UserCreateWithoutCommentsInput = {
+    id?: string
+    clerkUserId: string
+    email: string
+    firstName?: string | null
+    lastName?: string | null
+    imageUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    boards?: BoardCreateNestedManyWithoutUserInput
+    workspaces?: WorkspaceCreateNestedManyWithoutOwnerInput
+    uploadedAttachments?: AttachmentCreateNestedManyWithoutUploadedByInput
+    assignedCards?: CardCreateNestedManyWithoutAssigneeInput
+  }
+
+  export type UserUncheckedCreateWithoutCommentsInput = {
+    id?: string
+    clerkUserId: string
+    email: string
+    firstName?: string | null
+    lastName?: string | null
+    imageUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    boards?: BoardUncheckedCreateNestedManyWithoutUserInput
+    workspaces?: WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
+    uploadedAttachments?: AttachmentUncheckedCreateNestedManyWithoutUploadedByInput
+    assignedCards?: CardUncheckedCreateNestedManyWithoutAssigneeInput
+  }
+
+  export type UserCreateOrConnectWithoutCommentsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutCommentsInput, UserUncheckedCreateWithoutCommentsInput>
   }
 
   export type CardUpsertWithoutCommentsInput = {
@@ -15796,7 +18383,9 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     list?: ListUpdateOneRequiredWithoutCardsNestedInput
     board?: BoardUpdateOneRequiredWithoutCardsNestedInput
+    assignee?: UserUpdateOneWithoutAssignedCardsNestedInput
     checklists?: ChecklistUpdateManyWithoutCardNestedInput
+    labels?: LabelUpdateManyWithoutCardsNestedInput
     attachments?: AttachmentUpdateManyWithoutCardNestedInput
   }
 
@@ -15809,10 +18398,53 @@ export namespace Prisma {
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     listId?: StringFieldUpdateOperationsInput | string
     boardId?: StringFieldUpdateOperationsInput | string
+    assigneeId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     checklists?: ChecklistUncheckedUpdateManyWithoutCardNestedInput
+    labels?: LabelUncheckedUpdateManyWithoutCardsNestedInput
     attachments?: AttachmentUncheckedUpdateManyWithoutCardNestedInput
+  }
+
+  export type UserUpsertWithoutCommentsInput = {
+    update: XOR<UserUpdateWithoutCommentsInput, UserUncheckedUpdateWithoutCommentsInput>
+    create: XOR<UserCreateWithoutCommentsInput, UserUncheckedCreateWithoutCommentsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutCommentsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutCommentsInput, UserUncheckedUpdateWithoutCommentsInput>
+  }
+
+  export type UserUpdateWithoutCommentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clerkUserId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    boards?: BoardUpdateManyWithoutUserNestedInput
+    workspaces?: WorkspaceUpdateManyWithoutOwnerNestedInput
+    uploadedAttachments?: AttachmentUpdateManyWithoutUploadedByNestedInput
+    assignedCards?: CardUpdateManyWithoutAssigneeNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutCommentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clerkUserId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    boards?: BoardUncheckedUpdateManyWithoutUserNestedInput
+    workspaces?: WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
+    uploadedAttachments?: AttachmentUncheckedUpdateManyWithoutUploadedByNestedInput
+    assignedCards?: CardUncheckedUpdateManyWithoutAssigneeNestedInput
   }
 
   export type CardCreateWithoutAttachmentsInput = {
@@ -15826,8 +18458,10 @@ export namespace Prisma {
     updatedAt?: Date | string
     list: ListCreateNestedOneWithoutCardsInput
     board: BoardCreateNestedOneWithoutCardsInput
+    assignee?: UserCreateNestedOneWithoutAssignedCardsInput
     checklists?: ChecklistCreateNestedManyWithoutCardInput
     comments?: CommentCreateNestedManyWithoutCardInput
+    labels?: LabelCreateNestedManyWithoutCardsInput
   }
 
   export type CardUncheckedCreateWithoutAttachmentsInput = {
@@ -15839,15 +18473,52 @@ export namespace Prisma {
     dueDate?: Date | string | null
     listId: string
     boardId: string
+    assigneeId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     checklists?: ChecklistUncheckedCreateNestedManyWithoutCardInput
     comments?: CommentUncheckedCreateNestedManyWithoutCardInput
+    labels?: LabelUncheckedCreateNestedManyWithoutCardsInput
   }
 
   export type CardCreateOrConnectWithoutAttachmentsInput = {
     where: CardWhereUniqueInput
     create: XOR<CardCreateWithoutAttachmentsInput, CardUncheckedCreateWithoutAttachmentsInput>
+  }
+
+  export type UserCreateWithoutUploadedAttachmentsInput = {
+    id?: string
+    clerkUserId: string
+    email: string
+    firstName?: string | null
+    lastName?: string | null
+    imageUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    boards?: BoardCreateNestedManyWithoutUserInput
+    workspaces?: WorkspaceCreateNestedManyWithoutOwnerInput
+    comments?: CommentCreateNestedManyWithoutAuthorInput
+    assignedCards?: CardCreateNestedManyWithoutAssigneeInput
+  }
+
+  export type UserUncheckedCreateWithoutUploadedAttachmentsInput = {
+    id?: string
+    clerkUserId: string
+    email: string
+    firstName?: string | null
+    lastName?: string | null
+    imageUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    boards?: BoardUncheckedCreateNestedManyWithoutUserInput
+    workspaces?: WorkspaceUncheckedCreateNestedManyWithoutOwnerInput
+    comments?: CommentUncheckedCreateNestedManyWithoutAuthorInput
+    assignedCards?: CardUncheckedCreateNestedManyWithoutAssigneeInput
+  }
+
+  export type UserCreateOrConnectWithoutUploadedAttachmentsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutUploadedAttachmentsInput, UserUncheckedCreateWithoutUploadedAttachmentsInput>
   }
 
   export type CardUpsertWithoutAttachmentsInput = {
@@ -15872,8 +18543,10 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     list?: ListUpdateOneRequiredWithoutCardsNestedInput
     board?: BoardUpdateOneRequiredWithoutCardsNestedInput
+    assignee?: UserUpdateOneWithoutAssignedCardsNestedInput
     checklists?: ChecklistUpdateManyWithoutCardNestedInput
     comments?: CommentUpdateManyWithoutCardNestedInput
+    labels?: LabelUpdateManyWithoutCardsNestedInput
   }
 
   export type CardUncheckedUpdateWithoutAttachmentsInput = {
@@ -15885,10 +18558,53 @@ export namespace Prisma {
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     listId?: StringFieldUpdateOperationsInput | string
     boardId?: StringFieldUpdateOperationsInput | string
+    assigneeId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     checklists?: ChecklistUncheckedUpdateManyWithoutCardNestedInput
     comments?: CommentUncheckedUpdateManyWithoutCardNestedInput
+    labels?: LabelUncheckedUpdateManyWithoutCardsNestedInput
+  }
+
+  export type UserUpsertWithoutUploadedAttachmentsInput = {
+    update: XOR<UserUpdateWithoutUploadedAttachmentsInput, UserUncheckedUpdateWithoutUploadedAttachmentsInput>
+    create: XOR<UserCreateWithoutUploadedAttachmentsInput, UserUncheckedCreateWithoutUploadedAttachmentsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutUploadedAttachmentsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutUploadedAttachmentsInput, UserUncheckedUpdateWithoutUploadedAttachmentsInput>
+  }
+
+  export type UserUpdateWithoutUploadedAttachmentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clerkUserId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    boards?: BoardUpdateManyWithoutUserNestedInput
+    workspaces?: WorkspaceUpdateManyWithoutOwnerNestedInput
+    comments?: CommentUpdateManyWithoutAuthorNestedInput
+    assignedCards?: CardUpdateManyWithoutAssigneeNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutUploadedAttachmentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clerkUserId?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    boards?: BoardUncheckedUpdateManyWithoutUserNestedInput
+    workspaces?: WorkspaceUncheckedUpdateManyWithoutOwnerNestedInput
+    comments?: CommentUncheckedUpdateManyWithoutAuthorNestedInput
+    assignedCards?: CardUncheckedUpdateManyWithoutAssigneeNestedInput
   }
 
   export type BoardCreateManyUserInput = {
@@ -15909,6 +18625,36 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type CommentCreateManyAuthorInput = {
+    id?: string
+    text: string
+    cardId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AttachmentCreateManyUploadedByInput = {
+    id?: string
+    name: string
+    url: string
+    edgeColor?: string | null
+    cardId: string
+    createdAt?: Date | string
+  }
+
+  export type CardCreateManyAssigneeInput = {
+    id?: string
+    name: string
+    description?: string | null
+    pos: number
+    closed?: boolean
+    dueDate?: Date | string | null
+    listId: string
+    boardId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type BoardUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
@@ -15919,6 +18665,7 @@ export namespace Prisma {
     workspace?: WorkspaceUpdateOneRequiredWithoutBoardsNestedInput
     lists?: ListUpdateManyWithoutBoardNestedInput
     cards?: CardUpdateManyWithoutBoardNestedInput
+    labels?: LabelUpdateManyWithoutBoardNestedInput
   }
 
   export type BoardUncheckedUpdateWithoutUserInput = {
@@ -15931,6 +18678,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lists?: ListUncheckedUpdateManyWithoutBoardNestedInput
     cards?: CardUncheckedUpdateManyWithoutBoardNestedInput
+    labels?: LabelUncheckedUpdateManyWithoutBoardNestedInput
   }
 
   export type BoardUncheckedUpdateManyWithoutUserInput = {
@@ -15969,6 +18717,104 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type CommentUpdateWithoutAuthorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    text?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    card?: CardUpdateOneRequiredWithoutCommentsNestedInput
+  }
+
+  export type CommentUncheckedUpdateWithoutAuthorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    text?: StringFieldUpdateOperationsInput | string
+    cardId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CommentUncheckedUpdateManyWithoutAuthorInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    text?: StringFieldUpdateOperationsInput | string
+    cardId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AttachmentUpdateWithoutUploadedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    edgeColor?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    card?: CardUpdateOneRequiredWithoutAttachmentsNestedInput
+  }
+
+  export type AttachmentUncheckedUpdateWithoutUploadedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    edgeColor?: NullableStringFieldUpdateOperationsInput | string | null
+    cardId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AttachmentUncheckedUpdateManyWithoutUploadedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    edgeColor?: NullableStringFieldUpdateOperationsInput | string | null
+    cardId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CardUpdateWithoutAssigneeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    pos?: FloatFieldUpdateOperationsInput | number
+    closed?: BoolFieldUpdateOperationsInput | boolean
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    list?: ListUpdateOneRequiredWithoutCardsNestedInput
+    board?: BoardUpdateOneRequiredWithoutCardsNestedInput
+    checklists?: ChecklistUpdateManyWithoutCardNestedInput
+    comments?: CommentUpdateManyWithoutCardNestedInput
+    labels?: LabelUpdateManyWithoutCardsNestedInput
+    attachments?: AttachmentUpdateManyWithoutCardNestedInput
+  }
+
+  export type CardUncheckedUpdateWithoutAssigneeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    pos?: FloatFieldUpdateOperationsInput | number
+    closed?: BoolFieldUpdateOperationsInput | boolean
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    listId?: StringFieldUpdateOperationsInput | string
+    boardId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    checklists?: ChecklistUncheckedUpdateManyWithoutCardNestedInput
+    comments?: CommentUncheckedUpdateManyWithoutCardNestedInput
+    labels?: LabelUncheckedUpdateManyWithoutCardsNestedInput
+    attachments?: AttachmentUncheckedUpdateManyWithoutCardNestedInput
+  }
+
+  export type CardUncheckedUpdateManyWithoutAssigneeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    pos?: FloatFieldUpdateOperationsInput | number
+    closed?: BoolFieldUpdateOperationsInput | boolean
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    listId?: StringFieldUpdateOperationsInput | string
+    boardId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type BoardCreateManyWorkspaceInput = {
     id?: string
     name: string
@@ -15989,6 +18835,7 @@ export namespace Prisma {
     user?: UserUpdateOneRequiredWithoutBoardsNestedInput
     lists?: ListUpdateManyWithoutBoardNestedInput
     cards?: CardUpdateManyWithoutBoardNestedInput
+    labels?: LabelUpdateManyWithoutBoardNestedInput
   }
 
   export type BoardUncheckedUpdateWithoutWorkspaceInput = {
@@ -16001,6 +18848,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     lists?: ListUncheckedUpdateManyWithoutBoardNestedInput
     cards?: CardUncheckedUpdateManyWithoutBoardNestedInput
+    labels?: LabelUncheckedUpdateManyWithoutBoardNestedInput
   }
 
   export type BoardUncheckedUpdateManyWithoutWorkspaceInput = {
@@ -16030,8 +18878,15 @@ export namespace Prisma {
     closed?: boolean
     dueDate?: Date | string | null
     listId: string
+    assigneeId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+  }
+
+  export type LabelCreateManyBoardInput = {
+    id?: string
+    name: string
+    color?: string | null
   }
 
   export type ListUpdateWithoutBoardInput = {
@@ -16073,8 +18928,10 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     list?: ListUpdateOneRequiredWithoutCardsNestedInput
+    assignee?: UserUpdateOneWithoutAssignedCardsNestedInput
     checklists?: ChecklistUpdateManyWithoutCardNestedInput
     comments?: CommentUpdateManyWithoutCardNestedInput
+    labels?: LabelUpdateManyWithoutCardsNestedInput
     attachments?: AttachmentUpdateManyWithoutCardNestedInput
   }
 
@@ -16086,10 +18943,12 @@ export namespace Prisma {
     closed?: BoolFieldUpdateOperationsInput | boolean
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     listId?: StringFieldUpdateOperationsInput | string
+    assigneeId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     checklists?: ChecklistUncheckedUpdateManyWithoutCardNestedInput
     comments?: CommentUncheckedUpdateManyWithoutCardNestedInput
+    labels?: LabelUncheckedUpdateManyWithoutCardsNestedInput
     attachments?: AttachmentUncheckedUpdateManyWithoutCardNestedInput
   }
 
@@ -16101,8 +18960,29 @@ export namespace Prisma {
     closed?: BoolFieldUpdateOperationsInput | boolean
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     listId?: StringFieldUpdateOperationsInput | string
+    assigneeId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LabelUpdateWithoutBoardInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    color?: NullableStringFieldUpdateOperationsInput | string | null
+    cards?: CardUpdateManyWithoutLabelsNestedInput
+  }
+
+  export type LabelUncheckedUpdateWithoutBoardInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    color?: NullableStringFieldUpdateOperationsInput | string | null
+    cards?: CardUncheckedUpdateManyWithoutLabelsNestedInput
+  }
+
+  export type LabelUncheckedUpdateManyWithoutBoardInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    color?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type CardCreateManyListInput = {
@@ -16113,6 +18993,7 @@ export namespace Prisma {
     closed?: boolean
     dueDate?: Date | string | null
     boardId: string
+    assigneeId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -16127,8 +19008,10 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     board?: BoardUpdateOneRequiredWithoutCardsNestedInput
+    assignee?: UserUpdateOneWithoutAssignedCardsNestedInput
     checklists?: ChecklistUpdateManyWithoutCardNestedInput
     comments?: CommentUpdateManyWithoutCardNestedInput
+    labels?: LabelUpdateManyWithoutCardsNestedInput
     attachments?: AttachmentUpdateManyWithoutCardNestedInput
   }
 
@@ -16140,10 +19023,12 @@ export namespace Prisma {
     closed?: BoolFieldUpdateOperationsInput | boolean
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     boardId?: StringFieldUpdateOperationsInput | string
+    assigneeId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     checklists?: ChecklistUncheckedUpdateManyWithoutCardNestedInput
     comments?: CommentUncheckedUpdateManyWithoutCardNestedInput
+    labels?: LabelUncheckedUpdateManyWithoutCardsNestedInput
     attachments?: AttachmentUncheckedUpdateManyWithoutCardNestedInput
   }
 
@@ -16155,6 +19040,7 @@ export namespace Prisma {
     closed?: BoolFieldUpdateOperationsInput | boolean
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     boardId?: StringFieldUpdateOperationsInput | string
+    assigneeId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -16168,7 +19054,9 @@ export namespace Prisma {
   export type CommentCreateManyCardInput = {
     id?: string
     text: string
+    authorId: string
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type AttachmentCreateManyCardInput = {
@@ -16176,6 +19064,7 @@ export namespace Prisma {
     name: string
     url: string
     edgeColor?: string | null
+    uploadedById?: string | null
     createdAt?: Date | string
   }
 
@@ -16203,18 +19092,45 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     text?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    author?: UserUpdateOneRequiredWithoutCommentsNestedInput
   }
 
   export type CommentUncheckedUpdateWithoutCardInput = {
     id?: StringFieldUpdateOperationsInput | string
     text?: StringFieldUpdateOperationsInput | string
+    authorId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CommentUncheckedUpdateManyWithoutCardInput = {
     id?: StringFieldUpdateOperationsInput | string
     text?: StringFieldUpdateOperationsInput | string
+    authorId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LabelUpdateWithoutCardsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    color?: NullableStringFieldUpdateOperationsInput | string | null
+    board?: BoardUpdateOneRequiredWithoutLabelsNestedInput
+  }
+
+  export type LabelUncheckedUpdateWithoutCardsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    color?: NullableStringFieldUpdateOperationsInput | string | null
+    boardId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type LabelUncheckedUpdateManyWithoutCardsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    color?: NullableStringFieldUpdateOperationsInput | string | null
+    boardId?: StringFieldUpdateOperationsInput | string
   }
 
   export type AttachmentUpdateWithoutCardInput = {
@@ -16223,6 +19139,7 @@ export namespace Prisma {
     url?: StringFieldUpdateOperationsInput | string
     edgeColor?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    uploadedBy?: UserUpdateOneWithoutUploadedAttachmentsNestedInput
   }
 
   export type AttachmentUncheckedUpdateWithoutCardInput = {
@@ -16230,6 +19147,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
     edgeColor?: NullableStringFieldUpdateOperationsInput | string | null
+    uploadedById?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -16238,7 +19156,56 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
     edgeColor?: NullableStringFieldUpdateOperationsInput | string | null
+    uploadedById?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CardUpdateWithoutLabelsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    pos?: FloatFieldUpdateOperationsInput | number
+    closed?: BoolFieldUpdateOperationsInput | boolean
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    list?: ListUpdateOneRequiredWithoutCardsNestedInput
+    board?: BoardUpdateOneRequiredWithoutCardsNestedInput
+    assignee?: UserUpdateOneWithoutAssignedCardsNestedInput
+    checklists?: ChecklistUpdateManyWithoutCardNestedInput
+    comments?: CommentUpdateManyWithoutCardNestedInput
+    attachments?: AttachmentUpdateManyWithoutCardNestedInput
+  }
+
+  export type CardUncheckedUpdateWithoutLabelsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    pos?: FloatFieldUpdateOperationsInput | number
+    closed?: BoolFieldUpdateOperationsInput | boolean
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    listId?: StringFieldUpdateOperationsInput | string
+    boardId?: StringFieldUpdateOperationsInput | string
+    assigneeId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    checklists?: ChecklistUncheckedUpdateManyWithoutCardNestedInput
+    comments?: CommentUncheckedUpdateManyWithoutCardNestedInput
+    attachments?: AttachmentUncheckedUpdateManyWithoutCardNestedInput
+  }
+
+  export type CardUncheckedUpdateManyWithoutLabelsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    pos?: FloatFieldUpdateOperationsInput | number
+    closed?: BoolFieldUpdateOperationsInput | boolean
+    dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    listId?: StringFieldUpdateOperationsInput | string
+    boardId?: StringFieldUpdateOperationsInput | string
+    assigneeId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CheckItemCreateManyChecklistInput = {

@@ -28,13 +28,27 @@ export class BoardsController {
   ) {}
 
   @Get()
-  findAll() {
-    return this.boardsService.findAll();
+  @UseGuards(ClerkAuthGuard)
+  async findAll(@CurrentUser("sub") clerkUserId: string) {
+    const user = await this.usersService.findByClerkId(clerkUserId);
+    if (!user) {
+      throw new NotFoundException(
+        "User not found. Sync the Clerk user to the database first.",
+      );
+    }
+    return this.boardsService.findAllByUserId(user.id);
   }
 
   @Get(":id")
-  findOne(@Param("id") id: string) {
-    return this.boardsService.findOne(id);
+  @UseGuards(ClerkAuthGuard)
+  async findOne(@Param("id") id: string, @CurrentUser("sub") clerkUserId: string) {
+    const user = await this.usersService.findByClerkId(clerkUserId);
+    if (!user) {
+      throw new NotFoundException(
+        "User not found. Sync the Clerk user to the database first.",
+      );
+    }
+    return this.boardsService.findOneByIdForUser(id, user.id);
   }
 
   @Post()
@@ -49,16 +63,34 @@ export class BoardsController {
         "User not found. Sync the Clerk user to the database first.",
       );
     }
-    return this.boardsService.create({ ...body, userId: user.id });
+    return this.boardsService.createForUser({ ...body, userId: user.id });
   }
 
   @Patch(":id")
-  update(@Param("id") id: string, @Body() body: UpdateBoardDto) {
-    return this.boardsService.update(id, body);
+  @UseGuards(ClerkAuthGuard)
+  async update(
+    @Param("id") id: string,
+    @Body() body: UpdateBoardDto,
+    @CurrentUser("sub") clerkUserId: string,
+  ) {
+    const user = await this.usersService.findByClerkId(clerkUserId);
+    if (!user) {
+      throw new NotFoundException(
+        "User not found. Sync the Clerk user to the database first.",
+      );
+    }
+    return this.boardsService.updateForUser(id, user.id, body);
   }
 
   @Delete(":id")
-  remove(@Param("id") id: string) {
-    return this.boardsService.remove(id);
+  @UseGuards(ClerkAuthGuard)
+  async remove(@Param("id") id: string, @CurrentUser("sub") clerkUserId: string) {
+    const user = await this.usersService.findByClerkId(clerkUserId);
+    if (!user) {
+      throw new NotFoundException(
+        "User not found. Sync the Clerk user to the database first.",
+      );
+    }
+    return this.boardsService.removeForUser(id, user.id);
   }
 }

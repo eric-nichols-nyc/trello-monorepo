@@ -1,0 +1,49 @@
+import {
+  Controller,
+  Get,
+  Param,
+  Post,
+  Body,
+  UseGuards,
+  NotFoundException,
+} from "@nestjs/common";
+import { ZodValidationPipe } from "../common/pipes/zod-validation.pipe";
+import { ClerkAuthGuard } from "../auth/clerk-auth.guard";
+import { CurrentUser } from "../auth/current-user.decorator";
+import { UsersService } from "../users/users.service";
+import { CommentsService } from "./comments.service";
+import { createCommentSchema } from "./schemas/create-comment.schema";
+import type { CreateCommentInput } from "./schemas/create-comment.schema";
+
+@Controller("cards/:cardId/comments")
+export class CardCommentsController {
+  constructor(
+    private readonly commentsService: CommentsService,
+    private readonly usersService: UsersService,
+  ) {}
+
+  @Get()
+  @UseGuards(ClerkAuthGuard)
+  findByCard(
+    @Param("cardId") cardId: string,
+    @CurrentUser("sub") clerkUserId: string,
+  ) {
+    return this.commentsService.findByCardForUser(cardId, clerkUserId);
+  }
+
+  @Post()
+  @UseGuards(ClerkAuthGuard)
+  async create(
+    @Param("cardId") cardId: string,
+    @Body(new ZodValidationPipe(createCommentSchema)) body: CreateCommentInput,
+    @CurrentUser("sub") clerkUserId: string,
+  ) {
+    const user = await this.usersService.findByClerkId(clerkUserId);
+    if (!user) {
+      throw new NotFoundException(
+        "User not found. Complete an authenticated API request first.",
+      );
+    }
+    return this.commentsService.createForUser(cardId, clerkUserId, user.id, body);
+  }
+}
