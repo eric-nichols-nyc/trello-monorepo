@@ -52,6 +52,41 @@ Provisioning runs on **every** request that uses **`ClerkAuthGuard`** (after the
 
 This is **not** tied to Clerk’s “sign up” event in the dashboard; it runs on the **first authenticated API call** (and keeps the user row updated on later calls). For provisioning at signup without hitting the API, use a **Clerk webhook** instead.
 
+### Clerk webhook (`POST /webhooks/clerk`)
+
+Set **`CLERK_WEBHOOK_SECRET`** or **`CLERK_WEBHOOK_SIGNING_SECRET`** to the **`whsec_...`** signing secret from Clerk → Webhooks → your endpoint.
+
+#### Local dev: expose the API with **ngrok**
+
+Clerk sends webhooks over the public internet, so **`localhost` is not reachable**. Use **[ngrok](https://ngrok.com/)** (or similar) to tunnel to your Nest process.
+
+1. Start the API (default port **`3000`**, or match **`PORT`** in `.env`).
+2. In another terminal, run:
+   ```bash
+   ngrok http 3000
+   ```
+   Use the same port your API listens on if it’s not `3000`.
+3. Copy the **HTTPS** forwarding URL from the ngrok output (e.g. `https://abc-123.ngrok-free.app`).
+4. In [Clerk → Webhooks](https://dashboard.clerk.com/~/webhooks), set the endpoint URL to:
+   ```text
+   https://<your-ngrok-host>/webhooks/clerk
+   ```
+5. Subscribe to the events you need (e.g. **`user.created`**) and save.
+
+**Notes**
+
+- Stopping ngrok (e.g. closing that terminal) ends the tunnel. On the **free** ngrok plan you usually get a **new** URL on the next run—update the Clerk endpoint when it changes. A **reserved domain** (paid) keeps the URL stable.
+- If ngrok shows an interstitial page in the browser, webhook **`POST`** requests from Clerk still typically reach your app; if anything fails, check ngrok’s **web interface** (e.g. `http://127.0.0.1:4040`) for request/response details.
+
+The handler **writes** rows only when it can resolve a **User** from the event:
+
+| Event | When it syncs |
+|--------------|----------------|
+| **`user.created`** / **`user.updated`** | Always (payload is the user). |
+| **`session.created`** | Only if **`data.user`** is present (sign-in). |
+
+If you use **Testing** in the Clerk Dashboard, choose **`user.created`** in the event dropdown (or another event that includes a user). A **200** response with **`"synced": false`** means verification succeeded but this event type didn’t include user data—nothing is written to the DB. Check the JSON response body or server logs.
+
 ---
 
 ## How NestJS works in this app

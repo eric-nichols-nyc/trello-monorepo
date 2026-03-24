@@ -7,6 +7,7 @@ import { BoardsModule } from "./boards/boards.module";
 import { PrismaModule } from "./prisma/prisma.module";
 import { UsersModule } from "./users/users.module";
 import { WorkspacesModule } from "./workspaces/workspaces.module";
+import { WebhooksModule } from "./webhooks/webhooks.module";
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { WorkspacesModule } from "./workspaces/workspaces.module";
     UsersModule,
     BoardsModule,
     WorkspacesModule,
+    WebhooksModule,
   ],
   controllers: [AppController],
   providers: [AppService],

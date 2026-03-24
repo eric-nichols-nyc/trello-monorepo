@@ -2,6 +2,9 @@
 
 generator client {
   provider = "prisma-client-js"
+  // App-local client so monorepo `prisma generate` in other packages cannot overwrite
+  // this schema’s types on the shared `@prisma/client` install.
+  output   = "../generated/prisma"
 }
 
 datasource db {

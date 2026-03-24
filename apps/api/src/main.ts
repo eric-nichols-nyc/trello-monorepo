@@ -4,7 +4,10 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    // Required for Clerk webhook signature verification (exact raw JSON bytes)
+    rawBody: true,
+  });
 
   app.enableCors();
 
