@@ -1,4 +1,5 @@
 import { ModeToggle } from "@repo/design-system/components/mode-toggle";
+import Link from "next/link";
 import { HeaderCreateButton } from "./search/header-create-button";
 import { HeaderSearchInput } from "./search/header-search-input";
 import { UserMenu } from "./user/user-menu";
@@ -11,12 +12,15 @@ export const GlobalHeader = ({
   title = "Dashboard",
 }: GlobalHeaderProperties) => (
   <header
-    className="flex min-h-14 items-center gap-4 border-border border-b bg-background px-8"
+    className="flex min-h-14 items-center gap-4 border-chrome-divider border-b bg-background px-8"
     data-testid="global-header"
   >
-    <strong className="shrink-0 font-semibold text-base text-foreground">
-      {title}
-    </strong>
+    <Link
+      className="shrink-0 rounded-md font-semibold text-base text-foreground no-underline outline-offset-2 transition-colors hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring"
+      href="/dashboard"
+    >
+      <strong>{title}</strong>
+    </Link>
     <div className="mx-auto flex min-w-0 max-w-[780px] flex-1 items-center gap-2">
       <HeaderSearchInput />
       <HeaderCreateButton className="shrink-0" />
