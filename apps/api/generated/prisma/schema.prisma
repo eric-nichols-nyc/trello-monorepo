@@ -11,6 +11,11 @@ datasource db {
   provider = "postgresql" // Or "mysql" / "sqlite"
 }
 
+enum BoardBackgroundBrightness {
+  light
+  dark
+}
+
 model User {
   id          String   @id @default(uuid())
   clerkUserId String   @unique
@@ -42,19 +47,26 @@ model Workspace {
 }
 
 model Board {
-  id          String    @id @default(uuid())
-  name        String
-  background  String? // Store hex color or image URL
-  closed      Boolean   @default(false)
-  userId      String
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  workspaceId String
-  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  lists       List[]
-  cards       Card[] // Redundant but useful for board-wide card queries
-  labels      Label[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id                    String                    @id @default(uuid())
+  name                  String
+  shortLink             String?                   @unique
+  background            String? // Legacy: hex color or image URL
+  backgroundImage       String?
+  backgroundBrightness  BoardBackgroundBrightness @default(light)
+  backgroundBottomColor String?
+  backgroundTopColor    String?
+  backgroundColor       String?
+  starred               Boolean                   @default(false)
+  closed                Boolean                   @default(false)
+  userId                String
+  user                  User                      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workspaceId           String
+  workspace             Workspace                 @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  lists                 List[]
+  cards                 Card[]
+  labels                Label[]
+  createdAt             DateTime                  @default(now())
+  updatedAt             DateTime                  @updatedAt
 
   @@index([workspaceId])
   @@index([userId])

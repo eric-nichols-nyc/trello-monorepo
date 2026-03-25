@@ -1,6 +1,12 @@
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from "@nestjs/common";
 // biome-ignore lint/style/useImportType: value import needed so PrismaService type includes PrismaClient (.board)
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaService } from "../prisma/prisma.service";
+import { randomBoardShortLink } from "./board-short-link";
 import type { UpdateBoardDto } from "./dto";
 import type { CreateBoardInput } from "./schemas/create-board.schema";
 
@@ -15,7 +21,14 @@ export class BoardsService {
       select: {
         id: true,
         name: true,
+        shortLink: true,
         background: true,
+        backgroundImage: true,
+        backgroundBrightness: true,
+        backgroundBottomColor: true,
+        backgroundTopColor: true,
+        backgroundColor: true,
+        starred: true,
         closed: true,
         userId: true,
         workspaceId: true,
@@ -37,14 +50,52 @@ export class BoardsService {
     });
   }
 
-  create(data: CreateBoardInput & { userId: string }) {
+  async create(data: CreateBoardInput & { userId: string }) {
+    const {
+      name,
+      workspaceId,
+      userId,
+      shortLink,
+      backgroundImage,
+      backgroundBrightness,
+      backgroundBottomColor,
+      backgroundTopColor,
+      backgroundColor,
+      starred,
+    } = data;
+    const resolvedShortLink =
+      shortLink ?? (await this.allocateUniqueShortLink());
     return this.prisma.board.create({
       data: {
-        name: data.name,
-        workspaceId: data.workspaceId,
-        userId: data.userId,
+        name,
+        workspaceId,
+        userId,
+        shortLink: resolvedShortLink,
+        ...(backgroundImage !== undefined ? { backgroundImage } : {}),
+        ...(backgroundBrightness !== undefined ? { backgroundBrightness } : {}),
+        ...(backgroundBottomColor !== undefined ? { backgroundBottomColor } : {}),
+        ...(backgroundTopColor !== undefined ? { backgroundTopColor } : {}),
+        ...(backgroundColor !== undefined ? { backgroundColor } : {}),
+        ...(starred !== undefined ? { starred } : {}),
       },
     });
+  }
+
+  /** Picks a fresh `shortLink` not yet in the DB (retries on rare collisions). */
+  private async allocateUniqueShortLink(): Promise<string> {
+    for (let attempt = 0; attempt < 12; attempt++) {
+      const candidate = randomBoardShortLink();
+      const taken = await this.prisma.board.findUnique({
+        where: { shortLink: candidate },
+        select: { id: true },
+      });
+      if (!taken) {
+        return candidate;
+      }
+    }
+    throw new InternalServerErrorException(
+      "Could not allocate a unique shortLink; try again.",
+    );
   }
 
   update(id: string, data: UpdateBoardDto) {
@@ -88,7 +139,7 @@ export class BoardsService {
     if (workspace.ownerId !== data.userId) {
       throw new ForbiddenException('Cannot create board in another user workspace');
     }
-    return this.create(data);
+    return await this.create(data);
   }
 
   async updateForUser(id: string, userId: string, data: UpdateBoardDto) {

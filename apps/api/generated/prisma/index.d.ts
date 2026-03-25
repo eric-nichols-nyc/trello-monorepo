@@ -65,6 +65,23 @@ export type Comment = $Result.DefaultSelection<Prisma.$CommentPayload>
 export type Attachment = $Result.DefaultSelection<Prisma.$AttachmentPayload>
 
 /**
+ * Enums
+ */
+export namespace $Enums {
+  export const BoardBackgroundBrightness: {
+  light: 'light',
+  dark: 'dark'
+};
+
+export type BoardBackgroundBrightness = (typeof BoardBackgroundBrightness)[keyof typeof BoardBackgroundBrightness]
+
+}
+
+export type BoardBackgroundBrightness = $Enums.BoardBackgroundBrightness
+
+export const BoardBackgroundBrightness: typeof $Enums.BoardBackgroundBrightness
+
+/**
  * ##  Prisma Client ʲˢ
  *
  * Type-safe database client for TypeScript & Node.js
@@ -4313,7 +4330,14 @@ export namespace Prisma {
   export type BoardMinAggregateOutputType = {
     id: string | null
     name: string | null
+    shortLink: string | null
     background: string | null
+    backgroundImage: string | null
+    backgroundBrightness: $Enums.BoardBackgroundBrightness | null
+    backgroundBottomColor: string | null
+    backgroundTopColor: string | null
+    backgroundColor: string | null
+    starred: boolean | null
     closed: boolean | null
     userId: string | null
     workspaceId: string | null
@@ -4324,7 +4348,14 @@ export namespace Prisma {
   export type BoardMaxAggregateOutputType = {
     id: string | null
     name: string | null
+    shortLink: string | null
     background: string | null
+    backgroundImage: string | null
+    backgroundBrightness: $Enums.BoardBackgroundBrightness | null
+    backgroundBottomColor: string | null
+    backgroundTopColor: string | null
+    backgroundColor: string | null
+    starred: boolean | null
     closed: boolean | null
     userId: string | null
     workspaceId: string | null
@@ -4335,7 +4366,14 @@ export namespace Prisma {
   export type BoardCountAggregateOutputType = {
     id: number
     name: number
+    shortLink: number
     background: number
+    backgroundImage: number
+    backgroundBrightness: number
+    backgroundBottomColor: number
+    backgroundTopColor: number
+    backgroundColor: number
+    starred: number
     closed: number
     userId: number
     workspaceId: number
@@ -4348,7 +4386,14 @@ export namespace Prisma {
   export type BoardMinAggregateInputType = {
     id?: true
     name?: true
+    shortLink?: true
     background?: true
+    backgroundImage?: true
+    backgroundBrightness?: true
+    backgroundBottomColor?: true
+    backgroundTopColor?: true
+    backgroundColor?: true
+    starred?: true
     closed?: true
     userId?: true
     workspaceId?: true
@@ -4359,7 +4404,14 @@ export namespace Prisma {
   export type BoardMaxAggregateInputType = {
     id?: true
     name?: true
+    shortLink?: true
     background?: true
+    backgroundImage?: true
+    backgroundBrightness?: true
+    backgroundBottomColor?: true
+    backgroundTopColor?: true
+    backgroundColor?: true
+    starred?: true
     closed?: true
     userId?: true
     workspaceId?: true
@@ -4370,7 +4422,14 @@ export namespace Prisma {
   export type BoardCountAggregateInputType = {
     id?: true
     name?: true
+    shortLink?: true
     background?: true
+    backgroundImage?: true
+    backgroundBrightness?: true
+    backgroundBottomColor?: true
+    backgroundTopColor?: true
+    backgroundColor?: true
+    starred?: true
     closed?: true
     userId?: true
     workspaceId?: true
@@ -4454,7 +4513,14 @@ export namespace Prisma {
   export type BoardGroupByOutputType = {
     id: string
     name: string
+    shortLink: string | null
     background: string | null
+    backgroundImage: string | null
+    backgroundBrightness: $Enums.BoardBackgroundBrightness
+    backgroundBottomColor: string | null
+    backgroundTopColor: string | null
+    backgroundColor: string | null
+    starred: boolean
     closed: boolean
     userId: string
     workspaceId: string
@@ -4482,7 +4548,14 @@ export namespace Prisma {
   export type BoardSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    shortLink?: boolean
     background?: boolean
+    backgroundImage?: boolean
+    backgroundBrightness?: boolean
+    backgroundBottomColor?: boolean
+    backgroundTopColor?: boolean
+    backgroundColor?: boolean
+    starred?: boolean
     closed?: boolean
     userId?: boolean
     workspaceId?: boolean
@@ -4499,7 +4572,14 @@ export namespace Prisma {
   export type BoardSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    shortLink?: boolean
     background?: boolean
+    backgroundImage?: boolean
+    backgroundBrightness?: boolean
+    backgroundBottomColor?: boolean
+    backgroundTopColor?: boolean
+    backgroundColor?: boolean
+    starred?: boolean
     closed?: boolean
     userId?: boolean
     workspaceId?: boolean
@@ -4512,7 +4592,14 @@ export namespace Prisma {
   export type BoardSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    shortLink?: boolean
     background?: boolean
+    backgroundImage?: boolean
+    backgroundBrightness?: boolean
+    backgroundBottomColor?: boolean
+    backgroundTopColor?: boolean
+    backgroundColor?: boolean
+    starred?: boolean
     closed?: boolean
     userId?: boolean
     workspaceId?: boolean
@@ -4525,7 +4612,14 @@ export namespace Prisma {
   export type BoardSelectScalar = {
     id?: boolean
     name?: boolean
+    shortLink?: boolean
     background?: boolean
+    backgroundImage?: boolean
+    backgroundBrightness?: boolean
+    backgroundBottomColor?: boolean
+    backgroundTopColor?: boolean
+    backgroundColor?: boolean
+    starred?: boolean
     closed?: boolean
     userId?: boolean
     workspaceId?: boolean
@@ -4533,7 +4627,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type BoardOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "background" | "closed" | "userId" | "workspaceId" | "createdAt" | "updatedAt", ExtArgs["result"]["board"]>
+  export type BoardOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "shortLink" | "background" | "backgroundImage" | "backgroundBrightness" | "backgroundBottomColor" | "backgroundTopColor" | "backgroundColor" | "starred" | "closed" | "userId" | "workspaceId" | "createdAt" | "updatedAt", ExtArgs["result"]["board"]>
   export type BoardInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     workspace?: boolean | WorkspaceDefaultArgs<ExtArgs>
@@ -4563,7 +4657,14 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       name: string
+      shortLink: string | null
       background: string | null
+      backgroundImage: string | null
+      backgroundBrightness: $Enums.BoardBackgroundBrightness
+      backgroundBottomColor: string | null
+      backgroundTopColor: string | null
+      backgroundColor: string | null
+      starred: boolean
       closed: boolean
       userId: string
       workspaceId: string
@@ -4999,7 +5100,14 @@ export namespace Prisma {
   interface BoardFieldRefs {
     readonly id: FieldRef<"Board", 'String'>
     readonly name: FieldRef<"Board", 'String'>
+    readonly shortLink: FieldRef<"Board", 'String'>
     readonly background: FieldRef<"Board", 'String'>
+    readonly backgroundImage: FieldRef<"Board", 'String'>
+    readonly backgroundBrightness: FieldRef<"Board", 'BoardBackgroundBrightness'>
+    readonly backgroundBottomColor: FieldRef<"Board", 'String'>
+    readonly backgroundTopColor: FieldRef<"Board", 'String'>
+    readonly backgroundColor: FieldRef<"Board", 'String'>
+    readonly starred: FieldRef<"Board", 'Boolean'>
     readonly closed: FieldRef<"Board", 'Boolean'>
     readonly userId: FieldRef<"Board", 'String'>
     readonly workspaceId: FieldRef<"Board", 'String'>
@@ -13467,7 +13575,14 @@ export namespace Prisma {
   export const BoardScalarFieldEnum: {
     id: 'id',
     name: 'name',
+    shortLink: 'shortLink',
     background: 'background',
+    backgroundImage: 'backgroundImage',
+    backgroundBrightness: 'backgroundBrightness',
+    backgroundBottomColor: 'backgroundBottomColor',
+    backgroundTopColor: 'backgroundTopColor',
+    backgroundColor: 'backgroundColor',
+    starred: 'starred',
     closed: 'closed',
     userId: 'userId',
     workspaceId: 'workspaceId',
@@ -13618,6 +13733,20 @@ export namespace Prisma {
    * Reference to a field of type 'DateTime[]'
    */
   export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'BoardBackgroundBrightness'
+   */
+  export type EnumBoardBackgroundBrightnessFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BoardBackgroundBrightness'>
+    
+
+
+  /**
+   * Reference to a field of type 'BoardBackgroundBrightness[]'
+   */
+  export type ListEnumBoardBackgroundBrightnessFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BoardBackgroundBrightness[]'>
     
 
 
@@ -13810,7 +13939,14 @@ export namespace Prisma {
     NOT?: BoardWhereInput | BoardWhereInput[]
     id?: StringFilter<"Board"> | string
     name?: StringFilter<"Board"> | string
+    shortLink?: StringNullableFilter<"Board"> | string | null
     background?: StringNullableFilter<"Board"> | string | null
+    backgroundImage?: StringNullableFilter<"Board"> | string | null
+    backgroundBrightness?: EnumBoardBackgroundBrightnessFilter<"Board"> | $Enums.BoardBackgroundBrightness
+    backgroundBottomColor?: StringNullableFilter<"Board"> | string | null
+    backgroundTopColor?: StringNullableFilter<"Board"> | string | null
+    backgroundColor?: StringNullableFilter<"Board"> | string | null
+    starred?: BoolFilter<"Board"> | boolean
     closed?: BoolFilter<"Board"> | boolean
     userId?: StringFilter<"Board"> | string
     workspaceId?: StringFilter<"Board"> | string
@@ -13826,7 +13962,14 @@ export namespace Prisma {
   export type BoardOrderByWithRelationInput = {
     id?: SortOrder
     name?: SortOrder
+    shortLink?: SortOrderInput | SortOrder
     background?: SortOrderInput | SortOrder
+    backgroundImage?: SortOrderInput | SortOrder
+    backgroundBrightness?: SortOrder
+    backgroundBottomColor?: SortOrderInput | SortOrder
+    backgroundTopColor?: SortOrderInput | SortOrder
+    backgroundColor?: SortOrderInput | SortOrder
+    starred?: SortOrder
     closed?: SortOrder
     userId?: SortOrder
     workspaceId?: SortOrder
@@ -13841,11 +13984,18 @@ export namespace Prisma {
 
   export type BoardWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    shortLink?: string
     AND?: BoardWhereInput | BoardWhereInput[]
     OR?: BoardWhereInput[]
     NOT?: BoardWhereInput | BoardWhereInput[]
     name?: StringFilter<"Board"> | string
     background?: StringNullableFilter<"Board"> | string | null
+    backgroundImage?: StringNullableFilter<"Board"> | string | null
+    backgroundBrightness?: EnumBoardBackgroundBrightnessFilter<"Board"> | $Enums.BoardBackgroundBrightness
+    backgroundBottomColor?: StringNullableFilter<"Board"> | string | null
+    backgroundTopColor?: StringNullableFilter<"Board"> | string | null
+    backgroundColor?: StringNullableFilter<"Board"> | string | null
+    starred?: BoolFilter<"Board"> | boolean
     closed?: BoolFilter<"Board"> | boolean
     userId?: StringFilter<"Board"> | string
     workspaceId?: StringFilter<"Board"> | string
@@ -13856,12 +14006,19 @@ export namespace Prisma {
     lists?: ListListRelationFilter
     cards?: CardListRelationFilter
     labels?: LabelListRelationFilter
-  }, "id">
+  }, "id" | "shortLink">
 
   export type BoardOrderByWithAggregationInput = {
     id?: SortOrder
     name?: SortOrder
+    shortLink?: SortOrderInput | SortOrder
     background?: SortOrderInput | SortOrder
+    backgroundImage?: SortOrderInput | SortOrder
+    backgroundBrightness?: SortOrder
+    backgroundBottomColor?: SortOrderInput | SortOrder
+    backgroundTopColor?: SortOrderInput | SortOrder
+    backgroundColor?: SortOrderInput | SortOrder
+    starred?: SortOrder
     closed?: SortOrder
     userId?: SortOrder
     workspaceId?: SortOrder
@@ -13878,7 +14035,14 @@ export namespace Prisma {
     NOT?: BoardScalarWhereWithAggregatesInput | BoardScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Board"> | string
     name?: StringWithAggregatesFilter<"Board"> | string
+    shortLink?: StringNullableWithAggregatesFilter<"Board"> | string | null
     background?: StringNullableWithAggregatesFilter<"Board"> | string | null
+    backgroundImage?: StringNullableWithAggregatesFilter<"Board"> | string | null
+    backgroundBrightness?: EnumBoardBackgroundBrightnessWithAggregatesFilter<"Board"> | $Enums.BoardBackgroundBrightness
+    backgroundBottomColor?: StringNullableWithAggregatesFilter<"Board"> | string | null
+    backgroundTopColor?: StringNullableWithAggregatesFilter<"Board"> | string | null
+    backgroundColor?: StringNullableWithAggregatesFilter<"Board"> | string | null
+    starred?: BoolWithAggregatesFilter<"Board"> | boolean
     closed?: BoolWithAggregatesFilter<"Board"> | boolean
     userId?: StringWithAggregatesFilter<"Board"> | string
     workspaceId?: StringWithAggregatesFilter<"Board"> | string
@@ -14523,7 +14687,14 @@ export namespace Prisma {
   export type BoardCreateInput = {
     id?: string
     name: string
+    shortLink?: string | null
     background?: string | null
+    backgroundImage?: string | null
+    backgroundBrightness?: $Enums.BoardBackgroundBrightness
+    backgroundBottomColor?: string | null
+    backgroundTopColor?: string | null
+    backgroundColor?: string | null
+    starred?: boolean
     closed?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -14537,7 +14708,14 @@ export namespace Prisma {
   export type BoardUncheckedCreateInput = {
     id?: string
     name: string
+    shortLink?: string | null
     background?: string | null
+    backgroundImage?: string | null
+    backgroundBrightness?: $Enums.BoardBackgroundBrightness
+    backgroundBottomColor?: string | null
+    backgroundTopColor?: string | null
+    backgroundColor?: string | null
+    starred?: boolean
     closed?: boolean
     userId: string
     workspaceId: string
@@ -14551,7 +14729,14 @@ export namespace Prisma {
   export type BoardUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    shortLink?: NullableStringFieldUpdateOperationsInput | string | null
     background?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundImage?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundBrightness?: EnumBoardBackgroundBrightnessFieldUpdateOperationsInput | $Enums.BoardBackgroundBrightness
+    backgroundBottomColor?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundTopColor?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    starred?: BoolFieldUpdateOperationsInput | boolean
     closed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -14565,7 +14750,14 @@ export namespace Prisma {
   export type BoardUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    shortLink?: NullableStringFieldUpdateOperationsInput | string | null
     background?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundImage?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundBrightness?: EnumBoardBackgroundBrightnessFieldUpdateOperationsInput | $Enums.BoardBackgroundBrightness
+    backgroundBottomColor?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundTopColor?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    starred?: BoolFieldUpdateOperationsInput | boolean
     closed?: BoolFieldUpdateOperationsInput | boolean
     userId?: StringFieldUpdateOperationsInput | string
     workspaceId?: StringFieldUpdateOperationsInput | string
@@ -14579,7 +14771,14 @@ export namespace Prisma {
   export type BoardCreateManyInput = {
     id?: string
     name: string
+    shortLink?: string | null
     background?: string | null
+    backgroundImage?: string | null
+    backgroundBrightness?: $Enums.BoardBackgroundBrightness
+    backgroundBottomColor?: string | null
+    backgroundTopColor?: string | null
+    backgroundColor?: string | null
+    starred?: boolean
     closed?: boolean
     userId: string
     workspaceId: string
@@ -14590,7 +14789,14 @@ export namespace Prisma {
   export type BoardUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    shortLink?: NullableStringFieldUpdateOperationsInput | string | null
     background?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundImage?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundBrightness?: EnumBoardBackgroundBrightnessFieldUpdateOperationsInput | $Enums.BoardBackgroundBrightness
+    backgroundBottomColor?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundTopColor?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    starred?: BoolFieldUpdateOperationsInput | boolean
     closed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -14599,7 +14805,14 @@ export namespace Prisma {
   export type BoardUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    shortLink?: NullableStringFieldUpdateOperationsInput | string | null
     background?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundImage?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundBrightness?: EnumBoardBackgroundBrightnessFieldUpdateOperationsInput | $Enums.BoardBackgroundBrightness
+    backgroundBottomColor?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundTopColor?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    starred?: BoolFieldUpdateOperationsInput | boolean
     closed?: BoolFieldUpdateOperationsInput | boolean
     userId?: StringFieldUpdateOperationsInput | string
     workspaceId?: StringFieldUpdateOperationsInput | string
@@ -15290,6 +15503,13 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
+  export type EnumBoardBackgroundBrightnessFilter<$PrismaModel = never> = {
+    equals?: $Enums.BoardBackgroundBrightness | EnumBoardBackgroundBrightnessFieldRefInput<$PrismaModel>
+    in?: $Enums.BoardBackgroundBrightness[] | ListEnumBoardBackgroundBrightnessFieldRefInput<$PrismaModel>
+    notIn?: $Enums.BoardBackgroundBrightness[] | ListEnumBoardBackgroundBrightnessFieldRefInput<$PrismaModel>
+    not?: NestedEnumBoardBackgroundBrightnessFilter<$PrismaModel> | $Enums.BoardBackgroundBrightness
+  }
+
   export type BoolFilter<$PrismaModel = never> = {
     equals?: boolean | BooleanFieldRefInput<$PrismaModel>
     not?: NestedBoolFilter<$PrismaModel> | boolean
@@ -15323,7 +15543,14 @@ export namespace Prisma {
   export type BoardCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    shortLink?: SortOrder
     background?: SortOrder
+    backgroundImage?: SortOrder
+    backgroundBrightness?: SortOrder
+    backgroundBottomColor?: SortOrder
+    backgroundTopColor?: SortOrder
+    backgroundColor?: SortOrder
+    starred?: SortOrder
     closed?: SortOrder
     userId?: SortOrder
     workspaceId?: SortOrder
@@ -15334,7 +15561,14 @@ export namespace Prisma {
   export type BoardMaxOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    shortLink?: SortOrder
     background?: SortOrder
+    backgroundImage?: SortOrder
+    backgroundBrightness?: SortOrder
+    backgroundBottomColor?: SortOrder
+    backgroundTopColor?: SortOrder
+    backgroundColor?: SortOrder
+    starred?: SortOrder
     closed?: SortOrder
     userId?: SortOrder
     workspaceId?: SortOrder
@@ -15345,12 +15579,29 @@ export namespace Prisma {
   export type BoardMinOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    shortLink?: SortOrder
     background?: SortOrder
+    backgroundImage?: SortOrder
+    backgroundBrightness?: SortOrder
+    backgroundBottomColor?: SortOrder
+    backgroundTopColor?: SortOrder
+    backgroundColor?: SortOrder
+    starred?: SortOrder
     closed?: SortOrder
     userId?: SortOrder
     workspaceId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type EnumBoardBackgroundBrightnessWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.BoardBackgroundBrightness | EnumBoardBackgroundBrightnessFieldRefInput<$PrismaModel>
+    in?: $Enums.BoardBackgroundBrightness[] | ListEnumBoardBackgroundBrightnessFieldRefInput<$PrismaModel>
+    notIn?: $Enums.BoardBackgroundBrightness[] | ListEnumBoardBackgroundBrightnessFieldRefInput<$PrismaModel>
+    not?: NestedEnumBoardBackgroundBrightnessWithAggregatesFilter<$PrismaModel> | $Enums.BoardBackgroundBrightness
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumBoardBackgroundBrightnessFilter<$PrismaModel>
+    _max?: NestedEnumBoardBackgroundBrightnessFilter<$PrismaModel>
   }
 
   export type BoolWithAggregatesFilter<$PrismaModel = never> = {
@@ -16015,6 +16266,10 @@ export namespace Prisma {
     connectOrCreate?: LabelCreateOrConnectWithoutBoardInput | LabelCreateOrConnectWithoutBoardInput[]
     createMany?: LabelCreateManyBoardInputEnvelope
     connect?: LabelWhereUniqueInput | LabelWhereUniqueInput[]
+  }
+
+  export type EnumBoardBackgroundBrightnessFieldUpdateOperationsInput = {
+    set?: $Enums.BoardBackgroundBrightness
   }
 
   export type BoolFieldUpdateOperationsInput = {
@@ -16686,9 +16941,26 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type NestedEnumBoardBackgroundBrightnessFilter<$PrismaModel = never> = {
+    equals?: $Enums.BoardBackgroundBrightness | EnumBoardBackgroundBrightnessFieldRefInput<$PrismaModel>
+    in?: $Enums.BoardBackgroundBrightness[] | ListEnumBoardBackgroundBrightnessFieldRefInput<$PrismaModel>
+    notIn?: $Enums.BoardBackgroundBrightness[] | ListEnumBoardBackgroundBrightnessFieldRefInput<$PrismaModel>
+    not?: NestedEnumBoardBackgroundBrightnessFilter<$PrismaModel> | $Enums.BoardBackgroundBrightness
+  }
+
   export type NestedBoolFilter<$PrismaModel = never> = {
     equals?: boolean | BooleanFieldRefInput<$PrismaModel>
     not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type NestedEnumBoardBackgroundBrightnessWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.BoardBackgroundBrightness | EnumBoardBackgroundBrightnessFieldRefInput<$PrismaModel>
+    in?: $Enums.BoardBackgroundBrightness[] | ListEnumBoardBackgroundBrightnessFieldRefInput<$PrismaModel>
+    notIn?: $Enums.BoardBackgroundBrightness[] | ListEnumBoardBackgroundBrightnessFieldRefInput<$PrismaModel>
+    not?: NestedEnumBoardBackgroundBrightnessWithAggregatesFilter<$PrismaModel> | $Enums.BoardBackgroundBrightness
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumBoardBackgroundBrightnessFilter<$PrismaModel>
+    _max?: NestedEnumBoardBackgroundBrightnessFilter<$PrismaModel>
   }
 
   export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
@@ -16754,7 +17026,14 @@ export namespace Prisma {
   export type BoardCreateWithoutUserInput = {
     id?: string
     name: string
+    shortLink?: string | null
     background?: string | null
+    backgroundImage?: string | null
+    backgroundBrightness?: $Enums.BoardBackgroundBrightness
+    backgroundBottomColor?: string | null
+    backgroundTopColor?: string | null
+    backgroundColor?: string | null
+    starred?: boolean
     closed?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -16767,7 +17046,14 @@ export namespace Prisma {
   export type BoardUncheckedCreateWithoutUserInput = {
     id?: string
     name: string
+    shortLink?: string | null
     background?: string | null
+    backgroundImage?: string | null
+    backgroundBrightness?: $Enums.BoardBackgroundBrightness
+    backgroundBottomColor?: string | null
+    backgroundTopColor?: string | null
+    backgroundColor?: string | null
+    starred?: boolean
     closed?: boolean
     workspaceId: string
     createdAt?: Date | string
@@ -16935,7 +17221,14 @@ export namespace Prisma {
     NOT?: BoardScalarWhereInput | BoardScalarWhereInput[]
     id?: StringFilter<"Board"> | string
     name?: StringFilter<"Board"> | string
+    shortLink?: StringNullableFilter<"Board"> | string | null
     background?: StringNullableFilter<"Board"> | string | null
+    backgroundImage?: StringNullableFilter<"Board"> | string | null
+    backgroundBrightness?: EnumBoardBackgroundBrightnessFilter<"Board"> | $Enums.BoardBackgroundBrightness
+    backgroundBottomColor?: StringNullableFilter<"Board"> | string | null
+    backgroundTopColor?: StringNullableFilter<"Board"> | string | null
+    backgroundColor?: StringNullableFilter<"Board"> | string | null
+    starred?: BoolFilter<"Board"> | boolean
     closed?: BoolFilter<"Board"> | boolean
     userId?: StringFilter<"Board"> | string
     workspaceId?: StringFilter<"Board"> | string
@@ -17099,7 +17392,14 @@ export namespace Prisma {
   export type BoardCreateWithoutWorkspaceInput = {
     id?: string
     name: string
+    shortLink?: string | null
     background?: string | null
+    backgroundImage?: string | null
+    backgroundBrightness?: $Enums.BoardBackgroundBrightness
+    backgroundBottomColor?: string | null
+    backgroundTopColor?: string | null
+    backgroundColor?: string | null
+    starred?: boolean
     closed?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -17112,7 +17412,14 @@ export namespace Prisma {
   export type BoardUncheckedCreateWithoutWorkspaceInput = {
     id?: string
     name: string
+    shortLink?: string | null
     background?: string | null
+    backgroundImage?: string | null
+    backgroundBrightness?: $Enums.BoardBackgroundBrightness
+    backgroundBottomColor?: string | null
+    backgroundTopColor?: string | null
+    backgroundColor?: string | null
+    starred?: boolean
     closed?: boolean
     userId: string
     createdAt?: Date | string
@@ -17489,7 +17796,14 @@ export namespace Prisma {
   export type BoardCreateWithoutListsInput = {
     id?: string
     name: string
+    shortLink?: string | null
     background?: string | null
+    backgroundImage?: string | null
+    backgroundBrightness?: $Enums.BoardBackgroundBrightness
+    backgroundBottomColor?: string | null
+    backgroundTopColor?: string | null
+    backgroundColor?: string | null
+    starred?: boolean
     closed?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -17502,7 +17816,14 @@ export namespace Prisma {
   export type BoardUncheckedCreateWithoutListsInput = {
     id?: string
     name: string
+    shortLink?: string | null
     background?: string | null
+    backgroundImage?: string | null
+    backgroundBrightness?: $Enums.BoardBackgroundBrightness
+    backgroundBottomColor?: string | null
+    backgroundTopColor?: string | null
+    backgroundColor?: string | null
+    starred?: boolean
     closed?: boolean
     userId: string
     workspaceId: string
@@ -17575,7 +17896,14 @@ export namespace Prisma {
   export type BoardUpdateWithoutListsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    shortLink?: NullableStringFieldUpdateOperationsInput | string | null
     background?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundImage?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundBrightness?: EnumBoardBackgroundBrightnessFieldUpdateOperationsInput | $Enums.BoardBackgroundBrightness
+    backgroundBottomColor?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundTopColor?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    starred?: BoolFieldUpdateOperationsInput | boolean
     closed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17588,7 +17916,14 @@ export namespace Prisma {
   export type BoardUncheckedUpdateWithoutListsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    shortLink?: NullableStringFieldUpdateOperationsInput | string | null
     background?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundImage?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundBrightness?: EnumBoardBackgroundBrightnessFieldUpdateOperationsInput | $Enums.BoardBackgroundBrightness
+    backgroundBottomColor?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundTopColor?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    starred?: BoolFieldUpdateOperationsInput | boolean
     closed?: BoolFieldUpdateOperationsInput | boolean
     userId?: StringFieldUpdateOperationsInput | string
     workspaceId?: StringFieldUpdateOperationsInput | string
@@ -17642,7 +17977,14 @@ export namespace Prisma {
   export type BoardCreateWithoutCardsInput = {
     id?: string
     name: string
+    shortLink?: string | null
     background?: string | null
+    backgroundImage?: string | null
+    backgroundBrightness?: $Enums.BoardBackgroundBrightness
+    backgroundBottomColor?: string | null
+    backgroundTopColor?: string | null
+    backgroundColor?: string | null
+    starred?: boolean
     closed?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -17655,7 +17997,14 @@ export namespace Prisma {
   export type BoardUncheckedCreateWithoutCardsInput = {
     id?: string
     name: string
+    shortLink?: string | null
     background?: string | null
+    backgroundImage?: string | null
+    backgroundBrightness?: $Enums.BoardBackgroundBrightness
+    backgroundBottomColor?: string | null
+    backgroundTopColor?: string | null
+    backgroundColor?: string | null
+    starred?: boolean
     closed?: boolean
     userId: string
     workspaceId: string
@@ -17847,7 +18196,14 @@ export namespace Prisma {
   export type BoardUpdateWithoutCardsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    shortLink?: NullableStringFieldUpdateOperationsInput | string | null
     background?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundImage?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundBrightness?: EnumBoardBackgroundBrightnessFieldUpdateOperationsInput | $Enums.BoardBackgroundBrightness
+    backgroundBottomColor?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundTopColor?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    starred?: BoolFieldUpdateOperationsInput | boolean
     closed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17860,7 +18216,14 @@ export namespace Prisma {
   export type BoardUncheckedUpdateWithoutCardsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    shortLink?: NullableStringFieldUpdateOperationsInput | string | null
     background?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundImage?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundBrightness?: EnumBoardBackgroundBrightnessFieldUpdateOperationsInput | $Enums.BoardBackgroundBrightness
+    backgroundBottomColor?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundTopColor?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    starred?: BoolFieldUpdateOperationsInput | boolean
     closed?: BoolFieldUpdateOperationsInput | boolean
     userId?: StringFieldUpdateOperationsInput | string
     workspaceId?: StringFieldUpdateOperationsInput | string
@@ -17988,7 +18351,14 @@ export namespace Prisma {
   export type BoardCreateWithoutLabelsInput = {
     id?: string
     name: string
+    shortLink?: string | null
     background?: string | null
+    backgroundImage?: string | null
+    backgroundBrightness?: $Enums.BoardBackgroundBrightness
+    backgroundBottomColor?: string | null
+    backgroundTopColor?: string | null
+    backgroundColor?: string | null
+    starred?: boolean
     closed?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -18001,7 +18371,14 @@ export namespace Prisma {
   export type BoardUncheckedCreateWithoutLabelsInput = {
     id?: string
     name: string
+    shortLink?: string | null
     background?: string | null
+    backgroundImage?: string | null
+    backgroundBrightness?: $Enums.BoardBackgroundBrightness
+    backgroundBottomColor?: string | null
+    backgroundTopColor?: string | null
+    backgroundColor?: string | null
+    starred?: boolean
     closed?: boolean
     userId: string
     workspaceId: string
@@ -18069,7 +18446,14 @@ export namespace Prisma {
   export type BoardUpdateWithoutLabelsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    shortLink?: NullableStringFieldUpdateOperationsInput | string | null
     background?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundImage?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundBrightness?: EnumBoardBackgroundBrightnessFieldUpdateOperationsInput | $Enums.BoardBackgroundBrightness
+    backgroundBottomColor?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundTopColor?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    starred?: BoolFieldUpdateOperationsInput | boolean
     closed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -18082,7 +18466,14 @@ export namespace Prisma {
   export type BoardUncheckedUpdateWithoutLabelsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    shortLink?: NullableStringFieldUpdateOperationsInput | string | null
     background?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundImage?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundBrightness?: EnumBoardBackgroundBrightnessFieldUpdateOperationsInput | $Enums.BoardBackgroundBrightness
+    backgroundBottomColor?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundTopColor?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    starred?: BoolFieldUpdateOperationsInput | boolean
     closed?: BoolFieldUpdateOperationsInput | boolean
     userId?: StringFieldUpdateOperationsInput | string
     workspaceId?: StringFieldUpdateOperationsInput | string
@@ -18610,7 +19001,14 @@ export namespace Prisma {
   export type BoardCreateManyUserInput = {
     id?: string
     name: string
+    shortLink?: string | null
     background?: string | null
+    backgroundImage?: string | null
+    backgroundBrightness?: $Enums.BoardBackgroundBrightness
+    backgroundBottomColor?: string | null
+    backgroundTopColor?: string | null
+    backgroundColor?: string | null
+    starred?: boolean
     closed?: boolean
     workspaceId: string
     createdAt?: Date | string
@@ -18658,7 +19056,14 @@ export namespace Prisma {
   export type BoardUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    shortLink?: NullableStringFieldUpdateOperationsInput | string | null
     background?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundImage?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundBrightness?: EnumBoardBackgroundBrightnessFieldUpdateOperationsInput | $Enums.BoardBackgroundBrightness
+    backgroundBottomColor?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundTopColor?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    starred?: BoolFieldUpdateOperationsInput | boolean
     closed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -18671,7 +19076,14 @@ export namespace Prisma {
   export type BoardUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    shortLink?: NullableStringFieldUpdateOperationsInput | string | null
     background?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundImage?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundBrightness?: EnumBoardBackgroundBrightnessFieldUpdateOperationsInput | $Enums.BoardBackgroundBrightness
+    backgroundBottomColor?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundTopColor?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    starred?: BoolFieldUpdateOperationsInput | boolean
     closed?: BoolFieldUpdateOperationsInput | boolean
     workspaceId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -18684,7 +19096,14 @@ export namespace Prisma {
   export type BoardUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    shortLink?: NullableStringFieldUpdateOperationsInput | string | null
     background?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundImage?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundBrightness?: EnumBoardBackgroundBrightnessFieldUpdateOperationsInput | $Enums.BoardBackgroundBrightness
+    backgroundBottomColor?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundTopColor?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    starred?: BoolFieldUpdateOperationsInput | boolean
     closed?: BoolFieldUpdateOperationsInput | boolean
     workspaceId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -18818,7 +19237,14 @@ export namespace Prisma {
   export type BoardCreateManyWorkspaceInput = {
     id?: string
     name: string
+    shortLink?: string | null
     background?: string | null
+    backgroundImage?: string | null
+    backgroundBrightness?: $Enums.BoardBackgroundBrightness
+    backgroundBottomColor?: string | null
+    backgroundTopColor?: string | null
+    backgroundColor?: string | null
+    starred?: boolean
     closed?: boolean
     userId: string
     createdAt?: Date | string
@@ -18828,7 +19254,14 @@ export namespace Prisma {
   export type BoardUpdateWithoutWorkspaceInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    shortLink?: NullableStringFieldUpdateOperationsInput | string | null
     background?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundImage?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundBrightness?: EnumBoardBackgroundBrightnessFieldUpdateOperationsInput | $Enums.BoardBackgroundBrightness
+    backgroundBottomColor?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundTopColor?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    starred?: BoolFieldUpdateOperationsInput | boolean
     closed?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -18841,7 +19274,14 @@ export namespace Prisma {
   export type BoardUncheckedUpdateWithoutWorkspaceInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    shortLink?: NullableStringFieldUpdateOperationsInput | string | null
     background?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundImage?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundBrightness?: EnumBoardBackgroundBrightnessFieldUpdateOperationsInput | $Enums.BoardBackgroundBrightness
+    backgroundBottomColor?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundTopColor?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    starred?: BoolFieldUpdateOperationsInput | boolean
     closed?: BoolFieldUpdateOperationsInput | boolean
     userId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -18854,7 +19294,14 @@ export namespace Prisma {
   export type BoardUncheckedUpdateManyWithoutWorkspaceInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    shortLink?: NullableStringFieldUpdateOperationsInput | string | null
     background?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundImage?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundBrightness?: EnumBoardBackgroundBrightnessFieldUpdateOperationsInput | $Enums.BoardBackgroundBrightness
+    backgroundBottomColor?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundTopColor?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    starred?: BoolFieldUpdateOperationsInput | boolean
     closed?: BoolFieldUpdateOperationsInput | boolean
     userId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string

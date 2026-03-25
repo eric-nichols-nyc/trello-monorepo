@@ -143,7 +143,14 @@ exports.Prisma.WorkspaceScalarFieldEnum = {
 exports.Prisma.BoardScalarFieldEnum = {
   id: 'id',
   name: 'name',
+  shortLink: 'shortLink',
   background: 'background',
+  backgroundImage: 'backgroundImage',
+  backgroundBrightness: 'backgroundBrightness',
+  backgroundBottomColor: 'backgroundBottomColor',
+  backgroundTopColor: 'backgroundTopColor',
+  backgroundColor: 'backgroundColor',
+  starred: 'starred',
   closed: 'closed',
   userId: 'userId',
   workspaceId: 'workspaceId',
@@ -230,7 +237,10 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
-
+exports.BoardBackgroundBrightness = exports.$Enums.BoardBackgroundBrightness = {
+  light: 'light',
+  dark: 'dark'
+};
 
 exports.Prisma.ModelName = {
   User: 'User',
