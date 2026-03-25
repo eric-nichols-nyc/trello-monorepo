@@ -1,8 +1,13 @@
-import { Catch, ArgumentsHost, HttpStatus, HttpException } from "@nestjs/common";
+import {
+  Catch,
+  HttpException,
+  HttpStatus,
+  type ArgumentsHost,
+} from "@nestjs/common";
 import { BaseExceptionFilter } from "@nestjs/core";
-import { Request, Response } from 'express' 
+import type { Request, Response } from "express";
 import { MyLoggerService } from "./my-logger/my-logger.service";
-import { PrismaClientValidationError } from "@prisma/client/runtime/library";
+import { Prisma } from "../generated/prisma/client";
 
 type MyResponseObj = {
     statusCode: number,
@@ -31,9 +36,14 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
         if (exception instanceof HttpException){
                 myResponseObj.statusCode = exception.getStatus()
                 myResponseObj.response = exception.getResponse()
-        } else if (exception instanceof PrismaClientValidationError){ 
-                myResponseObj.statusCode = 422
-                myResponseObj.response = exception.message.replaceAll(/\n/g, ' ')
+        } else if (exception instanceof Prisma.PrismaClientValidationError) {
+                const validationError: Prisma.PrismaClientValidationError =
+                    exception;
+                myResponseObj.statusCode = 422;
+                myResponseObj.response = validationError.message.replaceAll(
+                    /\n/g,
+                    " ",
+                );
         } else {
             myResponseObj.statusCode = HttpStatus.INTERNAL_SERVER_ERROR
             myResponseObj.response = 'Internal Server Error'

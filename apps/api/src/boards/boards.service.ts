@@ -12,7 +12,16 @@ export class BoardsService {
     return this.prisma.board.findMany({
       where: { userId },
       orderBy: { createdAt: 'desc' },
-      include: { lists: { orderBy: { pos: 'asc' } } },
+      select: {
+        id: true,
+        name: true,
+        background: true,
+        closed: true,
+        userId: true,
+        workspaceId: true,
+        createdAt: true,
+        updatedAt: true,
+      },
     });
   }
 
