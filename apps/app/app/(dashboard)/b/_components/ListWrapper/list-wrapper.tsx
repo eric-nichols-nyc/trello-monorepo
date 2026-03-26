@@ -10,9 +10,16 @@ import { ListHeader } from "./list-header";
 type ListWrapperProps = {
   id: string;
   title: string;
+  cardIds: string[];
+  columnDroppableId: string;
 };
 
-export const ListWrapper = ({ id, title }: ListWrapperProps) => {
+export const ListWrapper = ({
+  id,
+  title,
+  cardIds,
+  columnDroppableId,
+}: ListWrapperProps) => {
   const {
     attributes,
     listeners,
@@ -36,7 +43,11 @@ export const ListWrapper = ({ id, title }: ListWrapperProps) => {
     >
       <div className="flex flex-col gap-2 rounded-lg bg-[rgb(16,18,4)]">
         <ListHeader title={title} dragHandleProps={listeners} />
-        <ListCards listId={id} />
+        <ListCards
+          listId={id}
+          cardIds={cardIds}
+          columnDroppableId={columnDroppableId}
+        />
         <ListFooter />
       </div>
     </li>
