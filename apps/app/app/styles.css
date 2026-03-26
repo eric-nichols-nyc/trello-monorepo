@@ -7,5 +7,6 @@ body {
 }
 
 body {
+  position: relative;
   overflow: hidden;
 }
