@@ -1,0 +1,373 @@
+{
+  "id": "07762d3a-eaa5-4e37-9f26-621b111167d6",
+  "name": "My new board",
+  "shortLink": "9535cf2k",
+  "background": null,
+  "backgroundImage": null,
+  "backgroundBrightness": "light",
+  "backgroundBottomColor": null,
+  "backgroundTopColor": null,
+  "backgroundColor": null,
+  "starred": false,
+  "closed": false,
+  "userId": "abb4736b-2794-4228-bc13-ca12a1988bcd",
+  "workspaceId": "81ab5ac4-874e-4150-a9e5-59698dab6fcc",
+  "createdAt": "2026-03-24T00:59:39.809Z",
+  "updatedAt": "2026-03-24T00:59:39.809Z",
+  "lists": [
+    {
+      "id": "a1111111-1111-4111-8111-111111111111",
+      "name": "To do",
+      "pos": 1000,
+      "closed": false,
+      "boardId": "07762d3a-eaa5-4e37-9f26-621b111167d6",
+      "createdAt": "2026-03-24T01:00:00.000Z",
+      "updatedAt": "2026-03-24T01:00:00.000Z",
+      "cards": [
+        {
+          "id": "b1111111-1111-4111-8111-111111111111",
+          "name": "Wire dashboard to API",
+          "description": "GET /api/boards and board detail; handle loading + errors.",
+          "pos": 1000,
+          "closed": false,
+          "dueDate": "2026-04-01T17:00:00.000Z",
+          "listId": "a1111111-1111-4111-8111-111111111111",
+          "boardId": "07762d3a-eaa5-4e37-9f26-621b111167d6",
+          "assigneeId": null,
+          "createdAt": "2026-03-24T01:01:00.000Z",
+          "updatedAt": "2026-03-24T01:01:00.000Z",
+          "comments": [
+            {
+              "id": "c1111111-1111-4111-8111-111111111111",
+              "text": "Use server component for first paint; token via Clerk.",
+              "cardId": "b1111111-1111-4111-8111-111111111111",
+              "authorId": "abb4736b-2794-4228-bc13-ca12a1988bcd",
+              "createdAt": "2026-03-24T01:02:00.000Z",
+              "updatedAt": "2026-03-24T01:02:00.000Z",
+              "author": {
+                "id": "abb4736b-2794-4228-bc13-ca12a1988bcd",
+                "email": "you@example.com",
+                "firstName": "Alex",
+                "lastName": "Rivera",
+                "imageUrl": null
+              }
+            },
+            {
+              "id": "c1111111-2222-4111-8111-111111111111",
+              "text": "Remember API_URL points at Nest, not Next.",
+              "cardId": "b1111111-1111-4111-8111-111111111111",
+              "authorId": "abb4736b-2794-4228-bc13-ca12a1988bcd",
+              "createdAt": "2026-03-24T01:03:00.000Z",
+              "updatedAt": "2026-03-24T01:03:00.000Z",
+              "author": {
+                "id": "abb4736b-2794-4228-bc13-ca12a1988bcd",
+                "email": "you@example.com",
+                "firstName": "Alex",
+                "lastName": "Rivera",
+                "imageUrl": null
+              }
+            }
+          ],
+          "checklists": [
+            {
+              "id": "d1111111-1111-4111-8111-111111111111",
+              "name": "Implementation",
+              "pos": 1000,
+              "cardId": "b1111111-1111-4111-8111-111111111111",
+              "items": [
+                {
+                  "id": "e1111111-1111-4111-8111-111111111111",
+                  "name": "Types for board payload",
+                  "pos": 1000,
+                  "completed": true,
+                  "checklistId": "d1111111-1111-4111-8111-111111111111"
+                },
+                {
+                  "id": "e1111111-2222-4111-8111-111111111111",
+                  "name": "Empty + error states",
+                  "pos": 2000,
+                  "completed": false,
+                  "checklistId": "d1111111-1111-4111-8111-111111111111"
+                },
+                {
+                  "id": "e1111111-3333-4111-8111-111111111111",
+                  "name": "TanStack Query cache keys",
+                  "pos": 3000,
+                  "completed": false,
+                  "checklistId": "d1111111-1111-4111-8111-111111111111"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "b2222222-2222-4222-8222-222222222222",
+          "name": "Board background & tiles",
+          "description": "Gradients, shortLink in URL, starred state.",
+          "pos": 2000,
+          "closed": false,
+          "dueDate": null,
+          "listId": "a1111111-1111-4111-8111-111111111111",
+          "boardId": "07762d3a-eaa5-4e37-9f26-621b111167d6",
+          "assigneeId": null,
+          "createdAt": "2026-03-24T01:04:00.000Z",
+          "updatedAt": "2026-03-24T01:04:00.000Z",
+          "comments": [
+            {
+              "id": "c2222222-1111-4111-8111-111111111111",
+              "text": "Match Trello tile aspect ratio on home grid.",
+              "cardId": "b2222222-2222-4222-8222-222222222222",
+              "authorId": "abb4736b-2794-4228-bc13-ca12a1988bcd",
+              "createdAt": "2026-03-24T01:05:00.000Z",
+              "updatedAt": "2026-03-24T01:05:00.000Z",
+              "author": {
+                "id": "abb4736b-2794-4228-bc13-ca12a1988bcd",
+                "email": "you@example.com",
+                "firstName": "Alex",
+                "lastName": "Rivera",
+                "imageUrl": null
+              }
+            }
+          ],
+          "checklists": [
+            {
+              "id": "d2222222-1111-4111-8111-111111111111",
+              "name": "QA",
+              "pos": 1000,
+              "cardId": "b2222222-2222-4222-8222-222222222222",
+              "items": [
+                {
+                  "id": "e2222222-1111-4111-8111-111111111111",
+                  "name": "Light / dark brightness toggle",
+                  "pos": 1000,
+                  "completed": false,
+                  "checklistId": "d2222222-1111-4111-8111-111111111111"
+                },
+                {
+                  "id": "e2222222-2222-4111-8111-111111111111",
+                  "name": "Keyboard focus on tiles",
+                  "pos": 2000,
+                  "completed": false,
+                  "checklistId": "d2222222-1111-4111-8111-111111111111"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "b3333333-3333-4333-8333-333333333333",
+          "name": "Invite flow copy",
+          "description": null,
+          "pos": 3000,
+          "closed": false,
+          "dueDate": null,
+          "listId": "a1111111-1111-4111-8111-111111111111",
+          "boardId": "07762d3a-eaa5-4e37-9f26-621b111167d6",
+          "assigneeId": null,
+          "createdAt": "2026-03-24T01:06:00.000Z",
+          "updatedAt": "2026-03-24T01:06:00.000Z",
+          "comments": [],
+          "checklists": []
+        }
+      ]
+    },
+    {
+      "id": "a2222222-2222-4222-8222-222222222222",
+      "name": "Doing",
+      "pos": 2000,
+      "closed": false,
+      "boardId": "07762d3a-eaa5-4e37-9f26-621b111167d6",
+      "createdAt": "2026-03-24T01:00:00.000Z",
+      "updatedAt": "2026-03-24T01:00:00.000Z",
+      "cards": [
+        {
+          "id": "b4444444-4444-4444-8444-444444444444",
+          "name": "Clerk session → API JWT",
+          "description": "Ensure getToken() template matches what Nest validates.",
+          "pos": 1000,
+          "closed": false,
+          "dueDate": "2026-03-26T12:00:00.000Z",
+          "listId": "a2222222-2222-4222-8222-222222222222",
+          "boardId": "07762d3a-eaa5-4e37-9f26-621b111167d6",
+          "assigneeId": "abb4736b-2794-4228-bc13-ca12a1988bcd",
+          "createdAt": "2026-03-24T01:07:00.000Z",
+          "updatedAt": "2026-03-24T01:07:00.000Z",
+          "comments": [
+            {
+              "id": "c4444444-1111-4111-8111-111111111111",
+              "text": "P2002 on duplicate shortLink — surface 409 in UI.",
+              "cardId": "b4444444-4444-4444-8444-444444444444",
+              "authorId": "abb4736b-2794-4228-bc13-ca12a1988bcd",
+              "createdAt": "2026-03-24T01:08:00.000Z",
+              "updatedAt": "2026-03-24T01:08:00.000Z",
+              "author": {
+                "id": "abb4736b-2794-4228-bc13-ca12a1988bcd",
+                "email": "you@example.com",
+                "firstName": "Alex",
+                "lastName": "Rivera",
+                "imageUrl": null
+              }
+            },
+            {
+              "id": "c4444444-2222-4111-8111-111111111111",
+              "text": "Done: tested with user_3Ae… in .env.local.",
+              "cardId": "b4444444-4444-4444-8444-444444444444",
+              "authorId": "abb4736b-2794-4228-bc13-ca12a1988bcd",
+              "createdAt": "2026-03-24T01:09:00.000Z",
+              "updatedAt": "2026-03-24T01:09:00.000Z",
+              "author": {
+                "id": "abb4736b-2794-4228-bc13-ca12a1988bcd",
+                "email": "you@example.com",
+                "firstName": "Alex",
+                "lastName": "Rivera",
+                "imageUrl": null
+              }
+            }
+          ],
+          "checklists": [
+            {
+              "id": "d4444444-1111-4111-8111-111111111111",
+              "name": "Deploy checklist",
+              "pos": 1000,
+              "cardId": "b4444444-4444-4444-8444-444444444444",
+              "items": [
+                {
+                  "id": "e4444444-1111-4111-8111-111111111111",
+                  "name": "Env: CLERK_SECRET_KEY on API",
+                  "pos": 1000,
+                  "completed": true,
+                  "checklistId": "d4444444-1111-4111-8111-111111111111"
+                },
+                {
+                  "id": "item-4444-2222-4111-8111-111111111111",
+                  "name": "CORS allows app origin",
+                  "pos": 2000,
+                  "completed": true,
+                  "checklistId": "d4444444-1111-4111-8111-111111111111"
+                },
+                {
+                  "id": "e4444444-3333-4111-8111-111111111111",
+                  "name": "Smoke test POST /api/boards",
+                  "pos": 3000,
+                  "completed": false,
+                  "checklistId": "d4444444-1111-4111-8111-111111111111"
+                }
+              ]
+            },
+            {
+              "id": "d4444444-2222-4111-8111-111111111111",
+              "name": "Docs",
+              "pos": 2000,
+              "cardId": "b4444444-4444-4444-8444-444444444444",
+              "items": [
+                {
+                  "id": "e4444444-aa11-4111-8111-111111111111",
+                  "name": "README: API_URL for Next",
+                  "pos": 1000,
+                  "completed": false,
+                  "checklistId": "d4444444-2222-4111-8111-111111111111"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "b5555555-5555-4555-8555-555555555555",
+          "name": "E2E: sign-in → dashboard",
+          "description": "Playwright happy path.",
+          "pos": 2000,
+          "closed": false,
+          "dueDate": null,
+          "listId": "a2222222-2222-4222-8222-222222222222",
+          "boardId": "07762d3a-eaa5-4e37-9f26-621b111167d6",
+          "assigneeId": null,
+          "createdAt": "2026-03-24T01:10:00.000Z",
+          "updatedAt": "2026-03-24T01:10:00.000Z",
+          "comments": [
+            {
+              "id": "c5555555-1111-4111-8111-111111111111",
+              "text": "Skip in CI until test Clerk user exists.",
+              "cardId": "b5555555-5555-4555-8555-555555555555",
+              "authorId": "abb4736b-2794-4228-bc13-ca12a1988bcd",
+              "createdAt": "2026-03-24T01:11:00.000Z",
+              "updatedAt": "2026-03-24T01:11:00.000Z",
+              "author": {
+                "id": "abb4736b-2794-4228-bc13-ca12a1988bcd",
+                "email": "you@example.com",
+                "firstName": "Alex",
+                "lastName": "Rivera",
+                "imageUrl": null
+              }
+            }
+          ],
+          "checklists": []
+        }
+      ]
+    },
+    {
+      "id": "a3333333-3333-4333-8333-333333333333",
+      "name": "Done",
+      "pos": 3000,
+      "closed": false,
+      "boardId": "07762d3a-eaa5-4e37-9f26-621b111167d6",
+      "createdAt": "2026-03-24T01:00:00.000Z",
+      "updatedAt": "2026-03-24T01:00:00.000Z",
+      "cards": [
+        {
+          "id": "b6666666-6666-4666-8666-666666666666",
+          "name": "Monorepo pnpm dev scripts",
+          "description": "Document running api on 3000 and app on 3005.",
+          "pos": 1000,
+          "closed": false,
+          "dueDate": null,
+          "listId": "a3333333-3333-4333-8333-333333333333",
+          "boardId": "07762d3a-eaa5-4e37-9f26-621b111167d6",
+          "assigneeId": null,
+          "createdAt": "2026-03-24T01:12:00.000Z",
+          "updatedAt": "2026-03-24T01:12:00.000Z",
+          "comments": [
+            {
+              "id": "c6666666-1111-4111-8111-111111111111",
+              "text": "Merged to main.",
+              "cardId": "b6666666-6666-4666-8666-666666666666",
+              "authorId": "abb4736b-2794-4228-bc13-ca12a1988bcd",
+              "createdAt": "2026-03-24T01:13:00.000Z",
+              "updatedAt": "2026-03-24T01:13:00.000Z",
+              "author": {
+                "id": "abb4736b-2794-4228-bc13-ca12a1988bcd",
+                "email": "you@example.com",
+                "firstName": "Alex",
+                "lastName": "Rivera",
+                "imageUrl": null
+              }
+            }
+          ],
+          "checklists": [
+            {
+              "id": "d6666666-1111-4111-8111-111111111111",
+              "name": "Retro",
+              "pos": 1000,
+              "cardId": "b6666666-6666-4666-8666-666666666666",
+              "items": [
+                {
+                  "id": "e6666666-1111-4111-8111-111111111111",
+                  "name": "What went well",
+                  "pos": 1000,
+                  "completed": true,
+                  "checklistId": "d6666666-1111-4111-8111-111111111111"
+                },
+                {
+                  "id": "e6666666-2222-4111-8111-111111111111",
+                  "name": "What to improve",
+                  "pos": 2000,
+                  "completed": true,
+                  "checklistId": "d6666666-1111-4111-8111-111111111111"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

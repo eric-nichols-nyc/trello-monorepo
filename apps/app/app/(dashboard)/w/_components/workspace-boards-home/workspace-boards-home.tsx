@@ -1,0 +1,51 @@
+import { CircleUser } from "lucide-react";
+import { BoardTile } from "../board-tile/board-tile";
+import { WorkspaceHeader } from "../workspace-header/workspace-header";
+
+type WorkspaceBoardsHomeProperties = {
+  readonly boards: readonly unknown[];
+  readonly heading?: string;
+};
+
+const getBoardKey = (board: unknown, index: number): string => {
+  if (
+    board !== null &&
+    typeof board === "object" &&
+    "id" in board &&
+    typeof (board as { id: unknown }).id === "string"
+  ) {
+    return (board as { id: string }).id;
+  }
+  return `board-${index}`;
+};
+
+export const WorkspaceBoardsHome = ({
+  boards,
+  heading = "Your boards",
+}: WorkspaceBoardsHomeProperties) => {
+  const list = [...boards];
+
+  return (
+    <section
+      aria-labelledby="workspace-boards-home-heading"
+      className="space-y-4"
+    >
+      <WorkspaceHeader
+        id="workspace-boards-home-heading"
+        leading={
+          <CircleUser
+            aria-hidden
+            className="size-5 shrink-0 text-muted-foreground"
+            strokeWidth={2}
+          />
+        }
+        title={heading}
+      />
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {list.map((board, index) => (
+          <BoardTile board={board} key={getBoardKey(board, index)} />
+        ))}
+      </div>
+    </section>
+  );
+};

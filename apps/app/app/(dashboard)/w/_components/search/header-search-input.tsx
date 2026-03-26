@@ -27,7 +27,7 @@ export const HeaderSearchInput = ({
     />
     <Input
       aria-label={ariaLabel ?? placeholder}
-      className={cn("h-9 pl-9", className)}
+      className={cn("h-9 border-chrome-divider pl-9", className)}
       placeholder={placeholder}
       type="search"
       {...properties}
