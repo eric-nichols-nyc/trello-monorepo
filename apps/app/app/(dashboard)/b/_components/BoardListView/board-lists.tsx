@@ -15,19 +15,10 @@ import {
   horizontalListSortingStrategy,
   sortableKeyboardCoordinates,
 } from "@dnd-kit/sortable";
-import { useState } from "react";
+import type { BoardDetail } from "@/queries/board-detail";
+import { useEffect, useState } from "react";
 
-import { listTitleFromId } from "../ListWrapper/list-title";
 import { ListWrapper } from "../ListWrapper/list-wrapper";
-
-const initialListIds = ["list-1", "list-2", "list-3", "list-4"];
-
-const initialCardsByList: Record<string, string[]> = {
-  "list-1": ["c-l1-1", "c-l1-2", "c-l1-3", "c-l1-4", "c-l1-5"],
-  "list-2": ["c-l2-1", "c-l2-2", "c-l2-3", "c-l2-4", "c-l2-5"],
-  "list-3": ["c-l3-1", "c-l3-2", "c-l3-3", "c-l3-4", "c-l3-5"],
-  "list-4": ["c-l4-1", "c-l4-2", "c-l4-3", "c-l4-4", "c-l4-5"],
-};
 
 const COLUMN_PREFIX = "column:";
 
@@ -60,15 +51,46 @@ function resolveOverListId(
   if (fromColumn) return fromColumn;
   const fromCard = findListContainingCard(cardsByList, listOrder, overId);
   if (fromCard) return fromCard;
-  // Pointer can hit the list column's sortable `li` instead of a card or column droppable
   if (listOrder.includes(overId)) return overId;
   return undefined;
 }
 
-export const BoardLists = () => {
-  const [listIds, setListIds] = useState(initialListIds);
-  const [cardsByList, setCardsByList] =
-    useState<Record<string, string[]>>(initialCardsByList);
+function boardToListState(board: BoardDetail) {
+  const sortedLists = [...board.lists].sort((a, b) => a.pos - b.pos);
+  const listIds = sortedLists.map((l) => l.id);
+  const cardsByList: Record<string, string[]> = {};
+  const listTitles: Record<string, string> = {};
+  const cardTitles: Record<string, string> = {};
+  for (const list of sortedLists) {
+    const cards = [...list.cards].sort((a, b) => a.pos - b.pos);
+    cardsByList[list.id] = cards.map((c) => c.id);
+    listTitles[list.id] = list.name;
+    for (const c of cards) {
+      cardTitles[c.id] = c.name;
+    }
+  }
+  return { listIds, cardsByList, listTitles, cardTitles };
+}
+
+type BoardListsProps = {
+  board: BoardDetail;
+};
+
+export const BoardLists = ({ board }: BoardListsProps) => {
+  const [listIds, setListIds] = useState<string[]>([]);
+  const [cardsByList, setCardsByList] = useState<Record<string, string[]>>(
+    {},
+  );
+  const [listTitles, setListTitles] = useState<Record<string, string>>({});
+  const [cardTitles, setCardTitles] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    const next = boardToListState(board);
+    setListIds(next.listIds);
+    setCardsByList(next.cardsByList);
+    setListTitles(next.listTitles);
+    setCardTitles(next.cardTitles);
+  }, [board]);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -88,7 +110,6 @@ export const BoardLists = () => {
 
     if (activeId === overId) return;
 
-    // Reorder lists (ids are only on the board list order)
     if (listIds.includes(activeId) && listIds.includes(overId)) {
       setListIds((items) => {
         const from = items.indexOf(activeId);
@@ -165,8 +186,9 @@ export const BoardLists = () => {
             <ListWrapper
               key={id}
               id={id}
-              title={listTitleFromId(id)}
+              title={listTitles[id] ?? "List"}
               cardIds={cardsByList[id] ?? []}
+              cardTitles={cardTitles}
               columnDroppableId={columnDroppableId(id)}
             />
           ))}

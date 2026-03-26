@@ -1,7 +1,7 @@
 import { Separator } from "@repo/design-system/components/ui/separator";
 import { WorkspaceBanner } from "./_components/workspace-banner/workspace-banner";
 import { WorkspaceBoardsHome } from "./_components/workspace-boards-home/workspace-boards-home";
-import { DUMMY_BOARDS } from "./Test Data/dummy-boards";
+import { DUMMY_BOARDS } from "@/data/dummy-boards";
 
 export default function DashboardPage() {
   return (

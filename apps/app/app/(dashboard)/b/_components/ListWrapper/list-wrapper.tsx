@@ -11,6 +11,7 @@ type ListWrapperProps = {
   id: string;
   title: string;
   cardIds: string[];
+  cardTitles: Record<string, string>;
   columnDroppableId: string;
 };
 
@@ -18,6 +19,7 @@ export const ListWrapper = ({
   id,
   title,
   cardIds,
+  cardTitles,
   columnDroppableId,
 }: ListWrapperProps) => {
   const {
@@ -46,6 +48,7 @@ export const ListWrapper = ({
         <ListCards
           listId={id}
           cardIds={cardIds}
+          cardTitles={cardTitles}
           columnDroppableId={columnDroppableId}
         />
         <ListFooter />

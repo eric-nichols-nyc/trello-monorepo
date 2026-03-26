@@ -1,18 +1,9 @@
-export function listCardTitleFromListId(
-  listId: string,
-  cardIndex: number,
-): string {
-  const listNum = listId.replace(/^list-/, "");
-  return `list ${listNum} c${cardIndex}`;
-}
-
 type ListCardTitleProps = {
-  listId: string;
-  cardIndex: number;
+  title: string;
 };
 
-export const ListCardTitle = ({ listId, cardIndex }: ListCardTitleProps) => (
-  <span className="min-w-0 truncate text-xs font-medium text-white/85">
-    {listCardTitleFromListId(listId, cardIndex)}
+export const ListCardTitle = ({ title }: ListCardTitleProps) => (
+  <span className="block min-w-0 truncate text-xs font-medium text-white/85">
+    {title}
   </span>
 );

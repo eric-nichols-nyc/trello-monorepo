@@ -1,5 +1,7 @@
-export const BoardName = () => (
-  <h1 className="font-bold text-foreground">
-    1-on-1 Meeting Agenda with a really really really really really long name
-  </h1>
+type BoardNameProps = {
+  name: string;
+};
+
+export const BoardName = ({ name }: BoardNameProps) => (
+  <h1 className="font-bold text-foreground">{name}</h1>
 );

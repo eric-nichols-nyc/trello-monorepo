@@ -1,10 +1,10 @@
-import { TrelloBoard } from "../_components/Board/trello-board";
+import { BoardPageContent } from "../_components/board-page-content";
 
 type BoardPageProperties = {
   params: Promise<{ id: string }>;
 };
 
 export default async function BoardPage({ params }: BoardPageProperties) {
-  await params;
-  return <TrelloBoard />;
+  const { id } = await params;
+  return <BoardPageContent boardId={id} />;
 }

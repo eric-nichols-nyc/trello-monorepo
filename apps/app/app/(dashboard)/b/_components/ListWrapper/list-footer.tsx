@@ -1,3 +1,7 @@
+import { CardQuickAdd } from "../CardQuickAdd/card-quick-add";
+
 export const ListFooter = () => (
-  <footer className="mx-[4px] h-[32px] pt-[8px] pr-[8px] pl-[8px]" />
+  <footer className="mx-[4px] min-h-0 px-2 pb-2 pt-2">
+    <CardQuickAdd />
+  </footer>
 );

@@ -8,12 +8,14 @@ import { ListCard } from "../ListCard/list-card";
 type ListCardsProps = {
   listId: string;
   cardIds: string[];
+  cardTitles: Record<string, string>;
   columnDroppableId: string;
 };
 
 export const ListCards = ({
   listId,
   cardIds,
+  cardTitles,
   columnDroppableId,
 }: ListCardsProps) => {
   const { setNodeRef } = useDroppable({ id: columnDroppableId });
@@ -24,12 +26,11 @@ export const ListCards = ({
         ref={setNodeRef}
         className="mx-[4px] my-0 flex min-h-[120px] list-none flex-col gap-2 p-0"
       >
-        {cardIds.map((cardId, index) => (
+        {cardIds.map((cardId) => (
           <ListCard
             key={cardId}
             cardId={cardId}
-            listId={listId}
-            cardIndex={index + 1}
+            title={cardTitles[cardId] ?? "Card"}
           />
         ))}
       </ol>
