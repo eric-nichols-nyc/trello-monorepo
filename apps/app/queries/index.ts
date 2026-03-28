@@ -18,4 +18,9 @@ export {
   type UpdateBoardMutationVariables,
   useUpdateBoard,
 } from "./use-update-board";
+export {
+  type UpdateListMutationVariables,
+  useUpdateList,
+} from "./use-update-list";
 export type { UpdateBoardPatchBody } from "@/lib/api/boards/patch-board-client";
+export type { UpdateListPatchBody } from "@/lib/api/lists/patch-list-client";

@@ -1,3 +1,5 @@
+import type { CardOrderingRow, ListOrderingRow } from "@repo/schemas";
+
 export type BoardCommentAuthor = {
   id: string;
   email: string;
@@ -32,14 +34,12 @@ export type BoardChecklist = {
   items: BoardChecklistItem[];
 };
 
-export type BoardCard = {
-  id: string;
+/** Card row from the API; ordering fields match Prisma `Card` and {@link CardOrderingRow}. */
+export type BoardCard = CardOrderingRow & {
   name: string;
   description: string | null;
-  pos: number;
   closed: boolean;
   dueDate: string | null;
-  listId: string;
   boardId: string;
   assigneeId: string | null;
   createdAt: string;
@@ -48,12 +48,10 @@ export type BoardCard = {
   checklists: BoardChecklist[];
 };
 
-export type BoardList = {
-  id: string;
+/** List column from the API; ordering fields match Prisma `List` and {@link ListOrderingRow}. */
+export type BoardList = ListOrderingRow & {
   name: string;
-  pos: number;
   closed: boolean;
-  boardId: string;
   createdAt: string;
   updatedAt: string;
   cards: BoardCard[];

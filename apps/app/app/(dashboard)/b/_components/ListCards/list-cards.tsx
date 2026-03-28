@@ -1,7 +1,10 @@
 "use client";
 
 import { useDroppable } from "@dnd-kit/core";
-import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 
 import { ListCard } from "../ListCard/list-card";
 
@@ -13,7 +16,7 @@ type ListCardsProps = {
 };
 
 export const ListCards = ({
-  listId,
+  listId: _listId,
   cardIds,
   cardTitles,
   columnDroppableId,
@@ -23,13 +26,14 @@ export const ListCards = ({
   return (
     <SortableContext items={cardIds} strategy={verticalListSortingStrategy}>
       <ol
-        ref={setNodeRef}
         className="mx-[4px] my-0 flex min-h-[120px] list-none flex-col gap-2 p-0"
+        ref={setNodeRef}
       >
-        {cardIds.map((cardId) => (
+        {cardIds.map((cardId, index) => (
           <ListCard
-            key={cardId}
             cardId={cardId}
+            key={cardId}
+            listPosition={index + 1}
             title={cardTitles[cardId] ?? "Card"}
           />
         ))}

@@ -6,14 +6,18 @@ import { Checkbox } from "@repo/design-system/components/ui/checkbox";
 import { cn } from "@repo/design-system/lib/utils";
 import { useState } from "react";
 
-import { ListCardTitle } from "./list-card-title";
+import {
+  LIST_CARD_SURFACE_CLASSNAME,
+  ListCardTitleArea,
+} from "./list-card-chrome";
 
 type ListCardProps = {
   cardId: string;
   title: string;
+  listPosition?: number;
 };
 
-export const ListCard = ({ cardId, title }: ListCardProps) => {
+export const ListCard = ({ cardId, title, listPosition }: ListCardProps) => {
   const [checked, setChecked] = useState(false);
 
   const {
@@ -54,7 +58,10 @@ export const ListCard = ({ cardId, title }: ListCardProps) => {
       {/* biome-ignore lint/a11y/noNoninteractiveElementInteractions: no semantic element fits card chrome + mouseleave */}
       {/* biome-ignore lint/a11y/noStaticElementInteractions: same */}
       <div
-        className="relative flex min-h-[45px] w-full min-w-0 flex-1 cursor-grab touch-none items-center overflow-hidden rounded-[8px] bg-[rgb(36,37,40)] px-3 py-2 active:cursor-grabbing"
+        className={cn(
+          LIST_CARD_SURFACE_CLASSNAME,
+          "cursor-grab touch-none active:cursor-grabbing"
+        )}
         onMouseLeave={handleMouseLeave}
       >
         <span
@@ -73,16 +80,15 @@ export const ListCard = ({ cardId, title }: ListCardProps) => {
             onCheckedChange={(value) => setChecked(value === true)}
           />
         </span>
-        <div
-          className={cn(
-            "relative z-2 min-w-0 flex-1 transition-transform duration-200 ease-out",
+        <ListCardTitleArea
+          className={
             checked
               ? "translate-x-7"
               : "translate-x-0 group-focus-within:translate-x-7 group-hover:translate-x-7"
-          )}
-        >
-          <ListCardTitle title={title} />
-        </div>
+          }
+          listPosition={listPosition}
+          title={title}
+        />
       </div>
     </li>
   );

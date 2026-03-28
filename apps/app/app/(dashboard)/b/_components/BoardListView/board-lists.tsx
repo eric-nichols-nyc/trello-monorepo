@@ -1,62 +1,38 @@
 "use client";
 
 import {
-  closestCorners,
-  DndContext,
-  type DragEndEvent,
+  CollisionPriority,
+  type DragEndEvent as DomDragEndHandler,
+  type DragOverEvent as DomDragOverHandler,
+} from "@dnd-kit/abstract";
+import { PointerActivationConstraints } from "@dnd-kit/dom";
+import { move } from "@dnd-kit/helpers";
+import {
+  DragDropProvider,
   DragOverlay,
-  type DragStartEvent,
   KeyboardSensor,
   PointerSensor,
-  useSensor,
-  useSensors,
-} from "@dnd-kit/core";
-import {
-  arrayMove,
-  horizontalListSortingStrategy,
-  SortableContext,
-  sortableKeyboardCoordinates,
-} from "@dnd-kit/sortable";
-import { useEffect, useState } from "react";
+} from "@dnd-kit/react";
+import { useSortable } from "@dnd-kit/react/sortable";
+import { Checkbox } from "@repo/design-system/components/ui/checkbox";
+import { cn } from "@repo/design-system/lib/utils";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { suggestedListPositionsForOrder } from "@/lib/board/list-column-pos";
+import { useUpdateList } from "@/queries/use-update-list";
 import type { BoardDetail } from "@/types/board-detail";
+import {
+  LIST_CARD_SURFACE_CLASSNAME,
+  ListCardChrome,
+  ListCardTitleArea,
+} from "../ListCard/list-card-chrome";
+import { ListFooter } from "../ListWrapper/list-footer";
+import { ListHeader } from "../ListWrapper/list-header";
+import { ListColumnDragPreview } from "./list-column-drag-preview";
 
-import { ListWrapper } from "../ListWrapper/list-wrapper";
+type BoardDragOverEvent = Parameters<DomDragOverHandler>[0];
+type BoardDragEndEvent = Parameters<DomDragEndHandler>[0];
 
-const COLUMN_PREFIX = "column:";
-
-function columnDroppableId(listId: string) {
-  return `${COLUMN_PREFIX}${listId}`;
-}
-
-function listIdFromColumnDroppableId(id: string): string | undefined {
-  if (!id.startsWith(COLUMN_PREFIX)) return;
-  return id.slice(COLUMN_PREFIX.length);
-}
-
-function findListContainingCard(
-  cardsByList: Record<string, string[]>,
-  listOrder: string[],
-  cardId: string
-): string | undefined {
-  for (const listId of listOrder) {
-    if (cardsByList[listId]?.includes(cardId)) return listId;
-  }
-  return;
-}
-
-function resolveOverListId(
-  cardsByList: Record<string, string[]>,
-  listOrder: string[],
-  overId: string
-): string | undefined {
-  const fromColumn = listIdFromColumnDroppableId(overId);
-  if (fromColumn) return fromColumn;
-  const fromCard = findListContainingCard(cardsByList, listOrder, overId);
-  if (fromCard) return fromCard;
-  if (listOrder.includes(overId)) return overId;
-  return;
-}
-
+/** Local drag state: list and card order derived from `board`, sorted by `pos`. */
 function boardToListState(board: BoardDetail) {
   const sortedLists = [...board.lists].sort((a, b) => a.pos - b.pos);
   const listIds = sortedLists.map((l) => l.id);
@@ -74,188 +50,397 @@ function boardToListState(board: BoardDetail) {
   return { listIds, cardsByList, listTitles, cardTitles };
 }
 
+/** Stored `pos` per list id — input to {@link suggestedListPositionsForOrder}. */
+function listPosMapFromBoard(board: BoardDetail): Record<string, number> {
+  const m: Record<string, number> = {};
+  for (const l of board.lists) {
+    m[l.id] = l.pos;
+  }
+  return m;
+}
+
+/** True if column id sequences differ (avoids no-op PATCH after drag release). */
+function listColumnOrderChanged(before: string[], after: string[]): boolean {
+  if (before.length !== after.length) {
+    return true;
+  }
+  for (let i = 0; i < before.length; i++) {
+    if (before[i] !== after[i]) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function boardStructureFingerprint(board: BoardDetail): string {
+  const lists = [...board.lists].sort((a, b) => a.pos - b.pos);
+  return lists
+    .map((l) => {
+      const cards = [...l.cards].sort((a, b) => a.pos - b.pos);
+      const cardPart = cards.map((c) => `${c.id}\t${c.name}`).join("\n");
+      return `${l.id}\t${l.name}\n${cardPart}`;
+    })
+    .join("\n---\n");
+}
+
+type BoardCardItemProps = {
+  cardId: string;
+  columnId: string;
+  index: number;
+  title: string;
+};
+
+const BoardCardItem = memo(function BoardCardRow({
+  cardId,
+  columnId,
+  index,
+  title,
+}: BoardCardItemProps) {
+  const [checked, setChecked] = useState(false);
+  const { ref, targetRef, handleRef, isDragging } = useSortable({
+    id: cardId,
+    index,
+    group: columnId,
+    type: "item",
+    accept: "item",
+    feedback: "clone",
+  });
+
+  const setLiRef = useCallback(
+    (node: HTMLLIElement | null) => {
+      ref(node);
+      targetRef(node);
+    },
+    [ref, targetRef]
+  );
+
+  const handleMouseLeave = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (checked) {
+      return;
+    }
+    const active = document.activeElement;
+    if (active instanceof HTMLElement && event.currentTarget.contains(active)) {
+      active.blur();
+    }
+  };
+
+  return (
+    <li
+      className={cn(
+        "group relative flex list-none",
+        isDragging ? "opacity-0" : ""
+      )}
+      ref={setLiRef}
+    >
+      {/* biome-ignore lint/a11y/noNoninteractiveElementInteractions: card chrome */}
+      {/* biome-ignore lint/a11y/noStaticElementInteractions: same */}
+      <div
+        className={cn(
+          LIST_CARD_SURFACE_CLASSNAME,
+          "cursor-grab touch-none active:cursor-grabbing"
+        )}
+        onMouseLeave={handleMouseLeave}
+        ref={handleRef}
+      >
+        <span
+          className={cn(
+            "-translate-y-1/2 absolute top-1/2 left-3 z-1 transition-opacity duration-150",
+            checked
+              ? "pointer-events-auto opacity-100"
+              : "pointer-events-none opacity-0 group-focus-within:pointer-events-auto group-focus-within:opacity-100 group-hover:pointer-events-auto group-hover:opacity-100"
+          )}
+          onPointerDown={(event) => event.stopPropagation()}
+        >
+          <Checkbox
+            aria-label={`Mark card complete: ${title}`}
+            checked={checked}
+            className="size-5 rounded-full border-white/35 bg-transparent data-[state=checked]:border-emerald-500 data-[state=checked]:bg-emerald-600 [&_[data-slot=checkbox-indicator]_svg]:size-[18px]"
+            onCheckedChange={(value) => setChecked(value === true)}
+          />
+        </span>
+        <ListCardTitleArea
+          className={
+            checked
+              ? "translate-x-7"
+              : "translate-x-0 group-focus-within:translate-x-7 group-hover:translate-x-7"
+          }
+          listPosition={index + 1}
+          title={title}
+        />
+      </div>
+    </li>
+  );
+});
+
+type BoardColumnProps = {
+  boardKey: string;
+  columnIndex: number;
+  listId: string;
+  title: string;
+  cardIds: string[];
+  cardTitles: Record<string, string>;
+  /** Optional header debug: suggested vs server `pos` for this column. */
+  listPosDebug?: { suggested: number; stored: number };
+};
+
+const BoardColumn = memo(function BoardColumnFrame({
+  boardKey,
+  columnIndex,
+  listId,
+  title,
+  cardIds,
+  cardTitles,
+  listPosDebug,
+}: BoardColumnProps) {
+  const { ref, targetRef, handleRef, isDragging } = useSortable({
+    id: listId,
+    index: columnIndex,
+    type: "column",
+    accept: ["column", "item"],
+    collisionPriority: CollisionPriority.Low,
+  });
+
+  const setColRef = useCallback(
+    (node: HTMLLIElement | null) => {
+      ref(node);
+      targetRef(node);
+    },
+    [ref, targetRef]
+  );
+
+  return (
+    <li
+      className={cn("w-[270px] shrink-0", isDragging ? "opacity-0" : "")}
+      ref={setColRef}
+    >
+      <div className="flex flex-col gap-2 rounded-lg bg-[rgb(16,18,4)]">
+        <ListHeader
+          dragHandleRef={handleRef}
+          listPosDebug={listPosDebug}
+          title={title}
+        />
+        <ol className="mx-[4px] my-0 flex min-h-[120px] list-none flex-col gap-2 p-0">
+          {cardIds.map((cardId, index) => (
+            <BoardCardItem
+              cardId={cardId}
+              columnId={listId}
+              index={index}
+              key={cardId}
+              title={cardTitles[cardId] ?? "Card"}
+            />
+          ))}
+        </ol>
+        <ListFooter boardKey={boardKey} listId={listId} />
+      </div>
+    </li>
+  );
+});
+
 type BoardListsProps = {
   board: BoardDetail;
   boardKey: string;
 };
 
-function BoardDragOverlayPreview({
-  activeDragId,
-  listIds,
-  listTitles,
-  cardTitles,
-}: {
-  activeDragId: string;
-  listIds: string[];
-  listTitles: Record<string, string>;
-  cardTitles: Record<string, string>;
-}) {
-  const isListColumn = listIds.includes(activeDragId);
-
-  if (isListColumn) {
-    return (
-      <div className="pointer-events-none w-[270px] shrink-0 cursor-grabbing">
-        <div className="flex flex-col gap-2 rounded-lg bg-[rgb(16,18,4)] shadow-lg ring-2 ring-white/25">
-          <div className="flex items-center px-3 py-2 font-semibold text-sm text-white/95">
-            {listTitles[activeDragId] ?? "List"}
-          </div>
-          <div className="mx-[4px] mb-2 min-h-12 rounded-md bg-white/5" />
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="pointer-events-none w-[262px] max-w-[calc(270px-8px)] cursor-grabbing">
-      <div className="flex min-h-[45px] items-center overflow-hidden rounded-[8px] bg-[rgb(36,37,40)] px-3 py-2 shadow-lg ring-2 ring-white/20">
-        <span className="min-w-0 truncate text-sm text-white/95">
-          {cardTitles[activeDragId] ?? "Card"}
-        </span>
-      </div>
-    </div>
-  );
-}
-
 /**
- * Reads `board.lists` / cards from props (ultimately from `useBoardDetail` in
- * `BoardPageContent`). Local state mirrors that for drag-and-drop only.
+ * Nested sortable board (columns + cards) with `@dnd-kit/react` + `move()` on
+ * `onDragOver`. Local state mirrors `board` until the server changes; column
+ * reorder persists via `useUpdateList` on successful column drag (see `handleDragEnd`).
+ *
+ * Refs (`listIdsRef`, `boardRef`) supply latest order and stored positions inside
+ * drag callbacks, which close over stale React state otherwise.
  */
 export const BoardLists = ({ board, boardKey }: BoardListsProps) => {
+  /** Persists column `pos` after drag; optimistic updates use the same `boardKey`. */
+  const { mutate: patchList } = useUpdateList();
+
   const [listIds, setListIds] = useState<string[]>([]);
   const [cardsByList, setCardsByList] = useState<Record<string, string[]>>({});
   const [listTitles, setListTitles] = useState<Record<string, string>>({});
   const [cardTitles, setCardTitles] = useState<Record<string, string>>({});
-  const [activeDragId, setActiveDragId] = useState<string | null>(null);
 
+  const listIdsRef = useRef(listIds);
+  const cardsByListRef = useRef(cardsByList);
+  listIdsRef.current = listIds;
+  cardsByListRef.current = cardsByList;
+
+  const boardRef = useRef(board);
+  boardRef.current = board;
+
+  /** Captured at drag start; used to cancel column/card moves or to detect column reorder. */
+  const snapshotRef = useRef<{
+    listIds: string[];
+    cardsByList: Record<string, string[]>;
+  } | null>(null);
+
+  const structureFingerprint = boardStructureFingerprint(board);
+
+  const listPosById = useMemo(() => {
+    const m: Record<string, number> = {};
+    for (const l of board.lists) {
+      m[l.id] = l.pos;
+    }
+    return m;
+  }, [board]);
+
+  const suggestedListPosById = useMemo(
+    () => suggestedListPositionsForOrder(listIds, listPosById),
+    [listIds, listPosById]
+  );
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: fingerprint gate vs `board` identity
   useEffect(() => {
-    const next = boardToListState(board);
+    const next = boardToListState(boardRef.current);
     setListIds(next.listIds);
     setCardsByList(next.cardsByList);
     setListTitles(next.listTitles);
     setCardTitles(next.cardTitles);
-  }, [board]);
+  }, [structureFingerprint]);
 
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: { distance: 8 },
-    }),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
+  const sensors = useMemo(
+    () => [
+      PointerSensor.configure({
+        activationConstraints: [
+          new PointerActivationConstraints.Distance({ value: 8 }),
+        ],
+        activatorElements: (source) =>
+          [source.element, source.handle].filter(Boolean) as Element[],
+      }),
+      KeyboardSensor,
+    ],
+    []
   );
 
-  const handleDragStart = (event: DragStartEvent) => {
-    setActiveDragId(String(event.active.id));
-  };
-
-  const handleDragEnd = (event: DragEndEvent) => {
-    setActiveDragId(null);
-    const { active, over } = event;
-    if (!over) return;
-
-    const activeId = String(active.id);
-    const overId = String(over.id);
-
-    if (activeId === overId) return;
-
-    if (listIds.includes(activeId) && listIds.includes(overId)) {
-      setListIds((items) => {
-        const from = items.indexOf(activeId);
-        const to = items.indexOf(overId);
-        if (from === -1 || to === -1) return items;
-        return arrayMove(items, from, to);
-      });
+  const restoreSnapshot = useCallback(() => {
+    const snap = snapshotRef.current;
+    if (!snap) {
       return;
     }
+    setListIds(snap.listIds);
+    setCardsByList(snap.cardsByList);
+    snapshotRef.current = null;
+  }, []);
 
-    const activeListId = findListContainingCard(cardsByList, listIds, activeId);
-    if (!activeListId) return;
+  const handleDragStart = useCallback(() => {
+    snapshotRef.current = {
+      listIds: [...listIdsRef.current],
+      cardsByList: Object.fromEntries(
+        listIdsRef.current.map((id) => [
+          id,
+          [...(cardsByListRef.current[id] ?? [])],
+        ])
+      ),
+    };
+  }, []);
 
-    const overListId = resolveOverListId(cardsByList, listIds, overId);
-    if (!overListId) return;
+  const handleDragOver = useCallback((event: BoardDragOverEvent) => {
+    const source = event.operation.source;
+    if (!source) {
+      return;
+    }
+    if (source.type === "column") {
+      setListIds((ids) => move(ids, event));
+      return;
+    }
+    setCardsByList((items) => move(items, event));
+  }, []);
 
-    setCardsByList((prev) => {
-      if (activeListId === overListId) {
-        const items = [...(prev[activeListId] ?? [])];
-        const isColumnDrop =
-          listIdFromColumnDroppableId(overId) === activeListId;
-        const isListShellDrop = overId === activeListId;
-
-        if (isColumnDrop || isListShellDrop) {
-          const from = items.indexOf(activeId);
-          if (from === -1) return prev;
-          const next = [...items];
-          next.splice(from, 1);
-          next.push(activeId);
-          return { ...prev, [activeListId]: next };
-        }
-
-        const from = items.indexOf(activeId);
-        const to = items.indexOf(overId);
-        if (from === -1 || to === -1) return prev;
-        return {
-          ...prev,
-          [activeListId]: arrayMove(items, from, to),
-        };
+  const handleDragEnd = useCallback(
+    (event: BoardDragEndEvent) => {
+      if (event.canceled) {
+        restoreSnapshot();
+        return;
       }
 
-      const fromList = [...(prev[activeListId] ?? [])];
-      const toList = [...(prev[overListId] ?? [])];
-      const fromIndex = fromList.indexOf(activeId);
-      if (fromIndex === -1) return prev;
+      const source = event.operation.source;
+      const snap = snapshotRef.current;
 
-      const [moved] = fromList.splice(fromIndex, 1);
+      // Column: PATCH only the dragged list with a fractional pos between neighbors’ stored values.
+      if (source?.type === "column" && snap) {
+        const newIds = listIdsRef.current;
+        if (listColumnOrderChanged(snap.listIds, newIds)) {
+          const listId = String(source.id);
+          const suggested = suggestedListPositionsForOrder(
+            newIds,
+            listPosMapFromBoard(boardRef.current)
+          );
+          const pos = suggested[listId];
+          if (pos !== undefined) {
+            patchList({
+              listId,
+              boardKey,
+              updates: { pos },
+            });
+          }
+        }
+      }
 
-      const overIsColumn = listIdFromColumnDroppableId(overId) === overListId;
-      const overIsListShell = overId === overListId;
-      const insertIndex =
-        overIsColumn || overIsListShell
-          ? toList.length
-          : Math.max(0, toList.indexOf(overId));
-
-      toList.splice(insertIndex, 0, moved);
-
-      return {
-        ...prev,
-        [activeListId]: fromList,
-        [overListId]: toList,
-      };
-    });
-  };
+      snapshotRef.current = null;
+    },
+    [boardKey, patchList, restoreSnapshot]
+  );
 
   return (
-    <DndContext
-      collisionDetection={closestCorners}
-      onDragCancel={() => setActiveDragId(null)}
+    <DragDropProvider
       onDragEnd={handleDragEnd}
+      onDragOver={handleDragOver}
       onDragStart={handleDragStart}
       sensors={sensors}
     >
-      <SortableContext items={listIds} strategy={horizontalListSortingStrategy}>
-        <ul className="flex list-none gap-4 p-0">
-          {listIds.map((id) => (
-            <ListWrapper
-              boardKey={boardKey}
-              cardIds={cardsByList[id] ?? []}
-              cardTitles={cardTitles}
-              columnDroppableId={columnDroppableId(id)}
-              id={id}
-              key={id}
-              title={listTitles[id] ?? "List"}
-            />
-          ))}
-        </ul>
-      </SortableContext>
-      <DragOverlay dropAnimation={{ duration: 180, easing: "ease-out" }}>
-        {activeDragId === null ? null : (
-          <BoardDragOverlayPreview
-            activeDragId={activeDragId}
+      <ul className="flex list-none gap-4 p-0">
+        {listIds.map((id, columnIndex) => (
+          <BoardColumn
+            boardKey={boardKey}
+            cardIds={cardsByList[id] ?? []}
             cardTitles={cardTitles}
-            listIds={listIds}
-            listTitles={listTitles}
+            columnIndex={columnIndex}
+            key={id}
+            listId={id}
+            listPosDebug={{
+              stored: listPosById[id] ?? 0,
+              suggested: suggestedListPosById[id] ?? listPosById[id] ?? 0,
+            }}
+            title={listTitles[id] ?? "List"}
           />
-        )}
+        ))}
+      </ul>
+      <DragOverlay dropAnimation={{ duration: 180, easing: "ease-out" }}>
+        {(source) => {
+          if (!source) {
+            return null;
+          }
+          const id = String(source.id);
+          if (source.type === "column") {
+            return (
+              <ListColumnDragPreview
+                cardIds={cardsByList[id] ?? []}
+                cardTitles={cardTitles}
+                title={listTitles[id] ?? "List"}
+              />
+            );
+          }
+          const listIdForCard = listIds.find((lid) =>
+            (cardsByList[lid] ?? []).includes(id)
+          );
+          const cardIndex =
+            listIdForCard !== undefined
+              ? (cardsByList[listIdForCard] ?? []).indexOf(id)
+              : -1;
+          let listPosition: number | undefined;
+          if (cardIndex >= 0) {
+            listPosition = cardIndex + 1;
+          }
+          return (
+            <div className="pointer-events-none w-[262px] max-w-[calc(270px-8px)] cursor-grabbing">
+              <div className="overflow-hidden rounded-[8px] shadow-lg ring-2 ring-white/20">
+                <ListCardChrome
+                  listPosition={listPosition}
+                  title={cardTitles[id] ?? "Card"}
+                />
+              </div>
+            </div>
+          );
+        }}
       </DragOverlay>
-    </DndContext>
+    </DragDropProvider>
   );
 };

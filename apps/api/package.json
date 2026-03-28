@@ -20,6 +20,7 @@
     "get-token": "tsx scripts/get-clerk-token.ts"
   },
   "dependencies": {
+    "@repo/schemas": "workspace:*",
     "@clerk/backend": "^3.0.1",
     "@nestjs/common": "^11.0.0",
     "@nestjs/config": "^4.0.3",

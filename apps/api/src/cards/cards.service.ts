@@ -102,6 +102,52 @@ export class CardsService {
     });
   }
 
+  /**
+   * Sets `pos` for every card in the list to `(index + 1) * 1000` in one transaction.
+   * `cardIdsInOrder` must be a permutation of cards currently in `listId`.
+   */
+  async setListCardOrderForUser(
+    listId: string,
+    clerkUserId: string,
+    cardIdsInOrder: string[]
+  ) {
+    const list = await this.prisma.list.findFirst({
+      where: { id: listId, board: { user: { clerkUserId } } },
+      select: { id: true },
+    });
+    if (!list) {
+      throw new NotFoundException(`List ${listId} not found`);
+    }
+
+    const existing = await this.prisma.card.findMany({
+      where: { listId },
+      select: { id: true },
+    });
+    if (existing.length !== cardIdsInOrder.length) {
+      throw new BadRequestException(
+        "cardIds must list every card in the list exactly once"
+      );
+    }
+    const existingSet = new Set(existing.map((c) => c.id));
+    for (const id of cardIdsInOrder) {
+      if (!existingSet.has(id)) {
+        throw new BadRequestException(`Card ${id} is not in list ${listId}`);
+      }
+    }
+
+    const gap = 1000;
+    await this.prisma.$transaction(
+      cardIdsInOrder.map((id, index) =>
+        this.prisma.card.update({
+          where: { id },
+          data: { pos: (index + 1) * gap },
+        })
+      )
+    );
+
+    return this.findByListForUser(listId, clerkUserId);
+  }
+
   async removeForUser(id: string, clerkUserId: string) {
     const deleted = await this.prisma.card.deleteMany({
       where: { id, board: { user: { clerkUserId } } },

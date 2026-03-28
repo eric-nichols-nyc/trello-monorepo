@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
   },
-  transpilePackages: ["@repo/clerk", "@repo/schemas"],
+  transpilePackages: ["@repo/card-positioning", "@repo/clerk", "@repo/schemas"],
 };
 
 export default nextConfig;
