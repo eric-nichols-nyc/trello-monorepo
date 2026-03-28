@@ -17,6 +17,10 @@ import { useSortable } from "@dnd-kit/react/sortable";
 import { Checkbox } from "@repo/design-system/components/ui/checkbox";
 import { cn } from "@repo/design-system/lib/utils";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  type CardPlacement,
+  cardPlacementByLocalOrder,
+} from "@/lib/board/card-list-pos";
 import { suggestedListPositionsForOrder } from "@/lib/board/list-column-pos";
 import { useUpdateList } from "@/queries/use-update-list";
 import type { BoardDetail } from "@/types/board-detail";
@@ -88,6 +92,7 @@ type BoardCardItemProps = {
   columnId: string;
   index: number;
   title: string;
+  cardPlacement?: CardPlacement;
 };
 
 const BoardCardItem = memo(function BoardCardRow({
@@ -95,6 +100,7 @@ const BoardCardItem = memo(function BoardCardRow({
   columnId,
   index,
   title,
+  cardPlacement,
 }: BoardCardItemProps) {
   const [checked, setChecked] = useState(false);
   const { ref, targetRef, handleRef, isDragging } = useSortable({
@@ -159,6 +165,7 @@ const BoardCardItem = memo(function BoardCardRow({
           />
         </span>
         <ListCardTitleArea
+          cardPlacement={cardPlacement}
           className={
             checked
               ? "translate-x-7"
@@ -179,6 +186,7 @@ type BoardColumnProps = {
   title: string;
   cardIds: string[];
   cardTitles: Record<string, string>;
+  cardPlacementById: Record<string, CardPlacement>;
   /** Optional header debug: suggested vs server `pos` for this column. */
   listPosDebug?: { suggested: number; stored: number };
 };
@@ -190,6 +198,7 @@ const BoardColumn = memo(function BoardColumnFrame({
   title,
   cardIds,
   cardTitles,
+  cardPlacementById,
   listPosDebug,
 }: BoardColumnProps) {
   const { ref, targetRef, handleRef, isDragging } = useSortable({
@@ -223,6 +232,7 @@ const BoardColumn = memo(function BoardColumnFrame({
           {cardIds.map((cardId, index) => (
             <BoardCardItem
               cardId={cardId}
+              cardPlacement={cardPlacementById[cardId]}
               columnId={listId}
               index={index}
               key={cardId}
@@ -285,6 +295,11 @@ export const BoardLists = ({ board, boardKey }: BoardListsProps) => {
   const suggestedListPosById = useMemo(
     () => suggestedListPositionsForOrder(listIds, listPosById),
     [listIds, listPosById]
+  );
+
+  const cardPlacementById = useMemo(
+    () => cardPlacementByLocalOrder(board, listIds, cardsByList),
+    [board, listIds, cardsByList]
   );
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: fingerprint gate vs `board` identity
@@ -391,6 +406,7 @@ export const BoardLists = ({ board, boardKey }: BoardListsProps) => {
           <BoardColumn
             boardKey={boardKey}
             cardIds={cardsByList[id] ?? []}
+            cardPlacementById={cardPlacementById}
             cardTitles={cardTitles}
             columnIndex={columnIndex}
             key={id}
@@ -433,6 +449,7 @@ export const BoardLists = ({ board, boardKey }: BoardListsProps) => {
             <div className="pointer-events-none w-[262px] max-w-[calc(270px-8px)] cursor-grabbing">
               <div className="overflow-hidden rounded-[8px] shadow-lg ring-2 ring-white/20">
                 <ListCardChrome
+                  cardPlacement={cardPlacementById[id]}
                   listPosition={listPosition}
                   title={cardTitles[id] ?? "Card"}
                 />
