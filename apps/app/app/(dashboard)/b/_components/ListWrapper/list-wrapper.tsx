@@ -8,6 +8,7 @@ import { ListFooter } from "./list-footer";
 import { ListHeader } from "./list-header";
 
 type ListWrapperProps = {
+  boardKey: string;
   id: string;
   title: string;
   cardIds: string[];
@@ -16,6 +17,7 @@ type ListWrapperProps = {
 };
 
 export const ListWrapper = ({
+  boardKey,
   id,
   title,
   cardIds,
@@ -38,20 +40,20 @@ export const ListWrapper = ({
 
   return (
     <li
+      className={`w-[270px] shrink-0 ${isDragging ? "z-10 opacity-90" : ""}`}
       ref={setNodeRef}
       style={style}
-      className={`w-[270px] shrink-0 ${isDragging ? "z-10 opacity-90" : ""}`}
       {...attributes}
     >
       <div className="flex flex-col gap-2 rounded-lg bg-[rgb(16,18,4)]">
-        <ListHeader title={title} dragHandleProps={listeners} />
+        <ListHeader dragHandleProps={listeners} title={title} />
         <ListCards
-          listId={id}
           cardIds={cardIds}
           cardTitles={cardTitles}
           columnDroppableId={columnDroppableId}
+          listId={id}
         />
-        <ListFooter />
+        <ListFooter boardKey={boardKey} listId={id} />
       </div>
     </li>
   );

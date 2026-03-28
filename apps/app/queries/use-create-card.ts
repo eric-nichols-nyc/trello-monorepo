@@ -1,0 +1,120 @@
+"use client";
+
+import type { CreateCardInput } from "@repo/schemas";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+
+import { postCardClient } from "@/lib/api/cards/post-card-client";
+import type { BoardCard, BoardDetail } from "@/types/board-detail";
+
+import { boardDetailQueryKey } from "./board-detail-query";
+
+export type CreateCardMutationVariables = {
+  /** Target list UUID (Nest `POST /lists/:listId/cards`). */
+  listId: string;
+  /** Same URL/cache key as `useBoardDetail` — used for optimistic + invalidate. */
+  boardKey: string;
+  /** Validated body (e.g. from `createCardSchema`); quick-add usually sends `{ name }`. */
+  input: CreateCardInput;
+};
+
+type CreateCardMutationContext = {
+  previous: BoardDetail | undefined;
+};
+
+function dueDateToIso(value: CreateCardInput["dueDate"]): string | null {
+  if (value === undefined) {
+    return null;
+  }
+  if (value instanceof Date) {
+    return value.toISOString();
+  }
+  return String(value);
+}
+
+/**
+ * Builds a `BoardCard` placeholder for the cache before the server responds.
+ * `invalidateQueries` in `onSettled` replaces it with the real row shape.
+ */
+function buildOptimisticCard(
+  listId: string,
+  boardId: string,
+  input: CreateCardInput,
+  tempId: string
+): BoardCard {
+  const now = new Date().toISOString();
+  return {
+    id: tempId,
+    name: input.name,
+    description: input.description ?? null,
+    pos: input.pos ?? Date.now(),
+    closed: input.closed ?? false,
+    dueDate: dueDateToIso(input.dueDate),
+    listId,
+    boardId,
+    assigneeId: input.assigneeId ?? null,
+    createdAt: now,
+    updatedAt: now,
+    comments: [],
+    checklists: [],
+  };
+}
+
+/**
+ * Creates a card via `postCardClient`, appends an optimistic row under the
+ * matching list, rolls back on error, then invalidates board detail to sync.
+ */
+export function useCreateCard() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ listId, input }: CreateCardMutationVariables) =>
+      postCardClient(listId, input),
+    onMutate: async ({
+      boardKey,
+      listId,
+      input,
+    }): Promise<CreateCardMutationContext> => {
+      const key = boardDetailQueryKey(boardKey);
+      await queryClient.cancelQueries({ queryKey: key });
+
+      const previous = queryClient.getQueryData<BoardDetail>(key);
+      const tempId = `temp-${crypto.randomUUID()}`;
+
+      queryClient.setQueryData<BoardDetail>(key, (old) => {
+        if (!old) {
+          return old;
+        }
+        const listIndex = old.lists.findIndex((l) => l.id === listId);
+        if (listIndex === -1) {
+          return old;
+        }
+        const list = old.lists[listIndex];
+        const optimistic = buildOptimisticCard(
+          listId,
+          list.boardId,
+          input,
+          tempId
+        );
+        const nextLists = [...old.lists];
+        nextLists[listIndex] = {
+          ...list,
+          cards: [...list.cards, optimistic].sort((a, b) => a.pos - b.pos),
+        };
+        return { ...old, lists: nextLists };
+      });
+
+      return { previous };
+    },
+    onError: (_error, { boardKey }, context) => {
+      const key = boardDetailQueryKey(boardKey);
+      if (context?.previous !== undefined) {
+        queryClient.setQueryData(key, context.previous);
+      }
+    },
+    onSettled: (_data, _error, { boardKey }) => {
+      queryClient.invalidateQueries({
+        queryKey: boardDetailQueryKey(boardKey),
+      });
+    },
+  });
+}

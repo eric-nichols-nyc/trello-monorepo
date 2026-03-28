@@ -157,6 +157,9 @@ importers:
       '@repo/design-system':
         specifier: workspace:*
         version: link:../../packages/design-system
+      '@repo/schemas':
+        specifier: workspace:*
+        version: link:../../packages/schemas
       '@tanstack/react-query':
         specifier: ^5.95.2
         version: 5.95.2(react@19.2.1)
@@ -181,6 +184,9 @@ importers:
       react-dom:
         specifier: 19.2.1
         version: 19.2.1(react@19.2.1)
+      zod:
+        specifier: ^4.3.6
+        version: 4.3.6
     devDependencies:
       '@playwright/test':
         specifier: ^1.52.0

@@ -1,22 +1,22 @@
 "use client";
 
 import {
+  closestCorners,
   DndContext,
+  type DragEndEvent,
   KeyboardSensor,
   PointerSensor,
-  closestCorners,
   useSensor,
   useSensors,
-  type DragEndEvent,
 } from "@dnd-kit/core";
 import {
-  SortableContext,
   arrayMove,
   horizontalListSortingStrategy,
+  SortableContext,
   sortableKeyboardCoordinates,
 } from "@dnd-kit/sortable";
-import type { BoardDetail } from "@/types/board-detail";
 import { useEffect, useState } from "react";
+import type { BoardDetail } from "@/types/board-detail";
 
 import { ListWrapper } from "../ListWrapper/list-wrapper";
 
@@ -27,32 +27,32 @@ function columnDroppableId(listId: string) {
 }
 
 function listIdFromColumnDroppableId(id: string): string | undefined {
-  if (!id.startsWith(COLUMN_PREFIX)) return undefined;
+  if (!id.startsWith(COLUMN_PREFIX)) return;
   return id.slice(COLUMN_PREFIX.length);
 }
 
 function findListContainingCard(
   cardsByList: Record<string, string[]>,
   listOrder: string[],
-  cardId: string,
+  cardId: string
 ): string | undefined {
   for (const listId of listOrder) {
     if (cardsByList[listId]?.includes(cardId)) return listId;
   }
-  return undefined;
+  return;
 }
 
 function resolveOverListId(
   cardsByList: Record<string, string[]>,
   listOrder: string[],
-  overId: string,
+  overId: string
 ): string | undefined {
   const fromColumn = listIdFromColumnDroppableId(overId);
   if (fromColumn) return fromColumn;
   const fromCard = findListContainingCard(cardsByList, listOrder, overId);
   if (fromCard) return fromCard;
   if (listOrder.includes(overId)) return overId;
-  return undefined;
+  return;
 }
 
 function boardToListState(board: BoardDetail) {
@@ -74,17 +74,16 @@ function boardToListState(board: BoardDetail) {
 
 type BoardListsProps = {
   board: BoardDetail;
+  boardKey: string;
 };
 
 /**
  * Reads `board.lists` / cards from props (ultimately from `useBoardDetail` in
  * `BoardPageContent`). Local state mirrors that for drag-and-drop only.
  */
-export const BoardLists = ({ board }: BoardListsProps) => {
+export const BoardLists = ({ board, boardKey }: BoardListsProps) => {
   const [listIds, setListIds] = useState<string[]>([]);
-  const [cardsByList, setCardsByList] = useState<Record<string, string[]>>(
-    {},
-  );
+  const [cardsByList, setCardsByList] = useState<Record<string, string[]>>({});
   const [listTitles, setListTitles] = useState<Record<string, string>>({});
   const [cardTitles, setCardTitles] = useState<Record<string, string>>({});
 
@@ -102,7 +101,7 @@ export const BoardLists = ({ board }: BoardListsProps) => {
     }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
-    }),
+    })
   );
 
   const handleDragEnd = (event: DragEndEvent) => {
@@ -133,7 +132,8 @@ export const BoardLists = ({ board }: BoardListsProps) => {
     setCardsByList((prev) => {
       if (activeListId === overListId) {
         const items = [...(prev[activeListId] ?? [])];
-        const isColumnDrop = listIdFromColumnDroppableId(overId) === activeListId;
+        const isColumnDrop =
+          listIdFromColumnDroppableId(overId) === activeListId;
         const isListShellDrop = overId === activeListId;
 
         if (isColumnDrop || isListShellDrop) {
@@ -180,20 +180,21 @@ export const BoardLists = ({ board }: BoardListsProps) => {
 
   return (
     <DndContext
-      sensors={sensors}
       collisionDetection={closestCorners}
       onDragEnd={handleDragEnd}
+      sensors={sensors}
     >
       <SortableContext items={listIds} strategy={horizontalListSortingStrategy}>
         <ul className="flex list-none gap-4 p-0">
           {listIds.map((id) => (
             <ListWrapper
-              key={id}
-              id={id}
-              title={listTitles[id] ?? "List"}
+              boardKey={boardKey}
               cardIds={cardsByList[id] ?? []}
               cardTitles={cardTitles}
               columnDroppableId={columnDroppableId(id)}
+              id={id}
+              key={id}
+              title={listTitles[id] ?? "List"}
             />
           ))}
         </ul>

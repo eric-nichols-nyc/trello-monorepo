@@ -1,7 +1,6 @@
 import type { BoardDetail } from "@/types/board-detail";
-
-import { BoardListView } from "../BoardListView/board-list-view";
 import { BoardHeader } from "../BoardHeader/board-header";
+import { BoardListView } from "../BoardListView/board-list-view";
 
 type BoardViewProps = {
   /** Same `board` object flowing down from `TrelloBoard` (query result). */
@@ -17,6 +16,6 @@ export const BoardView = ({ board, boardKey }: BoardViewProps) => (
       boardKey={boardKey}
       boardName={board.name}
     />
-    <BoardListView board={board} />
+    <BoardListView board={board} boardKey={boardKey} />
   </div>
 );
