@@ -10,7 +10,11 @@ export default defineConfig({
   test: {
     environment: "jsdom",
     globals: true,
-    include: ["__tests__/**/*.test.{ts,tsx}", "app/**/*.test.{ts,tsx}"],
+    include: [
+      "__tests__/**/*.test.{ts,tsx}",
+      "app/**/*.test.{ts,tsx}",
+      "queries/**/*.test.{ts,tsx}",
+    ],
     setupFiles: ["./vitest.setup.ts"],
   },
   resolve: {
