@@ -19,9 +19,14 @@ import { cn } from "@repo/design-system/lib/utils";
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   type CardPlacement,
+  cardMovePersistPayload,
   cardPlacementByLocalOrder,
 } from "@/lib/board/card-list-pos";
 import { suggestedListPositionsForOrder } from "@/lib/board/list-column-pos";
+import {
+  type MoveCardMutationVariables,
+  useMoveCard,
+} from "@/queries/use-move-card";
 import { useUpdateList } from "@/queries/use-update-list";
 import type { BoardDetail } from "@/types/board-detail";
 import {
@@ -35,6 +40,67 @@ import { ListColumnDragPreview } from "./list-column-drag-preview";
 
 type BoardDragOverEvent = Parameters<DomDragOverHandler>[0];
 type BoardDragEndEvent = Parameters<DomDragEndHandler>[0];
+
+type BoardDragSnapshot = {
+  listIds: string[];
+  cardsByList: Record<string, string[]>;
+};
+
+type DndSource = { type: string; id: string | number } | undefined;
+
+type PersistColumnDragOpts = {
+  source: DndSource;
+  snap: BoardDragSnapshot | null;
+  listIds: string[];
+  board: BoardDetail;
+  boardKey: string;
+  patchList: (args: {
+    listId: string;
+    boardKey: string;
+    updates: { pos: number };
+  }) => void;
+};
+
+function persistColumnDragIfNeeded(o: PersistColumnDragOpts): void {
+  if (o.source?.type !== "column" || !o.snap) {
+    return;
+  }
+  if (!listColumnOrderChanged(o.snap.listIds, o.listIds)) {
+    return;
+  }
+  const listId = String(o.source.id);
+  const suggested = suggestedListPositionsForOrder(
+    o.listIds,
+    listPosMapFromBoard(o.board)
+  );
+  const pos = suggested[listId];
+  if (pos !== undefined) {
+    o.patchList({ listId, boardKey: o.boardKey, updates: { pos } });
+  }
+}
+
+type PersistCardDragOpts = {
+  source: DndSource;
+  snap: BoardDragSnapshot | null;
+  listIds: string[];
+  cardsByList: Record<string, string[]>;
+  board: BoardDetail;
+  boardKey: string;
+  moveCard: (args: MoveCardMutationVariables) => void;
+};
+
+function persistCardDragIfNeeded(o: PersistCardDragOpts): void {
+  if (o.source?.type !== "item" || !o.snap) {
+    return;
+  }
+  if (!cardsByListChanged(o.snap.cardsByList, o.cardsByList)) {
+    return;
+  }
+  const payload = cardMovePersistPayload(o.board, o.listIds, o.cardsByList);
+  if (payload !== null) {
+    o.moveCard({ boardKey: o.boardKey, ...payload.variables });
+  }
+}
 
 /** Local drag state: list and card order derived from `board`, sorted by `pos`. */
 function boardToListState(board: BoardDetail) {
@@ -70,6 +136,32 @@ function listColumnOrderChanged(before: string[], after: string[]): boolean {
   }
   for (let i = 0; i < before.length; i++) {
     if (before[i] !== after[i]) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function idSequencesEqual(a: string[], b: string[]): boolean {
+  if (a.length !== b.length) {
+    return false;
+  }
+  for (let i = 0; i < a.length; i++) {
+    if (a[i] !== b[i]) {
+      return false;
+    }
+  }
+  return true;
+}
+
+/** True if any column’s card id order changed (vs drag-start snapshot). */
+function cardsByListChanged(
+  before: Record<string, string[]>,
+  after: Record<string, string[]>
+): boolean {
+  const keys = new Set([...Object.keys(before), ...Object.keys(after)]);
+  for (const k of keys) {
+    if (!idSequencesEqual(before[k] ?? [], after[k] ?? [])) {
       return true;
     }
   }
@@ -262,6 +354,7 @@ type BoardListsProps = {
 export const BoardLists = ({ board, boardKey }: BoardListsProps) => {
   /** Persists column `pos` after drag; optimistic updates use the same `boardKey`. */
   const { mutate: patchList } = useUpdateList();
+  const { mutate: moveCard } = useMoveCard();
 
   const [listIds, setListIds] = useState<string[]>([]);
   const [cardsByList, setCardsByList] = useState<Record<string, string[]>>({});
@@ -366,32 +459,30 @@ export const BoardLists = ({ board, boardKey }: BoardListsProps) => {
         return;
       }
 
-      const source = event.operation.source;
+      const source = event.operation.source as DndSource;
       const snap = snapshotRef.current;
 
-      // Column: PATCH only the dragged list with a fractional pos between neighbors’ stored values.
-      if (source?.type === "column" && snap) {
-        const newIds = listIdsRef.current;
-        if (listColumnOrderChanged(snap.listIds, newIds)) {
-          const listId = String(source.id);
-          const suggested = suggestedListPositionsForOrder(
-            newIds,
-            listPosMapFromBoard(boardRef.current)
-          );
-          const pos = suggested[listId];
-          if (pos !== undefined) {
-            patchList({
-              listId,
-              boardKey,
-              updates: { pos },
-            });
-          }
-        }
-      }
+      persistColumnDragIfNeeded({
+        source,
+        snap,
+        listIds: listIdsRef.current,
+        board: boardRef.current,
+        boardKey,
+        patchList,
+      });
+      persistCardDragIfNeeded({
+        source,
+        snap,
+        listIds: listIdsRef.current,
+        cardsByList: cardsByListRef.current,
+        board: boardRef.current,
+        boardKey,
+        moveCard,
+      });
 
       snapshotRef.current = null;
     },
-    [boardKey, patchList, restoreSnapshot]
+    [boardKey, moveCard, patchList, restoreSnapshot]
   );
 
   return (

@@ -1,6 +1,9 @@
-import { KanbanCardPositionCalculator } from "@repo/card-positioning";
+import {
+  type CardPositionResult,
+  KanbanCardPositionCalculator,
+} from "@repo/card-positioning";
 import type { CardOrderingRow } from "@repo/schemas";
-import type { BoardDetail } from "@/types/board-detail";
+import type { BoardCard, BoardDetail } from "@/types/board-detail";
 
 export type CardPlacement = { listId: string; pos: number };
 
@@ -190,6 +193,122 @@ function dropParamsForIndexInColumn(
   return { dropPosition: "after", targetCardId: orderedIds[idx - 1] };
 }
 
+function runKanbanCardMove(
+  board: BoardDetail,
+  listIds: string[],
+  cardsByList: Record<string, string[]>
+): {
+  moved: { cardId: string; targetListId: string };
+  result: CardPositionResult;
+} | null {
+  const rows = boardToOrderingRows(board);
+  const moved = findMovedCard(board, listIds, cardsByList);
+  if (moved === null || !rows.some((r) => r.id === moved.cardId)) {
+    return null;
+  }
+  const orderedIds = cardsByList[moved.targetListId] ?? [];
+  const drop = dropParamsForIndexInColumn(orderedIds, moved.cardId);
+  const result = KanbanCardPositionCalculator.calculatePosition({
+    cards: rows,
+    cardId: moved.cardId,
+    targetListId: moved.targetListId,
+    dropPosition: drop.dropPosition,
+    targetCardId: drop.targetCardId,
+  });
+  return { moved, result };
+}
+
+function nextBoardDetailAfterCardOrdering(
+  board: BoardDetail,
+  listIds: string[],
+  cardsByList: Record<string, string[]>,
+  updatedRows: CardOrderingRow[]
+): BoardDetail {
+  const posById = new Map(updatedRows.map((r) => [r.id, r.pos]));
+  const cardById = new Map<string, BoardCard>();
+  for (const l of board.lists) {
+    for (const c of l.cards) {
+      cardById.set(c.id, c);
+    }
+  }
+  const listMetaById = new Map(board.lists.map((l) => [l.id, l]));
+
+  const lists = listIds.map((lid) => {
+    const meta = listMetaById.get(lid);
+    if (!meta) {
+      throw new Error(`Missing list ${lid}`);
+    }
+    const ids = cardsByList[lid] ?? [];
+    const cards: BoardCard[] = ids.map((id) => {
+      const base = cardById.get(id);
+      if (!base) {
+        throw new Error(`Missing card ${id}`);
+      }
+      const pos = posById.get(id) ?? base.pos;
+      return { ...base, listId: lid, pos };
+    });
+    return { ...meta, cards };
+  });
+  return { ...board, lists };
+}
+
+/**
+ * Build optimistic board + API payload after a single-card drag. Reorder is used when
+ * the calculator rebalances the target column; otherwise PATCH card `listId` + `pos`.
+ */
+export function cardMovePersistPayload(
+  board: BoardDetail,
+  listIds: string[],
+  cardsByList: Record<string, string[]>
+):
+  | {
+      variables: {
+        mode: "patch";
+        cardId: string;
+        body: { listId: string; pos: number };
+        nextBoardDetail: BoardDetail;
+      };
+    }
+  | {
+      variables: {
+        mode: "reorder";
+        listId: string;
+        cardIds: string[];
+        nextBoardDetail: BoardDetail;
+      };
+    }
+  | null {
+  const run = runKanbanCardMove(board, listIds, cardsByList);
+  if (!run) {
+    return null;
+  }
+  const { moved, result } = run;
+  const nextBoardDetail = nextBoardDetailAfterCardOrdering(
+    board,
+    listIds,
+    cardsByList,
+    result.updatedCards
+  );
+  if (result.needsRebalancing) {
+    return {
+      variables: {
+        mode: "reorder",
+        listId: moved.targetListId,
+        cardIds: cardsByList[moved.targetListId] ?? [],
+        nextBoardDetail,
+      },
+    };
+  }
+  return {
+    variables: {
+      mode: "patch",
+      cardId: moved.cardId,
+      body: { listId: moved.targetListId, pos: result.newPosition },
+      nextBoardDetail,
+    },
+  };
+}
+
 /**
  * Maps each visible card to `{ listId, pos }`. When local `cardsByList` differs from
  * the server board in exactly one drag, uses {@link KanbanCardPositionCalculator}
@@ -201,23 +320,12 @@ export function cardPlacementByLocalOrder(
   listIds: string[],
   cardsByList: Record<string, string[]>
 ): Record<string, CardPlacement> {
-  const rows = boardToOrderingRows(board);
-  const moved = findMovedCard(board, listIds, cardsByList);
-
   let posByCardId = storedPosByCardId(board);
 
-  if (moved !== null && rows.some((r) => r.id === moved.cardId)) {
-    const orderedIds = cardsByList[moved.targetListId] ?? [];
-    const drop = dropParamsForIndexInColumn(orderedIds, moved.cardId);
-    const result = KanbanCardPositionCalculator.calculatePosition({
-      cards: rows,
-      cardId: moved.cardId,
-      targetListId: moved.targetListId,
-      dropPosition: drop.dropPosition,
-      targetCardId: drop.targetCardId,
-    });
+  const run = runKanbanCardMove(board, listIds, cardsByList);
+  if (run !== null) {
     posByCardId = Object.fromEntries(
-      result.updatedCards.map((c) => [c.id, c.pos])
+      run.result.updatedCards.map((c) => [c.id, c.pos])
     );
   }
 

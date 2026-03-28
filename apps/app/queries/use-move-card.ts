@@ -35,8 +35,19 @@ export function useMoveCard() {
   return useMutation({
     mutationFn: (variables: MoveCardMutationVariables) => {
       if (variables.mode === "patch") {
+        console.log("[useMoveCard] sending PATCH /api/cards/:id", {
+          cardId: variables.cardId,
+          body: variables.body,
+        });
         return patchCardClient(variables.cardId, variables.body);
       }
+      console.log(
+        "[useMoveCard] sending PATCH /api/lists/:listId/cards/positions",
+        {
+          listId: variables.listId,
+          body: { cardIds: variables.cardIds },
+        }
+      );
       return reorderListCardsClient(variables.listId, {
         cardIds: variables.cardIds,
       });
