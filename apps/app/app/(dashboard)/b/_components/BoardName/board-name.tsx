@@ -71,8 +71,15 @@ export const BoardName = ({
     updateBoard.mutate(
       { boardId, boardKey, updates: { name: trimmed } },
       {
-        onError: () => {
+        onError: (error) => {
           setDraft(nameReference.current);
+          // Temporary UX until toast notifications exist.
+          // biome-ignore lint/suspicious/noAlert: user-requested error surface for failed rename
+          globalThis.alert(
+            error instanceof Error
+              ? error.message
+              : "Could not update the board name."
+          );
         },
         onSettled: () => {
           setIsEditing(false);

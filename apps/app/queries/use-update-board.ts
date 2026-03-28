@@ -6,6 +6,7 @@ import {
   type UpdateBoardPatchBody,
   patchBoardClient,
 } from "@/lib/api/boards/patch-board-client";
+import type { BoardDetail } from "@/types/board-detail";
 
 import { boardDetailQueryKey } from "./board-detail-query";
 
@@ -17,9 +18,13 @@ export type UpdateBoardMutationVariables = {
   updates: UpdateBoardPatchBody;
 };
 
+type UpdateBoardMutationContext = {
+  previous: BoardDetail | undefined;
+};
+
 /**
- * PATCH board fields on the API and refresh the board-detail query for `boardKey`.
- * (Nest returns a partial board payload; invalidating avoids a stale nested shape.)
+ * PATCH board fields with optimistic cache merge, rollback on error, then
+ * invalidate to reconcile with the server.
  */
 export function useUpdateBoard() {
   const queryClient = useQueryClient();
@@ -27,7 +32,28 @@ export function useUpdateBoard() {
   return useMutation({
     mutationFn: ({ boardId, updates }: UpdateBoardMutationVariables) =>
       patchBoardClient(boardId, updates),
-    onSuccess: (_data, { boardKey }) => {
+    onMutate: async ({
+      boardKey,
+      updates,
+    }): Promise<UpdateBoardMutationContext> => {
+      const key = boardDetailQueryKey(boardKey);
+      await queryClient.cancelQueries({ queryKey: key });
+
+      const previous = queryClient.getQueryData<BoardDetail>(key);
+
+      queryClient.setQueryData<BoardDetail>(key, (old) =>
+        old ? { ...old, ...updates } : old
+      );
+
+      return { previous };
+    },
+    onError: (_error, { boardKey }, context) => {
+      const key = boardDetailQueryKey(boardKey);
+      if (context?.previous !== undefined) {
+        queryClient.setQueryData(key, context.previous);
+      }
+    },
+    onSettled: (_data, _error, { boardKey }) => {
       queryClient.invalidateQueries({
         queryKey: boardDetailQueryKey(boardKey),
       });
