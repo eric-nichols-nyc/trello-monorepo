@@ -2,7 +2,14 @@ import { auth } from "@repo/clerk/server";
 
 import { BoardApiError } from "./board-api-error";
 
-export async function getBoard(boardKey: string): Promise<unknown> {
+/**
+ * Server-only: PATCH board on Nest. `boardId` must be the board UUID (Nest
+ * `updateForUser` matches on `id`, not `shortLink`).
+ */
+export async function patchBoard(
+  boardId: string,
+  body: Record<string, unknown>
+): Promise<unknown> {
   const { getToken } = await auth();
   const token = await getToken();
 
@@ -16,9 +23,14 @@ export async function getBoard(boardKey: string): Promise<unknown> {
   }
 
   const response = await fetch(
-    `${baseUrl}/api/boards/${encodeURIComponent(boardKey)}`,
+    `${baseUrl}/api/boards/${encodeURIComponent(boardId)}`,
     {
-      headers: { Authorization: `Bearer ${token}` },
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
       cache: "no-store",
     }
   );

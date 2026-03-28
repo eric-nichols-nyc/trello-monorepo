@@ -1,5 +1,4 @@
 export {
-  normalizeBoardDetailPayload,
   type BoardCard,
   type BoardChecklist,
   type BoardChecklistItem,
@@ -7,4 +6,12 @@ export {
   type BoardCommentAuthor,
   type BoardDetail,
   type BoardList,
+  normalizeBoardDetailPayload,
 } from "../types/board-detail";
+export { boardDetailQueryKey } from "./board-detail-query";
+export { useBoardDetail } from "./use-board-detail";
+export {
+  type UpdateBoardMutationVariables,
+  useUpdateBoard,
+} from "./use-update-board";
+export type { UpdateBoardPatchBody } from "@/lib/api/boards/patch-board-client";

@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 
-import { BoardApiError, getBoard } from "@/lib/api/boards/get-board";
+import { BoardApiError } from "@/lib/api/boards/board-api-error";
+import { getBoard } from "@/lib/api/boards/get-board";
 import { normalizeBoardDetailPayload } from "@/types/board-detail";
 
 import { BoardPageContent } from "../_components/board-page-content";
@@ -9,6 +10,10 @@ type BoardPageProperties = {
   params: Promise<{ id: string }>;
 };
 
+/**
+ * Server load for SEO, `notFound()`, and first paint. The normalized board is
+ * passed to `BoardPageContent`, which seeds TanStack Query via `useBoardDetail`.
+ */
 export default async function BoardPage({ params }: BoardPageProperties) {
   const { id } = await params;
 
@@ -22,6 +27,6 @@ export default async function BoardPage({ params }: BoardPageProperties) {
     throw error;
   }
 
-  const board = normalizeBoardDetailPayload(raw);
-  return <BoardPageContent board={board} />;
+  const initialBoard = normalizeBoardDetailPayload(raw);
+  return <BoardPageContent boardKey={id} initialBoard={initialBoard} />;
 }

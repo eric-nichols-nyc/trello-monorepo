@@ -76,6 +76,10 @@ type BoardListsProps = {
   board: BoardDetail;
 };
 
+/**
+ * Reads `board.lists` / cards from props (ultimately from `useBoardDetail` in
+ * `BoardPageContent`). Local state mirrors that for drag-and-drop only.
+ */
 export const BoardLists = ({ board }: BoardListsProps) => {
   const [listIds, setListIds] = useState<string[]>([]);
   const [cardsByList, setCardsByList] = useState<Record<string, string[]>>(
