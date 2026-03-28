@@ -4,6 +4,8 @@ import {
   closestCorners,
   DndContext,
   type DragEndEvent,
+  DragOverlay,
+  type DragStartEvent,
   KeyboardSensor,
   PointerSensor,
   useSensor,
@@ -77,6 +79,43 @@ type BoardListsProps = {
   boardKey: string;
 };
 
+function BoardDragOverlayPreview({
+  activeDragId,
+  listIds,
+  listTitles,
+  cardTitles,
+}: {
+  activeDragId: string;
+  listIds: string[];
+  listTitles: Record<string, string>;
+  cardTitles: Record<string, string>;
+}) {
+  const isListColumn = listIds.includes(activeDragId);
+
+  if (isListColumn) {
+    return (
+      <div className="pointer-events-none w-[270px] shrink-0 cursor-grabbing">
+        <div className="flex flex-col gap-2 rounded-lg bg-[rgb(16,18,4)] shadow-lg ring-2 ring-white/25">
+          <div className="flex items-center px-3 py-2 font-semibold text-sm text-white/95">
+            {listTitles[activeDragId] ?? "List"}
+          </div>
+          <div className="mx-[4px] mb-2 min-h-12 rounded-md bg-white/5" />
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="pointer-events-none w-[262px] max-w-[calc(270px-8px)] cursor-grabbing">
+      <div className="flex min-h-[45px] items-center overflow-hidden rounded-[8px] bg-[rgb(36,37,40)] px-3 py-2 shadow-lg ring-2 ring-white/20">
+        <span className="min-w-0 truncate text-sm text-white/95">
+          {cardTitles[activeDragId] ?? "Card"}
+        </span>
+      </div>
+    </div>
+  );
+}
+
 /**
  * Reads `board.lists` / cards from props (ultimately from `useBoardDetail` in
  * `BoardPageContent`). Local state mirrors that for drag-and-drop only.
@@ -86,6 +125,7 @@ export const BoardLists = ({ board, boardKey }: BoardListsProps) => {
   const [cardsByList, setCardsByList] = useState<Record<string, string[]>>({});
   const [listTitles, setListTitles] = useState<Record<string, string>>({});
   const [cardTitles, setCardTitles] = useState<Record<string, string>>({});
+  const [activeDragId, setActiveDragId] = useState<string | null>(null);
 
   useEffect(() => {
     const next = boardToListState(board);
@@ -104,7 +144,12 @@ export const BoardLists = ({ board, boardKey }: BoardListsProps) => {
     })
   );
 
+  const handleDragStart = (event: DragStartEvent) => {
+    setActiveDragId(String(event.active.id));
+  };
+
   const handleDragEnd = (event: DragEndEvent) => {
+    setActiveDragId(null);
     const { active, over } = event;
     if (!over) return;
 
@@ -181,7 +226,9 @@ export const BoardLists = ({ board, boardKey }: BoardListsProps) => {
   return (
     <DndContext
       collisionDetection={closestCorners}
+      onDragCancel={() => setActiveDragId(null)}
       onDragEnd={handleDragEnd}
+      onDragStart={handleDragStart}
       sensors={sensors}
     >
       <SortableContext items={listIds} strategy={horizontalListSortingStrategy}>
@@ -199,6 +246,16 @@ export const BoardLists = ({ board, boardKey }: BoardListsProps) => {
           ))}
         </ul>
       </SortableContext>
+      <DragOverlay dropAnimation={{ duration: 180, easing: "ease-out" }}>
+        {activeDragId === null ? null : (
+          <BoardDragOverlayPreview
+            activeDragId={activeDragId}
+            cardTitles={cardTitles}
+            listIds={listIds}
+            listTitles={listTitles}
+          />
+        )}
+      </DragOverlay>
     </DndContext>
   );
 };

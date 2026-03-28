@@ -43,7 +43,7 @@ export const ListCard = ({ cardId, title }: ListCardProps) => {
   return (
     <li
       className={`group relative flex list-none ${
-        isDragging ? "z-10 opacity-90 ring-1 ring-white/20" : ""
+        isDragging ? "opacity-0" : ""
       }`}
       ref={setNodeRef}
       style={style}

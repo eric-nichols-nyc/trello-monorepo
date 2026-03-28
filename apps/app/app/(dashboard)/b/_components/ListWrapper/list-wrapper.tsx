@@ -40,7 +40,7 @@ export const ListWrapper = ({
 
   return (
     <li
-      className={`w-[270px] shrink-0 ${isDragging ? "z-10 opacity-90" : ""}`}
+      className={`w-[270px] shrink-0 ${isDragging ? "opacity-0" : ""}`}
       ref={setNodeRef}
       style={style}
       {...attributes}
