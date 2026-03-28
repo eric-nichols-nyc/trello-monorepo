@@ -1,4 +1,4 @@
-import type { BoardDetail } from "@/queries/board-detail";
+import type { BoardDetail } from "@/types/board-detail";
 
 import { BoardListView } from "../BoardListView/board-list-view";
 import { BoardHeader } from "../BoardHeader/board-header";

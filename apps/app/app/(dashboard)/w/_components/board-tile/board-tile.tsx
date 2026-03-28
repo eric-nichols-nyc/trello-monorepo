@@ -42,6 +42,16 @@ const getBoardBooleanField = (board: unknown, key: "starred"): boolean => {
   return false;
 };
 
+const getBoardId = (board: unknown): string | undefined => {
+  if (board !== null && typeof board === "object" && "id" in board) {
+    const value = (board as Record<string, unknown>).id;
+    if (typeof value === "string" && value.length > 0) {
+      return value;
+    }
+  }
+  return;
+};
+
 const getPreviewBackgroundStyle = (board: unknown): CSSProperties => {
   const top = getBoardStringField(board, "backgroundTopColor");
   const bottom = getBoardStringField(board, "backgroundBottomColor");
@@ -59,11 +69,13 @@ const getPreviewBackgroundStyle = (board: unknown): CSSProperties => {
 
 export const BoardTile = ({ board }: BoardTileProperties) => {
   const shortLink = getBoardStringField(board, "shortLink");
+  const id = getBoardId(board);
   const name = getBoardStringField(board, "name");
   const workspaceLabel = getBoardStringField(board, "workspaceName");
   const starred = getBoardBooleanField(board, "starred");
-  const title = name ?? shortLink;
-  const href = shortLink !== undefined ? `/b/${shortLink}` : null;
+  const title = name ?? shortLink ?? id;
+  const boardKey = shortLink ?? id;
+  const href = boardKey !== undefined ? `/b/${boardKey}` : null;
   const previewStyle = getPreviewBackgroundStyle(board);
 
   const tile = (

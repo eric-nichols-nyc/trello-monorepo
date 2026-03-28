@@ -1,4 +1,4 @@
-import type { BoardDetail } from "@/queries/board-detail";
+import type { BoardDetail } from "@/types/board-detail";
 
 import { BoardView } from "./board-view";
 

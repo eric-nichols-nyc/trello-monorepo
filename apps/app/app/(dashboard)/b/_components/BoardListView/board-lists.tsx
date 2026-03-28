@@ -15,7 +15,7 @@ import {
   horizontalListSortingStrategy,
   sortableKeyboardCoordinates,
 } from "@dnd-kit/sortable";
-import type { BoardDetail } from "@/queries/board-detail";
+import type { BoardDetail } from "@/types/board-detail";
 import { useEffect, useState } from "react";
 
 import { ListWrapper } from "../ListWrapper/list-wrapper";

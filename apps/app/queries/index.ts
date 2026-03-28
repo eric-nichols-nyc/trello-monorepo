@@ -7,4 +7,4 @@ export {
   type BoardCommentAuthor,
   type BoardDetail,
   type BoardList,
-} from "./board-detail";
+} from "../types/board-detail";
