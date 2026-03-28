@@ -5,7 +5,7 @@ import { CSS } from "@dnd-kit/utilities";
 
 import { ListCards } from "../ListCards/list-cards";
 import { ListFooter } from "./list-footer";
-import { ListHeader } from "./list-header";
+import { ListHeader } from "../ListHeader/list-header";
 
 type ListWrapperProps = {
   boardKey: string;
@@ -46,7 +46,12 @@ export const ListWrapper = ({
       {...attributes}
     >
       <div className="flex flex-col gap-2 rounded-lg bg-[rgb(16,18,4)]">
-        <ListHeader dragHandleProps={listeners} title={title} />
+        <ListHeader
+          boardKey={boardKey}
+          dragHandleProps={listeners}
+          listId={id}
+          title={title}
+        />
         <ListCards
           cardIds={cardIds}
           cardTitles={cardTitles}

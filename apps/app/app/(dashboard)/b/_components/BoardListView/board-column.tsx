@@ -6,7 +6,7 @@ import { cn } from "@repo/design-system/lib/utils";
 import { memo, useCallback } from "react";
 import type { CardPlacement } from "@/lib/board/card-list-pos";
 import { ListFooter } from "../ListWrapper/list-footer";
-import { ListHeader } from "../ListWrapper/list-header";
+import { ListHeader } from "../ListHeader/list-header";
 import { BoardCardItem } from "./board-card-item";
 
 export type BoardColumnProps = {
@@ -54,11 +54,13 @@ export const BoardColumn = memo(function BoardColumnFrame({
     >
       <div className="flex flex-col gap-2 rounded-lg bg-[rgb(16,18,4)]">
         <ListHeader
+          boardKey={boardKey}
           dragHandleRef={handleRef}
+          listId={listId}
           listPosDebug={listPosDebug}
           title={title}
         />
-        <ol className="mx-[4px] my-0 flex min-h-[120px] list-none flex-col gap-2 p-0">
+        <ol className="mx-[4px] my-0 flex min-h-0 list-none flex-col gap-2 p-0">
           {cardIds.map((cardId, index) => (
             <BoardCardItem
               cardId={cardId}

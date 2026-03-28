@@ -98,7 +98,7 @@ export const BoardLists = ({ board, boardKey }: BoardListsProps) => {
           }}
         </DragOverlay>
       </DragDropProvider>
-      <ListComposer />
+      <ListComposer boardId={board.id} boardKey={boardKey} />
     </div>
   );
 };

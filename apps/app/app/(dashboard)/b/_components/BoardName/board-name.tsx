@@ -13,9 +13,9 @@ type BoardNameProperties = {
 };
 
 /**
- * Click to edit. **Enter** or **blur** (including from click-outside) commits via
+ * Click the title to show a rename form (input) and hide the static label.
+ * **Enter** (form submit) or **blur** (including click-outside) commits via
  * `useUpdateBoard` when the trimmed name changed. **Escape** discards edits.
- * Click-outside blurs the input so commit logic lives only in `commitOnBlur`.
  */
 export const BoardName = ({
   boardId,
@@ -24,7 +24,7 @@ export const BoardName = ({
 }: BoardNameProperties) => {
   const [isEditing, setIsEditing] = useState(false);
   const [draft, setDraft] = useState(name);
-  const containerReference = useRef<HTMLDivElement>(null);
+  const containerReference = useRef<HTMLFormElement>(null);
   const draftReference = useRef(draft);
   const nameReference = useRef(name);
 
@@ -106,7 +106,17 @@ export const BoardName = ({
 
   if (isEditing) {
     return (
-      <div className="min-w-48 max-w-full" ref={containerReference}>
+      <form
+        className="min-w-48 max-w-full"
+        ref={containerReference}
+        onSubmit={(event) => {
+          event.preventDefault();
+          const input = containerReference.current?.querySelector("input");
+          if (input instanceof HTMLInputElement) {
+            input.blur();
+          }
+        }}
+      >
         <Input
           aria-label="Board name"
           autoFocus
@@ -115,22 +125,18 @@ export const BoardName = ({
             "focus-visible:border-white/40 focus-visible:ring-white/30"
           )}
           disabled={updateBoard.isPending}
+          name="boardName"
           onBlur={commitOnBlur}
           onChange={(event) => setDraft(event.target.value)}
           onKeyDown={(event) => {
             if (event.key === "Escape") {
               event.preventDefault();
               cancelWithoutSave();
-              return;
-            }
-            if (event.key === "Enter") {
-              event.preventDefault();
-              (event.currentTarget as HTMLInputElement).blur();
             }
           }}
           value={draft}
         />
-      </div>
+      </form>
     );
   }
 

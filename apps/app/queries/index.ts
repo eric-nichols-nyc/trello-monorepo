@@ -13,6 +13,10 @@ export {
   type CreateCardMutationVariables,
   useCreateCard,
 } from "./use-create-card";
+export {
+  type CreateListMutationVariables,
+  useCreateList,
+} from "./use-create-list";
 export { useBoardDetail } from "./use-board-detail";
 export {
   type UpdateBoardMutationVariables,

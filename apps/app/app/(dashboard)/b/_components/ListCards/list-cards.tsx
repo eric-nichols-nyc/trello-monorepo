@@ -6,6 +6,8 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 
+import { cn } from "@repo/design-system/lib/utils";
+
 import { ListCard } from "../ListCard/list-card";
 
 type ListCardsProps = {
@@ -26,7 +28,11 @@ export const ListCards = ({
   return (
     <SortableContext items={cardIds} strategy={verticalListSortingStrategy}>
       <ol
-        className="mx-[4px] my-0 flex min-h-[120px] list-none flex-col gap-2 p-0"
+        className={cn(
+          "mx-[4px] my-0 flex list-none flex-col gap-2 p-0",
+          // Keep a modest hit target for @dnd-kit/core droppables when the list is empty.
+          cardIds.length === 0 ? "min-h-10" : "min-h-0"
+        )}
         ref={setNodeRef}
       >
         {cardIds.map((cardId, index) => (

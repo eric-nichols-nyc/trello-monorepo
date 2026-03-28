@@ -1,10 +1,13 @@
 import { GripVertical } from "lucide-react";
 import type { HTMLAttributes, Ref } from "react";
 
-import { ListTitle } from "./list-title";
+import { ListTitle } from "../ListTitle/list-title";
 
 type ListHeaderProps = {
   title: string;
+  /** When both are set, the list title is editable (PATCH list name). */
+  listId?: string;
+  boardKey?: string;
   dragHandleProps?: HTMLAttributes<HTMLButtonElement>;
   /** `@dnd-kit/react` sortable column handle (callback ref). */
   dragHandleRef?: (element: Element | null) => void;
@@ -13,7 +16,9 @@ type ListHeaderProps = {
 };
 
 export const ListHeader = ({
+  boardKey,
   title,
+  listId,
   dragHandleProps,
   dragHandleRef,
   listPosDebug,
@@ -29,7 +34,7 @@ export const ListHeader = ({
       <GripVertical aria-hidden className="size-4 shrink-0" />
     </button>
     <div className="flex min-w-0 flex-1 items-center gap-2">
-      <ListTitle title={title} />
+      <ListTitle boardKey={boardKey} listId={listId} title={title} />
       {listPosDebug ? (
         <span
           className="shrink-0 font-mono text-[10px] text-emerald-400/90 leading-none"
