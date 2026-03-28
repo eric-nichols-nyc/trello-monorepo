@@ -1,8 +1,3 @@
-/** Served from `public/test-data/board-detail.sample.json`. */
-export const BOARD_DETAIL_SAMPLE_URL = "/test-data/board-detail.sample.json";
-
-export const boardDetailSampleQueryKey = ["board", "detail", "sample"] as const;
-
 export type BoardCommentAuthor = {
   id: string;
   email: string;
@@ -83,12 +78,125 @@ export type BoardDetail = {
   lists: BoardList[];
 };
 
-export async function fetchBoardDetailSample(): Promise<BoardDetail> {
-  const response = await fetch(BOARD_DETAIL_SAMPLE_URL);
-  if (!response.ok) {
-    throw new Error(
-      `Failed to load board sample (${response.status} ${response.statusText})`,
-    );
+function normalizeBoardCommentAuthor(raw: unknown): BoardCommentAuthor {
+  const a = raw as Record<string, unknown>;
+  return {
+    id: String(a.id),
+    email: String(a.email ?? ""),
+    firstName: String(a.firstName ?? ""),
+    lastName: String(a.lastName ?? ""),
+    imageUrl:
+      a.imageUrl === null || a.imageUrl === undefined
+        ? null
+        : String(a.imageUrl),
+  };
+}
+
+function normalizeBoardComment(raw: unknown): BoardComment {
+  const c = raw as Record<string, unknown>;
+  return {
+    id: String(c.id),
+    text: String(c.text),
+    cardId: String(c.cardId),
+    authorId: String(c.authorId),
+    createdAt: String(c.createdAt),
+    updatedAt: String(c.updatedAt),
+    author: normalizeBoardCommentAuthor(c.author),
+  };
+}
+
+function normalizeBoardChecklist(raw: unknown): BoardChecklist {
+  const cl = raw as Record<string, unknown>;
+  const items = Array.isArray(cl.items) ? cl.items : [];
+  return {
+    id: String(cl.id),
+    name: String(cl.name),
+    pos: Number(cl.pos),
+    cardId: String(cl.cardId),
+    items: items.map((item) => {
+      const i = item as Record<string, unknown>;
+      return {
+        id: String(i.id),
+        name: String(i.name),
+        pos: Number(i.pos),
+        completed: Boolean(i.completed),
+        checklistId: String(i.checklistId),
+      };
+    }),
+  };
+}
+
+function normalizeBoardCard(raw: unknown): BoardCard {
+  const c = raw as Record<string, unknown>;
+  return {
+    id: String(c.id),
+    name: String(c.name),
+    description:
+      c.description === null || c.description === undefined
+        ? null
+        : String(c.description),
+    pos: Number(c.pos),
+    closed: Boolean(c.closed),
+    dueDate:
+      c.dueDate === null || c.dueDate === undefined
+        ? null
+        : String(c.dueDate),
+    listId: String(c.listId),
+    boardId: String(c.boardId),
+    assigneeId:
+      c.assigneeId === null || c.assigneeId === undefined
+        ? null
+        : String(c.assigneeId),
+    createdAt: String(c.createdAt),
+    updatedAt: String(c.updatedAt),
+    comments: Array.isArray(c.comments)
+      ? c.comments.map(normalizeBoardComment)
+      : [],
+    checklists: Array.isArray(c.checklists)
+      ? c.checklists.map(normalizeBoardChecklist)
+      : [],
+  };
+}
+
+function normalizeBoardList(raw: unknown): BoardList {
+  const l = raw as Record<string, unknown>;
+  const cards = Array.isArray(l.cards) ? l.cards : [];
+  return {
+    id: String(l.id),
+    name: String(l.name),
+    pos: Number(l.pos),
+    closed: Boolean(l.closed),
+    boardId: String(l.boardId),
+    createdAt: String(l.createdAt),
+    updatedAt: String(l.updatedAt),
+    cards: cards.map(normalizeBoardCard),
+  };
+}
+
+/** Maps a Nest/Prisma board JSON payload into the shape the board UI expects. */
+export function normalizeBoardDetailPayload(raw: unknown): BoardDetail {
+  if (raw === null || typeof raw !== "object") {
+    throw new Error("Invalid board payload");
   }
-  return response.json() as Promise<BoardDetail>;
+  const b = raw as Record<string, unknown>;
+  const lists = Array.isArray(b.lists) ? b.lists : [];
+  return {
+    id: String(b.id),
+    name: String(b.name),
+    shortLink: typeof b.shortLink === "string" ? b.shortLink : "",
+    background: (b.background as string | null | undefined) ?? null,
+    backgroundImage: (b.backgroundImage as string | null | undefined) ?? null,
+    backgroundBrightness: String(b.backgroundBrightness ?? "light"),
+    backgroundBottomColor:
+      (b.backgroundBottomColor as string | null | undefined) ?? null,
+    backgroundTopColor: (b.backgroundTopColor as string | null | undefined) ?? null,
+    backgroundColor: (b.backgroundColor as string | null | undefined) ?? null,
+    starred: Boolean(b.starred),
+    closed: Boolean(b.closed),
+    userId: String(b.userId),
+    workspaceId: String(b.workspaceId),
+    createdAt: String(b.createdAt),
+    updatedAt: String(b.updatedAt),
+    lists: lists.map(normalizeBoardList),
+  };
 }

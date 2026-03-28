@@ -111,21 +111,49 @@ export class BoardsService {
     });
   }
 
-  findOneByIdForUser(id: string, userId: string) {
-    return this.prisma.board.findFirst({
-      where: { id, userId },
+  async findOneForUser(boardKey: string, userId: string) {
+    const board = await this.prisma.board.findFirst({
+      where: {
+        userId,
+        OR: [{ id: boardKey }, { shortLink: boardKey }],
+      },
       include: {
         lists: {
           orderBy: { pos: 'asc' },
-          include: { cards: { orderBy: { pos: 'asc' } } },
+          include: {
+            cards: {
+              orderBy: { pos: 'asc' },
+              include: {
+                comments: {
+                  orderBy: { createdAt: 'asc' },
+                  include: {
+                    author: {
+                      select: {
+                        id: true,
+                        email: true,
+                        firstName: true,
+                        lastName: true,
+                        imageUrl: true,
+                      },
+                    },
+                  },
+                },
+                checklists: {
+                  orderBy: { pos: 'asc' },
+                  include: {
+                    items: { orderBy: { pos: 'asc' } },
+                  },
+                },
+              },
+            },
+          },
         },
       },
-    }).then((board) => {
-      if (!board) {
-        throw new NotFoundException(`Board ${id} not found`);
-      }
-      return board;
     });
+    if (!board) {
+      throw new NotFoundException(`Board ${boardKey} not found`);
+    }
+    return board;
   }
 
   async createForUser(data: CreateBoardInput & { userId: string }) {

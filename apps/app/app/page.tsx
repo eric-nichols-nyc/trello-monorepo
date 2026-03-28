@@ -40,7 +40,7 @@ const HomePage = () => (
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
-        <Link href="/dashboard">
+        <Link href="/w">
           <Card className="h-full transition-all hover:shadow-lg">
             <CardHeader>
               <div className="mb-4 flex items-center gap-3">
@@ -55,7 +55,7 @@ const HomePage = () => (
             </CardHeader>
             <CardContent>
               <Button className="w-full" variant="outline">
-                Open dashboard
+                Open workspace
               </Button>
             </CardContent>
           </Card>

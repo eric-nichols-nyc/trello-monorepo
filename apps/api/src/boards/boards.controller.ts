@@ -48,7 +48,7 @@ export class BoardsController {
         "User not found. Sync the Clerk user to the database first.",
       );
     }
-    return this.boardsService.findOneByIdForUser(id, user.id);
+    return this.boardsService.findOneForUser(id, user.id);
   }
 
   @Post()
