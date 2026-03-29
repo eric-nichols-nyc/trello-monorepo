@@ -8,10 +8,7 @@ import { PointerActivationConstraints } from "@dnd-kit/dom";
 import { move } from "@dnd-kit/helpers";
 import { KeyboardSensor, PointerSensor } from "@dnd-kit/react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import {
-  cardMovePersistPayload,
-  cardPlacementByLocalOrder,
-} from "@/lib/board/card-list-pos";
+import { cardMovePersistPayload } from "@/lib/board/card-list-pos";
 import { suggestedListPositionsForOrder } from "@/lib/board/list-column-pos";
 import {
   type MoveCardMutationVariables,
@@ -190,11 +187,6 @@ export function useBoardListsDrag(board: BoardDetail, boardKey: string) {
     [listIds, listPosById]
   );
 
-  const cardPlacementById = useMemo(
-    () => cardPlacementByLocalOrder(board, listIds, cardsByList),
-    [board, listIds, cardsByList]
-  );
-
   // biome-ignore lint/correctness/useExhaustiveDependencies: fingerprint gate vs `board` identity
   useEffect(() => {
     const next = boardToListState(boardRef.current);
@@ -292,7 +284,6 @@ export function useBoardListsDrag(board: BoardDetail, boardKey: string) {
     cardTitles,
     listPosById,
     suggestedListPosById,
-    cardPlacementById,
     sensors,
     handleDragStart,
     handleDragOver,

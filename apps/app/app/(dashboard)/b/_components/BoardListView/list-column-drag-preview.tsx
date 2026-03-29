@@ -23,12 +23,9 @@ export function ListColumnDragPreview({
       <div className="flex flex-col gap-2 rounded-lg bg-[rgb(16,18,4)] shadow-lg ring-2 ring-white/25">
         <ListHeader title={title} />
         <ol className="mx-[4px] my-0 flex min-h-0 list-none flex-col gap-2 p-0">
-          {cardIds.map((cardId, cardIndex) => (
+          {cardIds.map((cardId) => (
             <li className="relative flex list-none" key={cardId}>
-              <ListCardChrome
-                listPosition={cardIndex + 1}
-                title={cardTitles[cardId] ?? "Card"}
-              />
+              <ListCardChrome title={cardTitles[cardId] ?? "Card"} />
             </li>
           ))}
         </ol>

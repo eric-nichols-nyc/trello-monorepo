@@ -25,7 +25,6 @@ export const BoardLists = ({ board, boardKey }: BoardListsProps) => {
     cardTitles,
     listPosById,
     suggestedListPosById,
-    cardPlacementById,
     sensors,
     handleDragStart,
     handleDragOver,
@@ -45,7 +44,6 @@ export const BoardLists = ({ board, boardKey }: BoardListsProps) => {
             <BoardColumn
               boardKey={boardKey}
               cardIds={cardsByList[id] ?? []}
-              cardPlacementById={cardPlacementById}
               cardTitles={cardTitles}
               columnIndex={columnIndex}
               key={id}
@@ -73,25 +71,10 @@ export const BoardLists = ({ board, boardKey }: BoardListsProps) => {
                 />
               );
             }
-            const listIdForCard = listIds.find((lid) =>
-              (cardsByList[lid] ?? []).includes(id)
-            );
-            const cardIndex =
-              listIdForCard !== undefined
-                ? (cardsByList[listIdForCard] ?? []).indexOf(id)
-                : -1;
-            let listPosition: number | undefined;
-            if (cardIndex >= 0) {
-              listPosition = cardIndex + 1;
-            }
             return (
               <div className="pointer-events-none w-[262px] max-w-[calc(270px-8px)] cursor-grabbing">
                 <div className="overflow-hidden rounded-[8px] shadow-lg ring-2 ring-white/20">
-                  <ListCardChrome
-                    cardPlacement={cardPlacementById[id]}
-                    listPosition={listPosition}
-                    title={cardTitles[id] ?? "Card"}
-                  />
+                  <ListCardChrome title={cardTitles[id] ?? "Card"} />
                 </div>
               </div>
             );

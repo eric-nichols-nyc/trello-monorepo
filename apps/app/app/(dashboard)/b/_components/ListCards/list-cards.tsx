@@ -35,11 +35,10 @@ export const ListCards = ({
         )}
         ref={setNodeRef}
       >
-        {cardIds.map((cardId, index) => (
+        {cardIds.map((cardId) => (
           <ListCard
             cardId={cardId}
             key={cardId}
-            listPosition={index + 1}
             title={cardTitles[cardId] ?? "Card"}
           />
         ))}

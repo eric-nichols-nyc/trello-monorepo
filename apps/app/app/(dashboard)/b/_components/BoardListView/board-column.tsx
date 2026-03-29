@@ -4,10 +4,9 @@ import { CollisionPriority } from "@dnd-kit/abstract";
 import { useSortable } from "@dnd-kit/react/sortable";
 import { cn } from "@repo/design-system/lib/utils";
 import { memo, useCallback } from "react";
-import type { CardPlacement } from "@/lib/board/card-list-pos";
 import { ListFooter } from "../ListWrapper/list-footer";
 import { ListHeader } from "../ListHeader/list-header";
-import { BoardCardItem } from "./board-card-item";
+import { BoardCardItem } from "../ListCard/list-card-chrome";
 
 export type BoardColumnProps = {
   boardKey: string;
@@ -16,7 +15,6 @@ export type BoardColumnProps = {
   title: string;
   cardIds: string[];
   cardTitles: Record<string, string>;
-  cardPlacementById: Record<string, CardPlacement>;
   /** Optional header debug: suggested vs server `pos` for this column. */
   listPosDebug?: { suggested: number; stored: number };
 };
@@ -28,7 +26,6 @@ export const BoardColumn = memo(function BoardColumnFrame({
   title,
   cardIds,
   cardTitles,
-  cardPlacementById,
   listPosDebug,
 }: BoardColumnProps) {
   const { ref, targetRef, handleRef, isDragging } = useSortable({
@@ -64,7 +61,6 @@ export const BoardColumn = memo(function BoardColumnFrame({
           {cardIds.map((cardId, index) => (
             <BoardCardItem
               cardId={cardId}
-              cardPlacement={cardPlacementById[cardId]}
               columnId={listId}
               index={index}
               key={cardId}

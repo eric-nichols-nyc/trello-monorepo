@@ -6,6 +6,7 @@ import { Checkbox } from "@repo/design-system/components/ui/checkbox";
 import { cn } from "@repo/design-system/lib/utils";
 import { useState } from "react";
 
+import { CardActions } from "./card-actions";
 import {
   LIST_CARD_SURFACE_CLASSNAME,
   ListCardTitleArea,
@@ -14,10 +15,16 @@ import {
 type ListCardProps = {
   cardId: string;
   title: string;
-  listPosition?: number;
+  onOpenCard?: () => void;
+  onArchive?: () => void;
 };
 
-export const ListCard = ({ cardId, title, listPosition }: ListCardProps) => {
+export const ListCard = ({
+  cardId,
+  title,
+  onOpenCard,
+  onArchive,
+}: ListCardProps) => {
   const [checked, setChecked] = useState(false);
 
   const {
@@ -80,13 +87,18 @@ export const ListCard = ({ cardId, title, listPosition }: ListCardProps) => {
             onCheckedChange={(value) => setChecked(value === true)}
           />
         </span>
+        <CardActions
+          cardId={cardId}
+          cardTitle={title}
+          onArchive={onArchive}
+          onOpenCard={onOpenCard}
+        />
         <ListCardTitleArea
           className={
             checked
               ? "translate-x-7"
               : "translate-x-0 group-focus-within:translate-x-7 group-hover:translate-x-7"
           }
-          listPosition={listPosition}
           title={title}
         />
       </div>
