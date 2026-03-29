@@ -11,13 +11,18 @@ import { cn } from "@repo/design-system/lib/utils";
 import {
   Archive,
   ArrowRightLeft,
-  CalendarClock,
   Copy,
-  ImagePlus,
   SquareArrowOutUpRight,
   SquarePen,
   Trash2,
 } from "lucide-react";
+
+import {
+  CardCoverChooser,
+  isWithinCardCoverPanel,
+} from "../CardCoverChooser";
+import { EditDatesButton } from "./edit-dates-button";
+import { isWithinEditDatesPanel } from "./edit-dates-panel";
 
 export type CardActionsProps = {
   readonly cardId: string;
@@ -46,7 +51,7 @@ export function CardActions({
   onDeleteCard,
 }: CardActionsProps) {
   return (
-    <DropdownMenu>
+    <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
         <button
           aria-label={`Card actions: ${cardTitle}`}
@@ -56,6 +61,7 @@ export function CardActions({
             "focus-visible:outline focus-visible:ring-2 focus-visible:ring-white/25",
             "data-[state=open]:bg-white/10 data-[state=open]:text-white/80"
           )}
+          onClick={(event) => event.stopPropagation()}
           onPointerDown={(event) => event.stopPropagation()}
           type="button"
         >
@@ -65,6 +71,16 @@ export function CardActions({
       <DropdownMenuContent
         align="start"
         className="min-w-52"
+        onClick={(event) => event.stopPropagation()}
+        onCloseAutoFocus={(event) => event.preventDefault()}
+        onInteractOutside={(event) => {
+          if (
+            isWithinEditDatesPanel(event.target) ||
+            isWithinCardCoverPanel(event.target)
+          ) {
+            event.preventDefault();
+          }
+        }}
         onPointerDown={(event) => event.stopPropagation()}
         side="right"
         sideOffset={6}
@@ -78,20 +94,30 @@ export function CardActions({
           Open card
         </DropdownMenuItem>
         <DropdownMenuItem
-          onSelect={() => {
-            onChangeCover?.();
-          }}
+          className="p-0"
+          onSelect={(event) => event.preventDefault()}
         >
-          <ImagePlus aria-hidden className="size-4" strokeWidth={2} />
-          Change cover
+          <CardCoverChooser
+            onPanelOpenChange={(open) => {
+              if (open) {
+                onChangeCover?.();
+              }
+            }}
+            showLabel
+          />
         </DropdownMenuItem>
         <DropdownMenuItem
-          onSelect={() => {
-            onEditDates?.();
-          }}
+          className="p-0"
+          onSelect={(event) => event.preventDefault()}
         >
-          <CalendarClock aria-hidden className="size-4" strokeWidth={2} />
-          Edit dates
+          <EditDatesButton
+            onPanelOpenChange={(open) => {
+              if (open) {
+                onEditDates?.();
+              }
+            }}
+            showLabel
+          />
         </DropdownMenuItem>
         <DropdownMenuItem
           onSelect={() => {

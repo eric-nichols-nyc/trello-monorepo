@@ -2,7 +2,7 @@
 
 import { Button } from "@repo/design-system/components/ui/button";
 import { cn } from "@repo/design-system/lib/utils";
-import { CalendarClock } from "lucide-react";
+import { ImagePlus } from "lucide-react";
 import {
   type ComponentProps,
   useCallback,
@@ -13,13 +13,13 @@ import {
 } from "react";
 import { createPortal } from "react-dom";
 
-import { EditDatesPanel } from "./edit-dates-panel";
+import { CardCoverPanel } from "./card-cover-panel";
 
-export type EditDatesButtonProps = Omit<
+export type CardCoverChooserProps = Omit<
   ComponentProps<typeof Button>,
   "children" | "size" | "variant"
 > & {
-  /** @default "Edit dates" */
+  /** @default "Change cover" */
   label?: string;
   /** Icon + label row (e.g. card actions menu). @default false */
   showLabel?: boolean;
@@ -27,15 +27,15 @@ export type EditDatesButtonProps = Omit<
   onPanelOpenChange?: (open: boolean) => void;
 };
 
-export function EditDatesButton({
+export function CardCoverChooser({
   className,
-  label = "Edit dates",
+  label = "Change cover",
   showLabel = false,
   onClick,
   onPanelOpenChange,
   onPointerDown,
   ...props
-}: EditDatesButtonProps) {
+}: CardCoverChooserProps) {
   const [panelOpen, setPanelOpen] = useState(false);
   const anchorReference = useRef<HTMLDivElement>(null);
   const [panelPosition, setPanelPosition] = useState({ top: 0, left: 0 });
@@ -85,12 +85,12 @@ export function EditDatesButton({
   const panel =
     panelOpen && typeof document !== "undefined"
       ? createPortal(
-          <EditDatesPanel
+          <CardCoverPanel
             ignorePointerOutsideRef={anchorReference}
             onClose={closePanel}
             position={panelPosition}
           />,
-          document.body
+          document.body,
         )
       : null;
 
@@ -106,7 +106,7 @@ export function EditDatesButton({
           showLabel === true
             ? "h-auto min-h-8 w-full justify-start gap-2 px-2 py-1.5 font-normal text-sm"
             : false,
-          className
+          className,
         )}
         size={showLabel === true ? "sm" : "icon-sm"}
         type="button"
@@ -122,11 +122,11 @@ export function EditDatesButton({
           event.stopPropagation();
         }}
       >
-        <CalendarClock
+        <ImagePlus
           aria-hidden
           className={cn(
             "size-4 shrink-0",
-            showLabel === true ? "text-muted-foreground" : false
+            showLabel === true ? "text-muted-foreground" : false,
           )}
           strokeWidth={2}
         />
