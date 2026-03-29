@@ -1,6 +1,6 @@
 import { arrayMove } from "@dnd-kit/sortable";
-import type { CardOrderingRow } from "@repo/schemas";
 import type { CardDropPosition } from "@repo/card-positioning";
+import type { CardOrderingRow } from "@repo/schemas";
 
 import type { BoardCard, BoardDetail } from "@/types/board-detail";
 
@@ -79,8 +79,7 @@ export function computeNextCardsByListAfterCardDrag(
 
   if (activeListId === overListId) {
     const items = [...(cardsByList[activeListId] ?? [])];
-    const isColumnDrop =
-      listIdFromColumnDroppableId(overId) === activeListId;
+    const isColumnDrop = listIdFromColumnDroppableId(overId) === activeListId;
     const isListShellDrop = overId === activeListId;
 
     if (isColumnDrop || isListShellDrop) {
@@ -130,7 +129,9 @@ export function computeNextCardsByListAfterCardDrag(
   };
 }
 
-export function boardCardsToOrderingRows(board: BoardDetail): CardOrderingRow[] {
+export function boardCardsToOrderingRows(
+  board: BoardDetail
+): CardOrderingRow[] {
   return board.lists.flatMap((l) =>
     l.cards.map((c) => ({ id: c.id, listId: c.listId, pos: c.pos }))
   );

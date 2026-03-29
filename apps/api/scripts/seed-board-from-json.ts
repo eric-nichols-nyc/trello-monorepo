@@ -16,12 +16,12 @@ import { fileURLToPath } from "node:url";
 
 import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
+import { Pool } from "pg";
 import type {
   BoardBackgroundBrightness,
   Prisma,
 } from "../generated/prisma/client";
 import { PrismaClient } from "../generated/prisma/client";
-import { Pool } from "pg";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -65,7 +65,7 @@ const SEED_JSON =
 
 async function resolveWorkspaceId(
   prisma: PrismaClient,
-  userId: string,
+  userId: string
 ): Promise<string> {
   if (SEED_SAMPLE_BOARD_WORKSPACE_ID) {
     const ws = await prisma.workspace.findFirst({
@@ -73,7 +73,7 @@ async function resolveWorkspaceId(
     });
     if (!ws) {
       console.error(
-        `SEED_SAMPLE_BOARD_WORKSPACE_ID=${SEED_SAMPLE_BOARD_WORKSPACE_ID} is not owned by SEED_USER_ID.`,
+        `SEED_SAMPLE_BOARD_WORKSPACE_ID=${SEED_SAMPLE_BOARD_WORKSPACE_ID} is not owned by SEED_USER_ID.`
       );
       process.exit(1);
     }
@@ -107,10 +107,7 @@ function parseBoardJson(raw: string): JBoard {
   return data as JBoard;
 }
 
-function resolveAssigneeId(
-  card: JCard,
-  userId: string,
-): string | null {
+function resolveAssigneeId(card: JCard, userId: string): string | null {
   if (card.assigneeId === null || card.assigneeId === undefined) {
     return null;
   }
@@ -123,7 +120,7 @@ function resolveAssigneeId(
 async function seedCardGraph(
   tx: Prisma.TransactionClient,
   card: JCard,
-  ctx: { listId: string; boardId: string; userId: string },
+  ctx: { listId: string; boardId: string; userId: string }
 ): Promise<void> {
   const assigneeId = resolveAssigneeId(card, ctx.userId);
 

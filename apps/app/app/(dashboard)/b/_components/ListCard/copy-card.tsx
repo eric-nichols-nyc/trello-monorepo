@@ -12,7 +12,11 @@ export type CopyCardProps = Omit<
   label?: string;
 };
 
-export function CopyCard({ className, label = "Copy card", ...props }: CopyCardProps) {
+export function CopyCard({
+  className,
+  label = "Copy card",
+  ...props
+}: CopyCardProps) {
   return (
     <Button
       aria-label={label}

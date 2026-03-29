@@ -136,9 +136,7 @@ function normalizeBoardCard(raw: unknown): BoardCard {
     pos: Number(c.pos),
     closed: Boolean(c.closed),
     dueDate:
-      c.dueDate === null || c.dueDate === undefined
-        ? null
-        : String(c.dueDate),
+      c.dueDate === null || c.dueDate === undefined ? null : String(c.dueDate),
     listId: String(c.listId),
     boardId: String(c.boardId),
     assigneeId:
@@ -187,7 +185,8 @@ export function normalizeBoardDetailPayload(raw: unknown): BoardDetail {
     backgroundBrightness: String(b.backgroundBrightness ?? "light"),
     backgroundBottomColor:
       (b.backgroundBottomColor as string | null | undefined) ?? null,
-    backgroundTopColor: (b.backgroundTopColor as string | null | undefined) ?? null,
+    backgroundTopColor:
+      (b.backgroundTopColor as string | null | undefined) ?? null,
     backgroundColor: (b.backgroundColor as string | null | undefined) ?? null,
     starred: Boolean(b.starred),
     closed: Boolean(b.closed),

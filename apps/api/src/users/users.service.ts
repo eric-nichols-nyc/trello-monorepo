@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
+import type { ClerkAuthPayload } from "../auth/clerk-auth.service";
 // biome-ignore lint/style/useImportType: value import needed so PrismaService type includes PrismaClient (.user)
 import { PrismaService } from "../prisma/prisma.service";
-import type { ClerkAuthPayload } from "../auth/clerk-auth.service";
 import type { CreateUserInput, UpdateUserInput } from "./users.schema";
 
 @Injectable()
@@ -82,7 +82,9 @@ export class UsersService {
    * Upsert user from Clerk JWT claims and ensure a default workspace exists.
    * Call this on authenticated requests (e.g. from ClerkAuthGuard) — no webhooks required.
    */
-  async ensureUserAndDefaultWorkspace(payload: ClerkAuthPayload): Promise<void> {
+  async ensureUserAndDefaultWorkspace(
+    payload: ClerkAuthPayload
+  ): Promise<void> {
     const input = this.clerkPayloadToCreateUserInput(payload);
     await this.prisma.$transaction(async (tx) => {
       const user = await tx.user.upsert({
@@ -116,7 +118,9 @@ export class UsersService {
     });
   }
 
-  private clerkPayloadToCreateUserInput(payload: ClerkAuthPayload): CreateUserInput {
+  private clerkPayloadToCreateUserInput(
+    payload: ClerkAuthPayload
+  ): CreateUserInput {
     const email =
       typeof payload.email === "string" && payload.email.length > 0
         ? payload.email

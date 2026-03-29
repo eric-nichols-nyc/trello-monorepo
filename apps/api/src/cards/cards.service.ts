@@ -5,7 +5,7 @@ import {
 } from "@nestjs/common";
 // biome-ignore lint/style/useImportType: value import needed for PrismaService delegate types
 import { PrismaService } from "../prisma/prisma.service";
-import type { UpdateCardDto } from "./dto";
+import type { UpdateCardDto } from "./dto/update-card.dto";
 import type { CreateCardInput } from "./schemas/create-card.schema";
 
 @Injectable()
@@ -27,7 +27,11 @@ export class CardsService {
     });
   }
 
-  async createForUser(listId: string, clerkUserId: string, data: CreateCardInput) {
+  async createForUser(
+    listId: string,
+    clerkUserId: string,
+    data: CreateCardInput
+  ) {
     const list = await this.prisma.list.findUnique({
       where: { id: listId },
       include: { board: true },
@@ -92,7 +96,7 @@ export class CardsService {
       }
       if (targetList.boardId !== card.boardId) {
         throw new BadRequestException(
-          "Cannot move card to a list on a different board",
+          "Cannot move card to a list on a different board"
         );
       }
     }

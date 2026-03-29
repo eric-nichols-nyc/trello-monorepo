@@ -13,9 +13,7 @@
       "name": "Create board",
       "request": {
         "method": "POST",
-        "header": [
-          { "key": "Content-Type", "value": "application/json" }
-        ],
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
         "body": {
           "mode": "raw",
           "raw": "{\n  \"title\": \"My First Board\"\n}"
@@ -44,9 +42,7 @@
       "name": "Update board",
       "request": {
         "method": "PATCH",
-        "header": [
-          { "key": "Content-Type", "value": "application/json" }
-        ],
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
         "body": {
           "mode": "raw",
           "raw": "{\n  \"title\": \"Updated Board Title\"\n}"

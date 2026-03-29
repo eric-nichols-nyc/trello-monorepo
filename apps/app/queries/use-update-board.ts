@@ -3,8 +3,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import {
-  type UpdateBoardPatchBody,
   patchBoardClient,
+  type UpdateBoardPatchBody,
 } from "@/lib/api/boards/patch-board-client";
 import type { BoardDetail } from "@/types/board-detail";
 

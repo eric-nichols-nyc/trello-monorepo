@@ -44,9 +44,7 @@
           "name": "GET users/me",
           "request": {
             "method": "GET",
-            "header": [
-              { "key": "Authorization", "value": "Bearer {{token}}" }
-            ],
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
             "url": "{{baseUrl}}/users/me"
           }
         },
@@ -54,9 +52,7 @@
           "name": "DELETE users/me",
           "request": {
             "method": "DELETE",
-            "header": [
-              { "key": "Authorization", "value": "Bearer {{token}}" }
-            ],
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
             "url": "{{baseUrl}}/users/me"
           }
         }
@@ -67,11 +63,19 @@
       "item": [
         {
           "name": "GET workspaces",
-          "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/workspaces" }
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/workspaces"
+          }
         },
         {
           "name": "GET workspace by id",
-          "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/workspaces/{{workspaceId}}" }
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/workspaces/{{workspaceId}}"
+          }
         },
         {
           "name": "POST workspace",
@@ -96,7 +100,10 @@
               { "key": "Content-Type", "value": "application/json" },
               { "key": "Authorization", "value": "Bearer {{token}}" }
             ],
-            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Renamed workspace\"\n}" },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Renamed workspace\"\n}"
+            },
             "url": "{{baseUrl}}/workspaces/{{workspaceId}}"
           }
         },
@@ -115,11 +122,19 @@
       "item": [
         {
           "name": "GET boards",
-          "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/boards" }
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/boards"
+          }
         },
         {
           "name": "GET board by id",
-          "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/boards/{{boardId}}" }
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/boards/{{boardId}}"
+          }
         },
         {
           "name": "POST board",
@@ -200,7 +215,10 @@
               { "key": "Content-Type", "value": "application/json" },
               { "key": "Authorization", "value": "Bearer {{token}}" }
             ],
-            "body": { "mode": "raw", "raw": "{\n  \"name\": \"In Progress\",\n  \"closed\": false\n}" },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"In Progress\",\n  \"closed\": false\n}"
+            },
             "url": "{{baseUrl}}/lists/{{listId}}"
           }
         },
@@ -292,7 +310,10 @@
               { "key": "Content-Type", "value": "application/json" },
               { "key": "Authorization", "value": "Bearer {{token}}" }
             ],
-            "body": { "mode": "raw", "raw": "{\n  \"text\": \"Hello from HTTPie\"\n}" },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"text\": \"Hello from HTTPie\"\n}"
+            },
             "url": "{{baseUrl}}/cards/{{cardId}}/comments"
           }
         },
@@ -312,7 +333,10 @@
               { "key": "Content-Type", "value": "application/json" },
               { "key": "Authorization", "value": "Bearer {{token}}" }
             ],
-            "body": { "mode": "raw", "raw": "{\n  \"text\": \"Edited comment\"\n}" },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"text\": \"Edited comment\"\n}"
+            },
             "url": "{{baseUrl}}/comments/{{commentId}}"
           }
         },
@@ -365,7 +389,10 @@
               { "key": "Content-Type", "value": "application/json" },
               { "key": "Authorization", "value": "Bearer {{token}}" }
             ],
-            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Renamed checklist\"\n}" },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Renamed checklist\"\n}"
+            },
             "url": "{{baseUrl}}/checklists/{{checklistId}}"
           }
         },
@@ -393,7 +420,10 @@
               { "key": "Content-Type", "value": "application/json" },
               { "key": "Authorization", "value": "Bearer {{token}}" }
             ],
-            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Item 1\",\n  \"completed\": false\n}" },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Item 1\",\n  \"completed\": false\n}"
+            },
             "url": "{{baseUrl}}/checklists/{{checklistId}}/items"
           }
         },
@@ -413,7 +443,10 @@
               { "key": "Content-Type", "value": "application/json" },
               { "key": "Authorization", "value": "Bearer {{token}}" }
             ],
-            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Done item\",\n  \"completed\": true\n}" },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Done item\",\n  \"completed\": true\n}"
+            },
             "url": "{{baseUrl}}/checklist-items/{{checkItemId}}"
           }
         },

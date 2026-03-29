@@ -9,8 +9,8 @@ export function SocialProof() {
       </h2>
       <p className="mt-2 max-w-2xl text-foreground leading-relaxed">
         Placeholder for social proof—customer logos, short stats, or press
-        mentions. Reduces friction for visitors who need evidence others rely
-        on the product.
+        mentions. Reduces friction for visitors who need evidence others rely on
+        the product.
       </p>
     </section>
   );

@@ -19,6 +19,7 @@
       "!docs/hooks",
       "!apps/docs/**/*.json",
       "!apps/email/.react-email",
+      "!apps/api/generated/**",
       "!packages/cms/basehub-types.d.ts"
     ]
   },

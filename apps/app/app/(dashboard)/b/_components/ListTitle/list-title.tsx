@@ -2,9 +2,9 @@
 
 import { Input } from "@repo/design-system/components/ui/input";
 import { cn } from "@repo/design-system/lib/utils";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useClickOutside } from "@/hooks/use-click-outside";
 import { useUpdateList } from "@/queries/use-update-list";
-import { useCallback, useEffect, useRef, useState } from "react";
 
 const LIST_ID_PREFIX = /^list-/;
 
@@ -21,10 +21,7 @@ type ListTitleProps = {
 
 const titleTypography = "text-sm font-semibold text-white/90";
 
-const titleReadOnlyClass = cn(
-  "min-w-0 flex-1 truncate",
-  titleTypography
-);
+const titleReadOnlyClass = cn("min-w-0 flex-1 truncate", titleTypography);
 
 function ListTitleEditable({
   boardKey,
@@ -105,11 +102,7 @@ function ListTitleEditable({
     () => {
       const root = formReference.current;
       const active = document.activeElement;
-      if (
-        root &&
-        active instanceof HTMLInputElement &&
-        root.contains(active)
-      ) {
+      if (root && active instanceof HTMLInputElement && root.contains(active)) {
         active.blur();
       }
     },
@@ -120,7 +113,6 @@ function ListTitleEditable({
     return (
       <form
         className={cn("min-w-0 flex-1", titleTypography)}
-        ref={formReference}
         onSubmit={(event) => {
           event.preventDefault();
           const input = formReference.current?.querySelector("input");
@@ -128,6 +120,7 @@ function ListTitleEditable({
             input.blur();
           }
         }}
+        ref={formReference}
       >
         <Input
           aria-label="List name"

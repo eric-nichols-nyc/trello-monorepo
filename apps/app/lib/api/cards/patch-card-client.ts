@@ -12,15 +12,12 @@ export async function patchCardClient(
     throw new Error(parsed.error.message);
   }
 
-  const response = await fetch(
-    `/api/cards/${encodeURIComponent(cardId)}`,
-    {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(parsed.data),
-      cache: "no-store",
-    }
-  );
+  const response = await fetch(`/api/cards/${encodeURIComponent(cardId)}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(parsed.data),
+    cache: "no-store",
+  });
 
   if (!response.ok) {
     throw new BoardApiError(

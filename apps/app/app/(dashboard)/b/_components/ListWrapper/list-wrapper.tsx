@@ -4,8 +4,8 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
 import { ListCards } from "../ListCards/list-cards";
-import { ListFooter } from "./list-footer";
 import { ListHeader } from "../ListHeader/list-header";
+import { ListFooter } from "./list-footer";
 
 type ListWrapperProps = {
   boardKey: string;

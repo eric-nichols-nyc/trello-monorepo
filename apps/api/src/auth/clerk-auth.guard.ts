@@ -12,7 +12,7 @@ export const CLERK_AUTH_PAYLOAD = "clerkAuthPayload";
 export class ClerkAuthGuard implements CanActivate {
   constructor(
     private readonly clerkAuthService: ClerkAuthService,
-    private readonly usersService: UsersService,
+    private readonly usersService: UsersService
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -23,7 +23,9 @@ export class ClerkAuthGuard implements CanActivate {
       : undefined;
 
     if (!token) {
-      throw new UnauthorizedException("Missing or invalid Authorization header");
+      throw new UnauthorizedException(
+        "Missing or invalid Authorization header"
+      );
     }
 
     try {
@@ -34,7 +36,8 @@ export class ClerkAuthGuard implements CanActivate {
       ] = payload;
       return true;
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Invalid or expired token";
+      const message =
+        err instanceof Error ? err.message : "Invalid or expired token";
       throw new UnauthorizedException(message);
     }
   }

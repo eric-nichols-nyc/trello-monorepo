@@ -1,5 +1,5 @@
-import { BoardApiError } from "@/lib/api/boards/board-api-error";
 import type { CreateCardInput } from "@repo/schemas";
+import { BoardApiError } from "@/lib/api/boards/board-api-error";
 
 /**
  * Browser-safe `POST` to the Next proxy at `/api/lists/:listId/cards`.

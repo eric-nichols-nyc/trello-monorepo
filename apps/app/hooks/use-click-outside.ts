@@ -2,7 +2,7 @@ import { type RefObject, useEffect, useRef } from "react";
 
 function targetIsInsideIgnoredSubtree(
   target: Node,
-  ignores: readonly RefObject<HTMLElement | null>[] | undefined,
+  ignores: readonly RefObject<HTMLElement | null>[] | undefined
 ): boolean {
   if (!ignores) {
     return false;
@@ -26,7 +26,7 @@ export function useClickOutside<T extends HTMLElement>(
   ref: RefObject<T | null>,
   onOutside: () => void,
   enabled = true,
-  ignoreRefs?: readonly RefObject<HTMLElement | null>[],
+  ignoreRefs?: readonly RefObject<HTMLElement | null>[]
 ) {
   const onOutsideRef = useRef(onOutside);
   onOutsideRef.current = onOutside;

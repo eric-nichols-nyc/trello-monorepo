@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 // biome-ignore lint/style/useImportType: value import needed for PrismaService delegate types
 import { PrismaService } from "../prisma/prisma.service";
-import type { UpdateListDto } from "./dto";
+import type { UpdateListDto } from "./dto/update-list.dto";
 import type { CreateListInput } from "./schemas/create-list.schema";
 
 @Injectable()
@@ -16,7 +16,11 @@ export class ListsService {
     });
   }
 
-  async createForUser(boardId: string, clerkUserId: string, data: CreateListInput) {
+  async createForUser(
+    boardId: string,
+    clerkUserId: string,
+    data: CreateListInput
+  ) {
     const board = await this.prisma.board.findFirst({
       where: { id: boardId, user: { clerkUserId } },
     });

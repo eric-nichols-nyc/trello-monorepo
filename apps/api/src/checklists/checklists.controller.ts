@@ -1,16 +1,16 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
   Param,
   Patch,
-  Body,
   UseGuards,
 } from "@nestjs/common";
 import { ClerkAuthGuard } from "../auth/clerk-auth.guard";
 import { CurrentUser } from "../auth/current-user.decorator";
-import { ChecklistsService } from "./checklists.service";
-import { UpdateChecklistDto } from "./dto";
+import type { ChecklistsService } from "./checklists.service";
+import type { UpdateChecklistDto } from "./dto/update-checklist.dto";
 
 @Controller("checklists")
 export class ChecklistsController {
@@ -27,7 +27,7 @@ export class ChecklistsController {
   update(
     @Param("id") id: string,
     @Body() body: UpdateChecklistDto,
-    @CurrentUser("sub") clerkUserId: string,
+    @CurrentUser("sub") clerkUserId: string
   ) {
     return this.checklistsService.updateForUser(id, clerkUserId, body);
   }

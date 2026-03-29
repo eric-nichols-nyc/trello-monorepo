@@ -12,9 +12,8 @@ import { CommentsModule } from "./comments/comments.module";
 import { ListsModule } from "./lists/lists.module";
 import { PrismaModule } from "./prisma/prisma.module";
 import { UsersModule } from "./users/users.module";
-import { WorkspacesModule } from "./workspaces/workspaces.module";
 import { WebhooksModule } from "./webhooks/webhooks.module";
-import { MyLoggerModule } from './my-logger/my-logger.module';
+import { WorkspacesModule } from "./workspaces/workspaces.module";
 
 @Module({
   imports: [
@@ -35,7 +34,6 @@ import { MyLoggerModule } from './my-logger/my-logger.module';
     ChecklistsModule,
     WorkspacesModule,
     WebhooksModule,
-    MyLoggerModule
   ],
   controllers: [AppController],
   providers: [

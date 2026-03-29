@@ -17,10 +17,8 @@ import {
   Trash2,
 } from "lucide-react";
 
-import {
-  CardCoverChooser,
-  isWithinCardCoverPanel,
-} from "../CardCoverChooser";
+import { CardCoverChooser } from "../CardCoverChooser/card-cover-chooser";
+import { isWithinCardCoverPanel } from "../CardCoverChooser/card-cover-panel";
 import { EditDatesButton } from "./edit-dates-button";
 import { isWithinEditDatesPanel } from "./edit-dates-panel";
 
@@ -90,7 +88,11 @@ export function CardActions({
             onOpenCard?.();
           }}
         >
-          <SquareArrowOutUpRight aria-hidden className="size-4" strokeWidth={2} />
+          <SquareArrowOutUpRight
+            aria-hidden
+            className="size-4"
+            strokeWidth={2}
+          />
           Open card
         </DropdownMenuItem>
         <DropdownMenuItem

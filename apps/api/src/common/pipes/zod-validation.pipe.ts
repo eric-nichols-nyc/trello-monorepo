@@ -1,5 +1,5 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
 import type { PipeTransform } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import type { z } from "zod";
 
 @Injectable()
@@ -9,7 +9,7 @@ export class ZodValidationPipe implements PipeTransform {
   transform(value: unknown) {
     if (value === undefined || value === null) {
       throw new BadRequestException(
-        'Request body is required. Send JSON with "name", "workspaceId" (UUID), and header: Content-Type: application/json',
+        'Request body is required. Send JSON with "name", "workspaceId" (UUID), and header: Content-Type: application/json'
       );
     }
     const result = this.schema.safeParse(value);
@@ -18,9 +18,16 @@ export class ZodValidationPipe implements PipeTransform {
     }
     const first = result.error.issues[0];
     const path = first?.path?.join(".") ?? "";
-    const message = first
-      ? (path ? `${path}: ${first.message}` : first.message)
-      : "Validation failed";
+    let message: string;
+    if (first) {
+      if (path && path.length > 0) {
+        message = `${path}: ${first.message}`;
+      } else {
+        message = first.message;
+      }
+    } else {
+      message = "Validation failed";
+    }
     throw new BadRequestException(message);
   }
 }

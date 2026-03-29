@@ -54,14 +54,14 @@ export function MiniCard({
       className={cn(
         "w-full max-w-[136px] overflow-hidden",
         MINI_CARD_SURFACE,
-        className,
+        className
       )}
     >
       {showCover ? (
         <div
           className={cn(
             "w-full shrink-0 rounded-t-[7px] bg-zinc-600",
-            coverHeights[coverSize],
+            coverHeights[coverSize]
           )}
           style={coverStyle}
         />
@@ -69,7 +69,7 @@ export function MiniCard({
       <div
         className={cn(
           "min-h-[28px] px-2 py-1.5",
-          showCover ? "rounded-b-[8px]" : "rounded-[8px]",
+          showCover ? "rounded-b-[8px]" : "rounded-[8px]"
         )}
       >
         <p className="line-clamp-2 font-medium text-[11px] text-zinc-100 leading-tight">

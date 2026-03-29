@@ -90,7 +90,7 @@ export function CardCoverChooser({
             onClose={closePanel}
             position={panelPosition}
           />,
-          document.body,
+          document.body
         )
       : null;
 
@@ -106,7 +106,7 @@ export function CardCoverChooser({
           showLabel === true
             ? "h-auto min-h-8 w-full justify-start gap-2 px-2 py-1.5 font-normal text-sm"
             : false,
-          className,
+          className
         )}
         size={showLabel === true ? "sm" : "icon-sm"}
         type="button"
@@ -126,7 +126,7 @@ export function CardCoverChooser({
           aria-hidden
           className={cn(
             "size-4 shrink-0",
-            showLabel === true ? "text-muted-foreground" : false,
+            showLabel === true ? "text-muted-foreground" : false
           )}
           strokeWidth={2}
         />

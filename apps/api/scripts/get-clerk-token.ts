@@ -15,7 +15,8 @@ const clerk = createClerkClient({
 });
 
 async function run() {
-  const userId = process.env.CLERK_USER_ID ?? "user_3AeBqoeILoFdovPUTlE0rvg1sYX";
+  const userId =
+    process.env.CLERK_USER_ID ?? "user_3AeBqoeILoFdovPUTlE0rvg1sYX";
   const template = process.env.CLERK_JWT_TEMPLATE ?? "default";
   const secretKey = process.env.CLERK_SECRET_KEY;
 
@@ -29,11 +30,14 @@ async function run() {
   });
 
   const response = await clerk.sessions.getToken(session.id, template);
-  const jwt = typeof response === "string" ? response : (response as { jwt?: string })?.jwt;
+  const jwt =
+    typeof response === "string"
+      ? response
+      : (response as { jwt?: string })?.jwt;
   if (!jwt) {
     console.error(
       "No JWT in response. Create a JWT template named '%s' in Clerk Dashboard → JWT templates.",
-      template,
+      template
     );
     console.error("Response:", response);
     process.exit(1);
@@ -41,9 +45,14 @@ async function run() {
 
   try {
     const payload = await verifyToken(jwt, { secretKey });
-    console.log("Token verified. sub (user id):", (payload as { sub?: string })?.sub);
+    console.log(
+      "Token verified. sub (user id):",
+      (payload as { sub?: string })?.sub
+    );
   } catch (err) {
-    console.error("Token verification failed (this is the error your API would return):");
+    console.error(
+      "Token verification failed (this is the error your API would return):"
+    );
     console.error(err);
     process.exit(1);
   }

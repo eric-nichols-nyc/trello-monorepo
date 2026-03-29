@@ -22,9 +22,9 @@
  */
 import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
+import { Pool } from "pg";
 import type { Prisma } from "../generated/prisma/client";
 import { PrismaClient } from "../generated/prisma/client";
-import { Pool } from "pg";
 
 const SYNTHETIC_CLERK_ID = "user_seed_local_demo";
 const SEED_BOARD_NAME = "Seed board";
@@ -37,7 +37,7 @@ const attachToExistingUser = CLERK_ID !== SYNTHETIC_CLERK_ID;
 async function seedBoardGraph(
   tx: Prisma.TransactionClient,
   user: { id: string; clerkUserId: string; email: string },
-  workspaceId: string,
+  workspaceId: string
 ) {
   const board = await tx.board.create({
     data: {
@@ -102,7 +102,12 @@ async function seedBoardGraph(
 
   await tx.checkItem.createMany({
     data: [
-      { name: "Wire API", pos: 1000, completed: true, checklistId: checklist.id },
+      {
+        name: "Wire API",
+        pos: 1000,
+        completed: true,
+        checklistId: checklist.id,
+      },
       { name: "Ship", pos: 2000, completed: false, checklistId: checklist.id },
     ],
   });
@@ -131,7 +136,7 @@ async function seedBoardGraph(
 
 async function resolveWorkspaceId(
   prisma: PrismaClient,
-  userId: string,
+  userId: string
 ): Promise<string> {
   if (WORKSPACE_ID_ENV) {
     const ws = await prisma.workspace.findFirst({
@@ -139,7 +144,7 @@ async function resolveWorkspaceId(
     });
     if (!ws) {
       console.error(
-        `SEED_WORKSPACE_ID=${WORKSPACE_ID_ENV} is not a workspace owned by this user.`,
+        `SEED_WORKSPACE_ID=${WORKSPACE_ID_ENV} is not a workspace owned by this user.`
       );
       process.exit(1);
     }
@@ -171,7 +176,7 @@ async function runAttachToExistingUser(prisma: PrismaClient) {
   });
   if (!user) {
     console.error(
-      `No user with clerkUserId=${CLERK_ID}. Sign in once (API + Clerk) or run a webhook so the user row exists.`,
+      `No user with clerkUserId=${CLERK_ID}. Sign in once (API + Clerk) or run a webhook so the user row exists.`
     );
     process.exit(1);
   }
@@ -182,14 +187,16 @@ async function runAttachToExistingUser(prisma: PrismaClient) {
     const removed = await prisma.board.deleteMany({
       where: { userId: user.id, name: SEED_BOARD_NAME },
     });
-    console.log(`--fresh: removed ${removed.count} "${SEED_BOARD_NAME}" board(s) for this user.`);
+    console.log(
+      `--fresh: removed ${removed.count} "${SEED_BOARD_NAME}" board(s) for this user.`
+    );
   } else {
     const dup = await prisma.board.findFirst({
       where: { userId: user.id, name: SEED_BOARD_NAME },
     });
     if (dup) {
       console.log(
-        `"${SEED_BOARD_NAME}" already exists. Re-run with --fresh to replace, or delete that board in Studio.\n`,
+        `"${SEED_BOARD_NAME}" already exists. Re-run with --fresh to replace, or delete that board in Studio.\n`
       );
       console.log(
         JSON.stringify(
@@ -201,18 +208,20 @@ async function runAttachToExistingUser(prisma: PrismaClient) {
             boardId: dup.id,
           },
           null,
-          2,
-        ),
+          2
+        )
       );
       return;
     }
   }
 
   const result = await prisma.$transaction((tx) =>
-    seedBoardGraph(tx, user, workspaceId),
+    seedBoardGraph(tx, user, workspaceId)
   );
 
-  console.log("Seed complete (attached to your user). IDs for Postman / HTTPie:\n");
+  console.log(
+    "Seed complete (attached to your user). IDs for Postman / HTTPie:\n"
+  );
   console.log(JSON.stringify(result, null, 2));
 }
 
@@ -221,7 +230,9 @@ async function runSyntheticSeed(prisma: PrismaClient) {
     const deleted = await prisma.user.deleteMany({
       where: { clerkUserId: CLERK_ID },
     });
-    console.log(`--fresh: removed ${deleted.count} user(s) with clerkUserId=${CLERK_ID}`);
+    console.log(
+      `--fresh: removed ${deleted.count} user(s) with clerkUserId=${CLERK_ID}`
+    );
   }
 
   const existing = await prisma.user.findUnique({
@@ -229,14 +240,14 @@ async function runSyntheticSeed(prisma: PrismaClient) {
   });
   if (existing && !FRESH) {
     console.log(
-      "Synthetic seed user already exists. Re-run with --fresh to replace, or set SEED_CLERK_USER_ID to your real Clerk id.\n",
+      "Synthetic seed user already exists. Re-run with --fresh to replace, or set SEED_CLERK_USER_ID to your real Clerk id.\n"
     );
     console.log(
       JSON.stringify(
         { userId: existing.id, clerkUserId: CLERK_ID, email: existing.email },
         null,
-        2,
-      ),
+        2
+      )
     );
     return;
   }
@@ -265,7 +276,7 @@ async function runSyntheticSeed(prisma: PrismaClient) {
   console.log("Seed complete (synthetic user). IDs for Postman / HTTPie:\n");
   console.log(JSON.stringify(result, null, 2));
   console.log(
-    "\nTip: use SEED_CLERK_USER_ID=<your JWT sub> to attach demo data to your real account instead.",
+    "\nTip: use SEED_CLERK_USER_ID=<your JWT sub> to attach demo data to your real account instead."
   );
 }
 

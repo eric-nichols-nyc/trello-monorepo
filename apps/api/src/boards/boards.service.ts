@@ -7,7 +7,7 @@ import {
 // biome-ignore lint/style/useImportType: value import needed so PrismaService type includes PrismaClient (.board)
 import { PrismaService } from "../prisma/prisma.service";
 import { randomBoardShortLink } from "./board-short-link";
-import type { UpdateBoardDto } from "./dto";
+import type { UpdateBoardDto } from "./dto/update-board.dto";
 import type { CreateBoardInput } from "./schemas/create-board.schema";
 
 @Injectable()
@@ -17,7 +17,7 @@ export class BoardsService {
   findAllByUserId(userId: string) {
     return this.prisma.board.findMany({
       where: { userId },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
       select: {
         id: true,
         name: true,
@@ -43,8 +43,8 @@ export class BoardsService {
       where: { id },
       include: {
         lists: {
-          orderBy: { pos: 'asc' },
-          include: { cards: { orderBy: { pos: 'asc' } } },
+          orderBy: { pos: "asc" },
+          include: { cards: { orderBy: { pos: "asc" } } },
         },
       },
     });
@@ -73,7 +73,9 @@ export class BoardsService {
         shortLink: resolvedShortLink,
         ...(backgroundImage !== undefined ? { backgroundImage } : {}),
         ...(backgroundBrightness !== undefined ? { backgroundBrightness } : {}),
-        ...(backgroundBottomColor !== undefined ? { backgroundBottomColor } : {}),
+        ...(backgroundBottomColor !== undefined
+          ? { backgroundBottomColor }
+          : {}),
         ...(backgroundTopColor !== undefined ? { backgroundTopColor } : {}),
         ...(backgroundColor !== undefined ? { backgroundColor } : {}),
         ...(starred !== undefined ? { starred } : {}),
@@ -94,7 +96,7 @@ export class BoardsService {
       }
     }
     throw new InternalServerErrorException(
-      "Could not allocate a unique shortLink; try again.",
+      "Could not allocate a unique shortLink; try again."
     );
   }
 
@@ -119,13 +121,13 @@ export class BoardsService {
       },
       include: {
         lists: {
-          orderBy: { pos: 'asc' },
+          orderBy: { pos: "asc" },
           include: {
             cards: {
-              orderBy: { pos: 'asc' },
+              orderBy: { pos: "asc" },
               include: {
                 comments: {
-                  orderBy: { createdAt: 'asc' },
+                  orderBy: { createdAt: "asc" },
                   include: {
                     author: {
                       select: {
@@ -139,9 +141,9 @@ export class BoardsService {
                   },
                 },
                 checklists: {
-                  orderBy: { pos: 'asc' },
+                  orderBy: { pos: "asc" },
                   include: {
-                    items: { orderBy: { pos: 'asc' } },
+                    items: { orderBy: { pos: "asc" } },
                   },
                 },
               },
@@ -165,7 +167,9 @@ export class BoardsService {
       throw new NotFoundException(`Workspace ${data.workspaceId} not found`);
     }
     if (workspace.ownerId !== data.userId) {
-      throw new ForbiddenException('Cannot create board in another user workspace');
+      throw new ForbiddenException(
+        "Cannot create board in another user workspace"
+      );
     }
     return await this.create(data);
   }

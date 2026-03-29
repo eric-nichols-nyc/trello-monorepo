@@ -23,11 +23,7 @@ describe("CardQuickAddForm", () => {
   it("shows a validation message when the title is empty", () => {
     const onClose = vi.fn();
     render(
-      <CardQuickAddForm
-        boardKey="my-board"
-        listId="list-1"
-        onClose={onClose}
-      />
+      <CardQuickAddForm boardKey="my-board" listId="list-1" onClose={onClose} />
     );
 
     fireEvent.click(screen.getByRole("button", { name: "Add card" }));
@@ -39,11 +35,7 @@ describe("CardQuickAddForm", () => {
 
   it("clears the name error when the user types", () => {
     render(
-      <CardQuickAddForm
-        boardKey="my-board"
-        listId="list-1"
-        onClose={vi.fn()}
-      />
+      <CardQuickAddForm boardKey="my-board" listId="list-1" onClose={vi.fn()} />
     );
 
     fireEvent.click(screen.getByRole("button", { name: "Add card" }));
@@ -61,11 +53,7 @@ describe("CardQuickAddForm", () => {
     const onClose = vi.fn();
 
     render(
-      <CardQuickAddForm
-        boardKey="my-board"
-        listId="list-1"
-        onClose={onClose}
-      />
+      <CardQuickAddForm boardKey="my-board" listId="list-1" onClose={onClose} />
     );
 
     fireEvent.change(screen.getByRole("textbox", { name: "Card title" }), {
@@ -93,16 +81,10 @@ describe("CardQuickAddForm", () => {
     createMutate.mockImplementation((_vars, options) => {
       options?.onError?.(new Error("Network down"));
     });
-    const alertSpy = vi
-      .spyOn(globalThis, "alert")
-      .mockImplementation(vi.fn());
+    const alertSpy = vi.spyOn(globalThis, "alert").mockImplementation(vi.fn());
 
     render(
-      <CardQuickAddForm
-        boardKey="my-board"
-        listId="list-1"
-        onClose={vi.fn()}
-      />
+      <CardQuickAddForm boardKey="my-board" listId="list-1" onClose={vi.fn()} />
     );
 
     fireEvent.change(screen.getByRole("textbox", { name: "Card title" }), {

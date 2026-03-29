@@ -1,6 +1,6 @@
 import { verifyToken } from "@clerk/backend";
 import { Injectable } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
+import type { ConfigService } from "@nestjs/config";
 
 export type ClerkAuthPayload = {
   sub: string;
@@ -20,7 +20,10 @@ export class ClerkAuthService {
 
     // verifyToken (legacy return) returns the payload on success or throws TokenVerificationError on failure
     const authorizedParties = this.config.get("CLERK_AUTHORIZED_PARTIES")
-      ? this.config.get("CLERK_AUTHORIZED_PARTIES")?.split(",").map((s: string) => s.trim())
+      ? this.config
+          .get("CLERK_AUTHORIZED_PARTIES")
+          ?.split(",")
+          .map((s: string) => s.trim())
       : undefined;
 
     const payload = await verifyToken(token, {

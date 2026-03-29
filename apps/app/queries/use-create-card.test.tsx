@@ -79,7 +79,10 @@ describe("useCreateCard", () => {
 
   it("appends an optimistic card to the matching list", async () => {
     const boardKey = "my-board";
-    queryClient.setQueryData(boardDetailQueryKey(boardKey), boardDetailFixture());
+    queryClient.setQueryData(
+      boardDetailQueryKey(boardKey),
+      boardDetailFixture()
+    );
 
     const { result } = renderHook(() => useCreateCard(), {
       wrapper: wrapperFor(queryClient),

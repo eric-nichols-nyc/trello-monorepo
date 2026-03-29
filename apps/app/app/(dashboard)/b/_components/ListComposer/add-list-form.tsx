@@ -1,9 +1,9 @@
 "use client";
 
-import { createListSchema } from "@repo/schemas";
 import { Button } from "@repo/design-system/components/ui/button";
 import { Input } from "@repo/design-system/components/ui/input";
 import { cn } from "@repo/design-system/lib/utils";
+import { createListSchema } from "@repo/schemas";
 import { X } from "lucide-react";
 import { type FormEvent, useCallback, useRef, useState } from "react";
 import { useClickOutside } from "@/hooks/use-click-outside";
@@ -15,7 +15,11 @@ type AddListFormProps = {
   onClose: () => void;
 };
 
-export const AddListForm = ({ boardId, boardKey, onClose }: AddListFormProps) => {
+export const AddListForm = ({
+  boardId,
+  boardKey,
+  onClose,
+}: AddListFormProps) => {
   const [name, setName] = useState("");
   const [nameError, setNameError] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);

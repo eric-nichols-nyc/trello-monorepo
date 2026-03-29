@@ -5,10 +5,10 @@ import {
   NotFoundException,
   UseGuards,
 } from "@nestjs/common";
-import { ClerkAuthGuard } from "./auth/clerk-auth.guard";
-import { CurrentUser } from "./auth/current-user.decorator";
 // biome-ignore lint/style/useImportType: Nest DI needs AppService for constructor injection
 import { AppService } from "./app.service";
+import { ClerkAuthGuard } from "./auth/clerk-auth.guard";
+import { CurrentUser } from "./auth/current-user.decorator";
 // biome-ignore lint/style/useImportType: Nest DI needs the UsersService class reference
 import { UsersService } from "./users/users.service";
 
@@ -16,7 +16,7 @@ import { UsersService } from "./users/users.service";
 export class AppController {
   constructor(
     private readonly appService: AppService,
-    private readonly usersService: UsersService,
+    private readonly usersService: UsersService
   ) {}
 
   @Get()
@@ -35,10 +35,11 @@ export class AppController {
   @Get("users/me")
   @UseGuards(ClerkAuthGuard)
   async getCurrentUser(@CurrentUser("sub") clerkUserId: string) {
-    const user = await this.usersService.findByClerkIdWithWorkspaces(clerkUserId);
+    const user =
+      await this.usersService.findByClerkIdWithWorkspaces(clerkUserId);
     if (!user) {
       throw new NotFoundException(
-        "User not found in the database after authentication.",
+        "User not found in the database after authentication."
       );
     }
     return user;

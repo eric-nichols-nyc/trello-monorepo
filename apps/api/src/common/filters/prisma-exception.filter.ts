@@ -1,16 +1,12 @@
-import {
-  Catch,
-  HttpStatus,
-  Logger,
-} from "@nestjs/common";
 import type { ArgumentsHost, ExceptionFilter } from "@nestjs/common";
+import { Catch, HttpStatus, Logger } from "@nestjs/common";
 import type { Response } from "express";
 import { Prisma } from "../../../generated/prisma/client";
 
 @Catch(
   Prisma.PrismaClientKnownRequestError,
   Prisma.PrismaClientValidationError,
-  Prisma.PrismaClientInitializationError,
+  Prisma.PrismaClientInitializationError
 )
 export class PrismaExceptionFilter implements ExceptionFilter {
   private readonly logger = new Logger(PrismaExceptionFilter.name);
@@ -36,7 +32,9 @@ export class PrismaExceptionFilter implements ExceptionFilter {
 
     if (exception instanceof Prisma.PrismaClientInitializationError) {
       const message =
-        exception instanceof Error ? exception.message : "Unknown database init error";
+        exception instanceof Error
+          ? exception.message
+          : "Unknown database init error";
       this.logger.error(`Prisma initialization failed: ${message}`);
       return res.status(HttpStatus.SERVICE_UNAVAILABLE).json({
         statusCode: HttpStatus.SERVICE_UNAVAILABLE,
@@ -67,7 +65,7 @@ export class PrismaExceptionFilter implements ExceptionFilter {
         };
       default:
         this.logger.error(
-          `Unhandled Prisma error code ${error.code}: ${error.message}`,
+          `Unhandled Prisma error code ${error.code}: ${error.message}`
         );
         return {
           statusCode: HttpStatus.INTERNAL_SERVER_ERROR,

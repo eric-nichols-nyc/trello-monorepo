@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 // biome-ignore lint/style/useImportType: value import needed for PrismaService delegate types
 import { PrismaService } from "../prisma/prisma.service";
-import type { UpdateCheckItemDto } from "./dto";
+import type { UpdateCheckItemDto } from "./dto/update-check-item.dto";
 import type { CreateCheckItemInput } from "./schemas/create-check-item.schema";
 
 @Injectable()
@@ -21,7 +21,7 @@ export class CheckItemsService {
   async createForUser(
     checklistId: string,
     clerkUserId: string,
-    data: CreateCheckItemInput,
+    data: CreateCheckItemInput
   ) {
     const checklist = await this.prisma.checklist.findFirst({
       where: { id: checklistId, card: { board: { user: { clerkUserId } } } },
@@ -50,7 +50,11 @@ export class CheckItemsService {
     });
   }
 
-  async updateForUser(id: string, clerkUserId: string, data: UpdateCheckItemDto) {
+  async updateForUser(
+    id: string,
+    clerkUserId: string,
+    data: UpdateCheckItemDto
+  ) {
     const item = await this.prisma.checkItem.findFirst({
       where: {
         id,

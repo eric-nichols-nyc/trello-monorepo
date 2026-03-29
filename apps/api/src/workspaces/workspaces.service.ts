@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 // biome-ignore lint/style/useImportType: value import needed so PrismaService type includes PrismaClient (.workspace)
 import { PrismaService } from "../prisma/prisma.service";
-import type { UpdateWorkspaceDto } from "./dto";
+import type { UpdateWorkspaceDto } from "./dto/update-workspace.dto";
 import type { CreateWorkspaceInput } from "./schemas/create-workspace.schema";
 
 @Injectable()

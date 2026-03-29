@@ -1,4 +1,11 @@
-import { IsBoolean, IsEnum, IsOptional, IsString, MaxLength, MinLength } from "class-validator";
+import {
+  IsBoolean,
+  IsEnum,
+  IsOptional,
+  IsString,
+  MaxLength,
+  MinLength,
+} from "class-validator";
 import { BoardBackgroundBrightness } from "../../../generated/prisma/client";
 
 export class UpdateBoardDto {

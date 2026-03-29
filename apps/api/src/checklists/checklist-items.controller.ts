@@ -1,10 +1,10 @@
-import { Controller, Get, Param, Post, Body, UseGuards } from "@nestjs/common";
-import { ZodValidationPipe } from "../common/pipes/zod-validation.pipe";
+import { Body, Controller, Get, Param, Post, UseGuards } from "@nestjs/common";
 import { ClerkAuthGuard } from "../auth/clerk-auth.guard";
 import { CurrentUser } from "../auth/current-user.decorator";
-import { CheckItemsService } from "./check-items.service";
-import { createCheckItemSchema } from "./schemas/create-check-item.schema";
+import { ZodValidationPipe } from "../common/pipes/zod-validation.pipe";
+import type { CheckItemsService } from "./check-items.service";
 import type { CreateCheckItemInput } from "./schemas/create-check-item.schema";
+import { createCheckItemSchema } from "./schemas/create-check-item.schema";
 
 @Controller("checklists/:checklistId/items")
 export class ChecklistItemsController {
@@ -14,17 +14,21 @@ export class ChecklistItemsController {
   @UseGuards(ClerkAuthGuard)
   findByChecklist(
     @Param("checklistId") checklistId: string,
-    @CurrentUser("sub") clerkUserId: string,
+    @CurrentUser("sub") clerkUserId: string
   ) {
-    return this.checkItemsService.findByChecklistForUser(checklistId, clerkUserId);
+    return this.checkItemsService.findByChecklistForUser(
+      checklistId,
+      clerkUserId
+    );
   }
 
   @Post()
   @UseGuards(ClerkAuthGuard)
   create(
     @Param("checklistId") checklistId: string,
-    @Body(new ZodValidationPipe(createCheckItemSchema)) body: CreateCheckItemInput,
-    @CurrentUser("sub") clerkUserId: string,
+    @Body(new ZodValidationPipe(createCheckItemSchema))
+    body: CreateCheckItemInput,
+    @CurrentUser("sub") clerkUserId: string
   ) {
     return this.checkItemsService.createForUser(checklistId, clerkUserId, body);
   }

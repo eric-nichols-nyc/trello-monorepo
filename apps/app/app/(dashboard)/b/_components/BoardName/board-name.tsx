@@ -2,9 +2,9 @@
 
 import { Input } from "@repo/design-system/components/ui/input";
 import { cn } from "@repo/design-system/lib/utils";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useClickOutside } from "@/hooks/use-click-outside";
 import { useUpdateBoard } from "@/queries/use-update-board";
-import { useCallback, useEffect, useRef, useState } from "react";
 
 type BoardNameProperties = {
   readonly boardId: string;
@@ -17,11 +17,7 @@ type BoardNameProperties = {
  * **Enter** (form submit) or **blur** (including click-outside) commits via
  * `useUpdateBoard` when the trimmed name changed. **Escape** discards edits.
  */
-export const BoardName = ({
-  boardId,
-  boardKey,
-  name,
-}: BoardNameProperties) => {
+export const BoardName = ({ boardId, boardKey, name }: BoardNameProperties) => {
   const [isEditing, setIsEditing] = useState(false);
   const [draft, setDraft] = useState(name);
   const containerReference = useRef<HTMLFormElement>(null);
@@ -93,11 +89,7 @@ export const BoardName = ({
     () => {
       const root = containerReference.current;
       const active = document.activeElement;
-      if (
-        root &&
-        active instanceof HTMLInputElement &&
-        root.contains(active)
-      ) {
+      if (root && active instanceof HTMLInputElement && root.contains(active)) {
         active.blur();
       }
     },
@@ -108,7 +100,6 @@ export const BoardName = ({
     return (
       <form
         className="min-w-48 max-w-full"
-        ref={containerReference}
         onSubmit={(event) => {
           event.preventDefault();
           const input = containerReference.current?.querySelector("input");
@@ -116,6 +107,7 @@ export const BoardName = ({
             input.blur();
           }
         }}
+        ref={containerReference}
       >
         <Input
           aria-label="Board name"

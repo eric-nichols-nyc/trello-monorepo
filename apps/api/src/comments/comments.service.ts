@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 // biome-ignore lint/style/useImportType: value import needed for PrismaService delegate types
 import { PrismaService } from "../prisma/prisma.service";
-import type { UpdateCommentDto } from "./dto";
+import type { UpdateCommentDto } from "./dto/update-comment.dto";
 import type { CreateCommentInput } from "./schemas/create-comment.schema";
 
 @Injectable()
@@ -20,7 +20,7 @@ export class CommentsService {
     cardId: string,
     clerkUserId: string,
     authorId: string,
-    data: CreateCommentInput,
+    data: CreateCommentInput
   ) {
     const card = await this.prisma.card.findFirst({
       where: { id: cardId, board: { user: { clerkUserId } } },

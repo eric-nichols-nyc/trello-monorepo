@@ -4,9 +4,9 @@ import { CollisionPriority } from "@dnd-kit/abstract";
 import { useSortable } from "@dnd-kit/react/sortable";
 import { cn } from "@repo/design-system/lib/utils";
 import { memo, useCallback } from "react";
-import { ListFooter } from "../ListWrapper/list-footer";
-import { ListHeader } from "../ListHeader/list-header";
 import { BoardCardItem } from "../ListCard/list-card-chrome";
+import { ListHeader } from "../ListHeader/list-header";
+import { ListFooter } from "../ListWrapper/list-footer";
 
 export type BoardColumnProps = {
   boardKey: string;

@@ -1,3 +1,5 @@
+import type { UserJSON } from "@clerk/backend";
+import { verifyWebhook, type WebhookEvent } from "@clerk/backend/webhooks";
 import {
   BadRequestException,
   Controller,
@@ -9,13 +11,17 @@ import {
 } from "@nestjs/common";
 // biome-ignore lint/style/useImportType: Nest DI needs ConfigService for constructor injection
 import { ConfigService } from "@nestjs/config";
-import {
-  type WebhookEvent,
-  verifyWebhook,
-} from "@clerk/backend/webhooks";
 import type { Request as ExpressRequest } from "express";
 // biome-ignore lint/style/useImportType: Nest DI needs ClerkWebhooksService for constructor injection
 import { ClerkWebhooksService } from "./webhooks.service";
+
+function isUserJSON(value: unknown): value is UserJSON {
+  if (typeof value !== "object" || value === null) {
+    return false;
+  }
+  const o = value as { object?: unknown; id?: unknown };
+  return o.object === "user" && typeof o.id === "string";
+}
 
 /**
  * Resolve a Clerk User object from a verified webhook when we can sync to DB.
@@ -41,7 +47,7 @@ function getUserPayloadForSync(evt: WebhookEvent): unknown | null {
 /** Build a Web `Request` for Clerk's `verifyWebhook` from Express + raw body. */
 function buildClerkWebhookRequestFromExpress(
   req: ExpressRequest,
-  rawBody: Buffer,
+  rawBody: Buffer
 ): globalThis.Request {
   const host = req.get("x-forwarded-host") ?? req.get("host") ?? "localhost";
   const proto = req.get("x-forwarded-proto") ?? req.protocol ?? "https";
@@ -67,13 +73,13 @@ export class ClerkWebhooksController {
 
   constructor(
     private readonly config: ConfigService,
-    private readonly clerkWebhooksService: ClerkWebhooksService,
+    private readonly clerkWebhooksService: ClerkWebhooksService
   ) {}
 
   @Post("clerk")
   async handleClerkWebhook(
     @Req() req: ExpressRequest,
-    @RawBody() rawBody: Buffer | undefined,
+    @RawBody() rawBody: Buffer | undefined
   ) {
     const secret =
       this.config.get<string>("CLERK_WEBHOOK_SECRET") ??
@@ -81,13 +87,13 @@ export class ClerkWebhooksController {
 
     if (!secret) {
       throw new InternalServerErrorException(
-        "Set CLERK_WEBHOOK_SECRET or CLERK_WEBHOOK_SIGNING_SECRET (from Clerk → Webhooks → Signing secret).",
+        "Set CLERK_WEBHOOK_SECRET or CLERK_WEBHOOK_SIGNING_SECRET (from Clerk → Webhooks → Signing secret)."
       );
     }
 
     if (!rawBody?.length) {
       throw new InternalServerErrorException(
-        "Missing raw body. Ensure NestFactory.create(..., { rawBody: true }) in main.ts.",
+        "Missing raw body. Ensure NestFactory.create(..., { rawBody: true }) in main.ts."
       );
     }
 
@@ -97,15 +103,18 @@ export class ClerkWebhooksController {
     try {
       evt = await verifyWebhook(incomingRequest, { signingSecret: secret });
     } catch (e) {
-      const msg = e instanceof Error ? e.message : "Webhook verification failed";
+      const msg =
+        e instanceof Error ? e.message : "Webhook verification failed";
       throw new BadRequestException(msg);
     }
 
     const userPayload = getUserPayloadForSync(evt);
-    if (userPayload) {
-      await this.clerkWebhooksService.ensureUserAndDefaultWorkspace(userPayload);
+    if (userPayload && isUserJSON(userPayload)) {
+      await this.clerkWebhooksService.ensureUserAndDefaultWorkspace(
+        userPayload
+      );
       this.logger.log(
-        `Synced user + default workspace from webhook type=${evt.type}`,
+        `Synced user + default workspace from webhook type=${evt.type}`
       );
       return {
         ok: true,
@@ -116,14 +125,13 @@ export class ClerkWebhooksController {
 
     this.logger.warn(
       `Webhook ok but no user sync for type=${evt.type}. ` +
-        `Use Testing → event "user.created", or subscribe to user.created / session.created in the endpoint.`,
+        `Use Testing → event "user.created", or subscribe to user.created / session.created in the endpoint.`
     );
     return {
       ok: true,
       type: evt.type,
       synced: false,
-      hint:
-        "Only user.created, user.updated (user payload), and session.created (with data.user) create rows.",
+      hint: "Only user.created, user.updated (user payload), and session.created (with data.user) create rows.",
     };
   }
 }

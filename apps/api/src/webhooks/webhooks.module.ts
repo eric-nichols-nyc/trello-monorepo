@@ -7,4 +7,3 @@ import { ClerkWebhooksService } from "./webhooks.service";
   providers: [ClerkWebhooksService],
 })
 export class WebhooksModule {}
-

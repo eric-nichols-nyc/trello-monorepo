@@ -11,12 +11,12 @@ import {
   type ReorderListCardsInput,
   reorderListCardsSchema,
 } from "@repo/schemas";
-import { ZodValidationPipe } from "../common/pipes/zod-validation.pipe";
 import { ClerkAuthGuard } from "../auth/clerk-auth.guard";
 import { CurrentUser } from "../auth/current-user.decorator";
-import { CardsService } from "./cards.service";
-import { createCardSchema } from "./schemas/create-card.schema";
+import { ZodValidationPipe } from "../common/pipes/zod-validation.pipe";
+import type { CardsService } from "./cards.service";
 import type { CreateCardInput } from "./schemas/create-card.schema";
+import { createCardSchema } from "./schemas/create-card.schema";
 
 @Controller("lists/:listId/cards")
 export class ListCardsController {
@@ -26,7 +26,7 @@ export class ListCardsController {
   @UseGuards(ClerkAuthGuard)
   findByList(
     @Param("listId") listId: string,
-    @CurrentUser("sub") clerkUserId: string,
+    @CurrentUser("sub") clerkUserId: string
   ) {
     return this.cardsService.findByListForUser(listId, clerkUserId);
   }
@@ -36,7 +36,7 @@ export class ListCardsController {
   create(
     @Param("listId") listId: string,
     @Body(new ZodValidationPipe(createCardSchema)) body: CreateCardInput,
-    @CurrentUser("sub") clerkUserId: string,
+    @CurrentUser("sub") clerkUserId: string
   ) {
     return this.cardsService.createForUser(listId, clerkUserId, body);
   }
@@ -45,8 +45,9 @@ export class ListCardsController {
   @UseGuards(ClerkAuthGuard)
   reorder(
     @Param("listId") listId: string,
-    @Body(new ZodValidationPipe(reorderListCardsSchema)) body: ReorderListCardsInput,
-    @CurrentUser("sub") clerkUserId: string,
+    @Body(new ZodValidationPipe(reorderListCardsSchema))
+    body: ReorderListCardsInput,
+    @CurrentUser("sub") clerkUserId: string
   ) {
     return this.cardsService.setListCardOrderForUser(
       listId,

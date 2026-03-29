@@ -1,16 +1,16 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
   Param,
   Patch,
-  Body,
   UseGuards,
 } from "@nestjs/common";
 import { ClerkAuthGuard } from "../auth/clerk-auth.guard";
 import { CurrentUser } from "../auth/current-user.decorator";
-import { CommentsService } from "./comments.service";
-import { UpdateCommentDto } from "./dto";
+import type { CommentsService } from "./comments.service";
+import type { UpdateCommentDto } from "./dto/update-comment.dto";
 
 @Controller("comments")
 export class CommentsController {
@@ -27,7 +27,7 @@ export class CommentsController {
   update(
     @Param("id") id: string,
     @Body() body: UpdateCommentDto,
-    @CurrentUser("sub") clerkUserId: string,
+    @CurrentUser("sub") clerkUserId: string
   ) {
     return this.commentsService.updateForUser(id, clerkUserId, body);
   }
