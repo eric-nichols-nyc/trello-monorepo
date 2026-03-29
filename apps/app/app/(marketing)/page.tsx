@@ -4,8 +4,6 @@ import {
   Footer,
   Header,
   Hero,
-  Pricing,
-  SocialProof,
   Testimonials,
   Workflow,
 } from "./_components";
@@ -16,11 +14,9 @@ const HomePage = () => (
     <main className="pt-16">
       <Header />
       <Hero />
-      <SocialProof />
       <Features />
       <Workflow />
       <Testimonials />
-      <Pricing />
       <CTA />
       <Footer />
     </main>
