@@ -20,7 +20,7 @@ export const GlobalHeader = ({
   >
     <Link
       className="shrink-0 rounded-md font-semibold text-base text-foreground no-underline outline-offset-2 transition-colors hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring"
-      href="/dashboard"
+      href="/w"
     >
       <strong>{title}</strong>
     </Link>
