@@ -34,8 +34,10 @@ function dueDateToIso(value: CreateCardInput["dueDate"]): string | null {
 /**
  * Builds a `BoardCard` placeholder for the cache before the server responds.
  * `invalidateQueries` in `onSettled` replaces it with the real row shape.
+ *
+ * Exported for {@link useCopyCard} optimistic updates.
  */
-function buildOptimisticCard(
+export function buildOptimisticCard(
   listId: string,
   boardId: string,
   input: CreateCardInput,

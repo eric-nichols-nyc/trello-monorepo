@@ -1,6 +1,13 @@
 @import "tailwindcss";
 @import "@repo/design-system/styles/globals.css";
 
+:root {
+  /* Board overflow menu card (`BoardMenuPopover`). Total width includes horizontal padding. */
+  --board-menu-card-bg: rgb(43, 44, 47);
+  --board-menu-card-width: 354px;
+  --board-menu-card-padding-inline: 8px;
+}
+
 html,
 body {
   height: 100%;

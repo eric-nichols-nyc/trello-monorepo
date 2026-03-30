@@ -8,16 +8,11 @@ import {
   DropdownMenuTrigger,
 } from "@repo/design-system/components/ui/dropdown-menu";
 import { cn } from "@repo/design-system/lib/utils";
-import {
-  Archive,
-  ArrowRightLeft,
-  Copy,
-  SquareArrowOutUpRight,
-  SquarePen,
-} from "lucide-react";
+import { ArrowRightLeft, SquareArrowOutUpRight, SquarePen } from "lucide-react";
 
 import { CardCoverChooser } from "../CardCoverChooser/card-cover-chooser";
 import { isWithinCardCoverPanel } from "../CardCoverChooser/card-cover-panel";
+import { CopyCardButton } from "./copy-card-button";
 import { DeleteCardButton } from "./delete-card-button";
 import { EditDatesButton } from "./edit-dates-button";
 import { isWithinEditDatesPanel } from "./edit-dates-panel";
@@ -30,7 +25,6 @@ export type CardActionsProps = {
   readonly onChangeCover?: () => void;
   readonly onEditDates?: () => void;
   readonly onMove?: () => void;
-  readonly onCopyCard?: () => void;
   readonly onArchive?: () => void;
 };
 
@@ -46,8 +40,6 @@ export function CardActions({
   onChangeCover,
   onEditDates,
   onMove,
-  onCopyCard,
-  onArchive,
 }: CardActionsProps) {
   return (
     <DropdownMenu modal={false}>
@@ -130,24 +122,8 @@ export function CardActions({
           <ArrowRightLeft aria-hidden className="size-4" strokeWidth={2} />
           Move
         </DropdownMenuItem>
-        <DropdownMenuItem
-          onSelect={() => {
-            onCopyCard?.();
-          }}
-        >
-          <Copy aria-hidden className="size-4" strokeWidth={2} />
-          Copy card
-        </DropdownMenuItem>
+        <CopyCardButton boardKey={boardKey} cardId={cardId} kind="menu" />
         <DropdownMenuSeparator />
-        <DropdownMenuItem
-          onSelect={() => {
-            onArchive?.();
-          }}
-          variant="destructive"
-        >
-          <Archive aria-hidden className="size-4" strokeWidth={2} />
-          Archive
-        </DropdownMenuItem>
         <DeleteCardButton boardKey={boardKey} cardId={cardId} kind="menu" />
       </DropdownMenuContent>
     </DropdownMenu>
