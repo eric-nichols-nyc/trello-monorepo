@@ -41,6 +41,15 @@ async function bootstrap() {
   // biome-ignore lint/correctness/useHookAtTopLevel: NestJS method, not a React hook
   app.useGlobalFilters(new AllExceptionsFilter(httpAdapter));
 
+  // Browsers probe `/` and `/favicon.ico`; routes live under `/api`, so handle these
+  // here to avoid noisy 404s in logs.
+  httpAdapter.get("/", (_req, res) => {
+    res.redirect(302, "/api");
+  });
+  httpAdapter.get("/favicon.ico", (_req, res) => {
+    res.status(204).end();
+  });
+
   const port = process.env.PORT ?? 3000;
   await app.listen(port);
   console.log(`Server running on http://localhost:${port}`);
