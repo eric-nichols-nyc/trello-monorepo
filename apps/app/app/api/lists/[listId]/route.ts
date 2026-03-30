@@ -1,10 +1,11 @@
 /**
- * `PATCH /api/lists/:listId` — sibling to `[listId]/cards/*` routes.
- * Validates JSON, forwards to Nest list update, maps auth/API errors to HTTP status.
+ * `PATCH` / `DELETE` `/api/lists/:listId` — sibling to `[listId]/cards/*` routes.
+ * Forwards to Nest `ListsController`; maps auth/API errors to HTTP status.
  */
 import { NextResponse } from "next/server";
 
 import { BoardApiError } from "@/lib/api/boards/board-api-error";
+import { deleteList } from "@/lib/api/lists/delete-list";
 import { patchList } from "@/lib/api/lists/patch-list";
 
 export async function PATCH(
@@ -34,6 +35,33 @@ export async function PATCH(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     console.error("[PATCH /api/lists/[listId]]", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(
+  _request: Request,
+  context: { params: Promise<{ listId: string }> }
+) {
+  const { listId } = await context.params;
+
+  try {
+    const data = await deleteList(listId);
+    return NextResponse.json(data);
+  } catch (error) {
+    if (error instanceof BoardApiError) {
+      return NextResponse.json(
+        { error: error.message },
+        { status: error.status }
+      );
+    }
+    if (error instanceof Error && error.message === "Not authenticated") {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    console.error("[DELETE /api/lists/[listId]]", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 }

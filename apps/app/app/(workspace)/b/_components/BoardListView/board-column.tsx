@@ -3,7 +3,7 @@
 import { CollisionPriority } from "@dnd-kit/abstract";
 import { useSortable } from "@dnd-kit/react/sortable";
 import { cn } from "@repo/design-system/lib/utils";
-import { memo, useCallback } from "react";
+import { memo, useCallback, useState } from "react";
 import { BoardCardItem } from "../ListCard/list-card-chrome";
 import { ListHeader } from "../ListHeader/list-header";
 import { ListFooter } from "../ListWrapper/list-footer";
@@ -44,6 +44,8 @@ export const BoardColumn = memo(function BoardColumnFrame({
     [ref, targetRef]
   );
 
+  const [quickAddOpen, setQuickAddOpen] = useState(false);
+
   return (
     <li
       className={cn("w-[270px] shrink-0", isDragging ? "opacity-0" : "")}
@@ -55,11 +57,13 @@ export const BoardColumn = memo(function BoardColumnFrame({
           dragHandleRef={handleRef}
           listId={listId}
           listPosDebug={listPosDebug}
+          onOpenCardQuickAdd={() => setQuickAddOpen(true)}
           title={title}
         />
         <ol className="mx-[4px] my-0 flex min-h-0 list-none flex-col gap-2 p-0">
           {cardIds.map((cardId, index) => (
             <BoardCardItem
+              boardKey={boardKey}
               cardId={cardId}
               columnId={listId}
               index={index}
@@ -68,7 +72,12 @@ export const BoardColumn = memo(function BoardColumnFrame({
             />
           ))}
         </ol>
-        <ListFooter boardKey={boardKey} listId={listId} />
+        <ListFooter
+          boardKey={boardKey}
+          listId={listId}
+          onQuickAddOpenChange={setQuickAddOpen}
+          quickAddOpen={quickAddOpen}
+        />
       </div>
     </li>
   );

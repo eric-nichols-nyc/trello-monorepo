@@ -13,6 +13,7 @@ import {
 } from "./list-card-chrome";
 
 type ListCardProps = {
+  boardKey: string;
   cardId: string;
   title: string;
   onOpenCard?: () => void;
@@ -20,6 +21,7 @@ type ListCardProps = {
 };
 
 export const ListCard = ({
+  boardKey,
   cardId,
   title,
   onOpenCard,
@@ -88,6 +90,7 @@ export const ListCard = ({
           />
         </span>
         <CardActions
+          boardKey={boardKey}
           cardId={cardId}
           cardTitle={title}
           onArchive={onArchive}

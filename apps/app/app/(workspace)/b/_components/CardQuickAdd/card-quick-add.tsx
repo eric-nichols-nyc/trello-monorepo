@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { useClickOutside } from "@/hooks/use-click-outside";
 
 import { CardQuickAddForm } from "./card-quick-add-form";
@@ -9,13 +9,19 @@ import { CardQuickAddTrigger } from "./card-quick-add-trigger";
 type CardQuickAddProperties = {
   readonly boardKey: string;
   readonly listId: string;
+  readonly open: boolean;
+  readonly onOpenChange: (open: boolean) => void;
 };
 
-export const CardQuickAdd = ({ boardKey, listId }: CardQuickAddProperties) => {
-  const [open, setOpen] = useState(false);
+export const CardQuickAdd = ({
+  boardKey,
+  listId,
+  onOpenChange,
+  open,
+}: CardQuickAddProperties) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
-  useClickOutside(containerRef, () => setOpen(false), open);
+  useClickOutside(containerRef, () => onOpenChange(false), open);
 
   if (open) {
     return (
@@ -23,11 +29,11 @@ export const CardQuickAdd = ({ boardKey, listId }: CardQuickAddProperties) => {
         <CardQuickAddForm
           boardKey={boardKey}
           listId={listId}
-          onClose={() => setOpen(false)}
+          onClose={() => onOpenChange(false)}
         />
       </div>
     );
   }
 
-  return <CardQuickAddTrigger onClick={() => setOpen(true)} />;
+  return <CardQuickAddTrigger onClick={() => onOpenChange(true)} />;
 };

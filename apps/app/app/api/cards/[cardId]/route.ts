@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { BoardApiError } from "@/lib/api/boards/board-api-error";
+import { deleteCard } from "@/lib/api/cards/delete-card";
 import { patchCard } from "@/lib/api/cards/patch-card";
 
 export async function PATCH(
@@ -30,6 +31,33 @@ export async function PATCH(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     console.error("[PATCH /api/cards/[cardId]]", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(
+  _request: Request,
+  context: { params: Promise<{ cardId: string }> }
+) {
+  const { cardId } = await context.params;
+
+  try {
+    const data = await deleteCard(cardId);
+    return NextResponse.json(data);
+  } catch (error) {
+    if (error instanceof BoardApiError) {
+      return NextResponse.json(
+        { error: error.message },
+        { status: error.status }
+      );
+    }
+    if (error instanceof Error && error.message === "Not authenticated") {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    console.error("[DELETE /api/cards/[cardId]]", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 }

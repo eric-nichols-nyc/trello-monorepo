@@ -2,6 +2,7 @@
 
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { useState } from "react";
 
 import { ListCards } from "../ListCards/list-cards";
 import { ListHeader } from "../ListHeader/list-header";
@@ -38,6 +39,8 @@ export const ListWrapper = ({
     transition,
   };
 
+  const [quickAddOpen, setQuickAddOpen] = useState(false);
+
   return (
     <li
       className={`w-[270px] shrink-0 ${isDragging ? "opacity-0" : ""}`}
@@ -50,15 +53,22 @@ export const ListWrapper = ({
           boardKey={boardKey}
           dragHandleProps={listeners}
           listId={id}
+          onOpenCardQuickAdd={() => setQuickAddOpen(true)}
           title={title}
         />
         <ListCards
+          boardKey={boardKey}
           cardIds={cardIds}
           cardTitles={cardTitles}
           columnDroppableId={columnDroppableId}
           listId={id}
         />
-        <ListFooter boardKey={boardKey} listId={id} />
+        <ListFooter
+          boardKey={boardKey}
+          listId={id}
+          onQuickAddOpenChange={setQuickAddOpen}
+          quickAddOpen={quickAddOpen}
+        />
       </div>
     </li>
   );

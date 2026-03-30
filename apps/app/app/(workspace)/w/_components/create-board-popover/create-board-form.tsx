@@ -2,15 +2,10 @@
 
 import { Input } from "@repo/design-system/components/ui/input";
 import { Label } from "@repo/design-system/components/ui/label";
+import { useRouter } from "next/navigation";
+import { type FormEvent, useCallback, useEffect, useState } from "react";
 import { BoardApiError } from "@/lib/api/boards/board-api-error";
 import { createBoardClient } from "@/lib/api/boards/create-board-client";
-import { useRouter } from "next/navigation";
-import {
-  type FormEvent,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
 import {
   CreateBoardBackgroundPicker,
   type CreateBoardBackgroundSelection,
@@ -144,7 +139,10 @@ export function CreateBoardForm({
         ) : null}
       </div>
 
-      <CreateBoardBackgroundPicker onChange={setBackground} value={background} />
+      <CreateBoardBackgroundPicker
+        onChange={setBackground}
+        value={background}
+      />
 
       {background === null && touched ? (
         <p className="text-muted-foreground text-xs leading-snug" role="alert">

@@ -45,6 +45,7 @@ type ListCardChromeProps = {
   showEditIcon?: boolean;
   /** Required when `showEditIcon` is true so {@link CardActions} can target this card. */
   cardId?: string;
+  boardKey?: string;
   onOpenCard?: () => void;
   onArchive?: () => void;
 };
@@ -56,16 +57,22 @@ type ListCardChromeProps = {
 export function ListCardChrome({
   title,
   showEditIcon = false,
+  boardKey,
   cardId,
   onOpenCard,
   onArchive,
 }: ListCardChromeProps) {
-  const showActions = showEditIcon === true && cardId !== undefined;
+  const showActions =
+    showEditIcon === true &&
+    cardId !== undefined &&
+    boardKey !== undefined &&
+    boardKey !== "";
 
   return (
     <div className={cn(LIST_CARD_SURFACE_CLASSNAME, "cursor-grabbing")}>
       {showActions ? (
         <CardActions
+          boardKey={boardKey}
           cardId={cardId}
           cardTitle={title}
           onArchive={onArchive}
@@ -82,6 +89,7 @@ export function ListCardChrome({
 }
 
 export type BoardCardItemProps = {
+  boardKey: string;
   cardId: string;
   columnId: string;
   index: number;
@@ -95,6 +103,7 @@ export type BoardCardItemProps = {
  * {@link ListCard}, wired to column `group` + drag handle ref.
  */
 export const BoardCardItem = memo(function BoardCardItemFrame({
+  boardKey,
   cardId,
   columnId,
   index,
@@ -165,6 +174,7 @@ export const BoardCardItem = memo(function BoardCardItemFrame({
           />
         </span>
         <CardActions
+          boardKey={boardKey}
           cardId={cardId}
           cardTitle={title}
           onArchive={onArchive}

@@ -11,7 +11,8 @@ const createBoardRequestSchema = z
   })
   .refine(
     (value) =>
-      value.backgroundColor !== undefined || value.backgroundImage !== undefined,
+      value.backgroundColor !== undefined ||
+      value.backgroundImage !== undefined,
     { message: "Choose a solid color or a photo background" }
   );
 

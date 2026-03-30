@@ -83,7 +83,9 @@ function persistCardDragIfNeeded(o: PersistCardDragOpts): void {
 
 /** Local drag state: list and card order derived from `board`, sorted by `pos`. */
 function boardToListState(board: BoardDetail) {
-  const sortedLists = [...board.lists].sort((a, b) => a.pos - b.pos);
+  const sortedLists = [...board.lists]
+    .filter((l) => !l.closed)
+    .sort((a, b) => a.pos - b.pos);
   const listIds = sortedLists.map((l) => l.id);
   const cardsByList: Record<string, string[]> = {};
   const listTitles: Record<string, string> = {};

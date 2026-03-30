@@ -11,6 +11,7 @@ import { cn } from "@repo/design-system/lib/utils";
 import { ListCard } from "../ListCard/list-card";
 
 type ListCardsProps = {
+  boardKey: string;
   listId: string;
   cardIds: string[];
   cardTitles: Record<string, string>;
@@ -18,6 +19,7 @@ type ListCardsProps = {
 };
 
 export const ListCards = ({
+  boardKey,
   listId: _listId,
   cardIds,
   cardTitles,
@@ -37,6 +39,7 @@ export const ListCards = ({
       >
         {cardIds.map((cardId) => (
           <ListCard
+            boardKey={boardKey}
             cardId={cardId}
             key={cardId}
             title={cardTitles[cardId] ?? "Card"}

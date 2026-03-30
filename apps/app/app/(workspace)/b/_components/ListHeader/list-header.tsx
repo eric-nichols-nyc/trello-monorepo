@@ -3,11 +3,15 @@ import type { HTMLAttributes, Ref } from "react";
 
 import { ListTitle } from "../ListTitle/list-title";
 
+import { OverflowMenu } from "./overflow-menu";
+
 type ListHeaderProps = {
   title: string;
   /** When both are set, the list title is editable (PATCH list name). */
   listId?: string;
   boardKey?: string;
+  /** Opens the list footer card composer (header overflow “Add card”). */
+  onOpenCardQuickAdd?: () => void;
   dragHandleProps?: HTMLAttributes<HTMLButtonElement>;
   /** `@dnd-kit/react` sortable column handle (callback ref). */
   dragHandleRef?: (element: Element | null) => void;
@@ -21,7 +25,7 @@ export const ListHeader = ({
   listId,
   dragHandleProps,
   dragHandleRef,
-  listPosDebug,
+  onOpenCardQuickAdd,
 }: ListHeaderProps) => (
   <header className="mx-[4px] flex h-[32px] items-center gap-1 pt-[8px] pr-[8px] pl-[8px]">
     <button
@@ -35,19 +39,14 @@ export const ListHeader = ({
     </button>
     <div className="flex min-w-0 flex-1 items-center gap-2">
       <ListTitle boardKey={boardKey} listId={listId} title={title} />
-      {listPosDebug ? (
-        <span
-          className="shrink-0 font-mono text-[10px] text-emerald-400/90 leading-none"
-          title={`Stored pos: ${listPosDebug.stored}\nSuggested pos (from order): ${listPosDebug.suggested}`}
-        >
-          {listPosDebug.suggested.toFixed(2)}
-          {Math.abs(listPosDebug.suggested - listPosDebug.stored) > 0.01 ? (
-            <span className="ml-1 text-white/35">
-              ←{listPosDebug.stored.toFixed(0)}
-            </span>
-          ) : null}
-        </span>
-      ) : null}
     </div>
+    {!!boardKey && !!listId && !!onOpenCardQuickAdd ? (
+      <OverflowMenu
+        boardKey={boardKey}
+        listId={listId}
+        listTitle={title}
+        onAddCard={onOpenCardQuickAdd}
+      />
+    ) : null}
   </header>
 );

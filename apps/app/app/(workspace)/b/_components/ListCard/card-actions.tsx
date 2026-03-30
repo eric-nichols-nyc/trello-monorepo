@@ -14,15 +14,16 @@ import {
   Copy,
   SquareArrowOutUpRight,
   SquarePen,
-  Trash2,
 } from "lucide-react";
 
 import { CardCoverChooser } from "../CardCoverChooser/card-cover-chooser";
 import { isWithinCardCoverPanel } from "../CardCoverChooser/card-cover-panel";
+import { DeleteCardButton } from "./delete-card-button";
 import { EditDatesButton } from "./edit-dates-button";
 import { isWithinEditDatesPanel } from "./edit-dates-panel";
 
 export type CardActionsProps = {
+  readonly boardKey: string;
   readonly cardId: string;
   readonly cardTitle: string;
   readonly onOpenCard?: () => void;
@@ -31,7 +32,6 @@ export type CardActionsProps = {
   readonly onMove?: () => void;
   readonly onCopyCard?: () => void;
   readonly onArchive?: () => void;
-  readonly onDeleteCard?: () => void;
 };
 
 /**
@@ -39,6 +39,8 @@ export type CardActionsProps = {
  * surface (sibling to the sliding title) so it does not move with hover animation.
  */
 export function CardActions({
+  boardKey,
+  cardId,
   cardTitle,
   onOpenCard,
   onChangeCover,
@@ -46,7 +48,6 @@ export function CardActions({
   onMove,
   onCopyCard,
   onArchive,
-  onDeleteCard,
 }: CardActionsProps) {
   return (
     <DropdownMenu modal={false}>
@@ -147,15 +148,7 @@ export function CardActions({
           <Archive aria-hidden className="size-4" strokeWidth={2} />
           Archive
         </DropdownMenuItem>
-        <DropdownMenuItem
-          onSelect={() => {
-            onDeleteCard?.();
-          }}
-          variant="destructive"
-        >
-          <Trash2 aria-hidden className="size-4" strokeWidth={2} />
-          Delete card
-        </DropdownMenuItem>
+        <DeleteCardButton boardKey={boardKey} cardId={cardId} kind="menu" />
       </DropdownMenuContent>
     </DropdownMenu>
   );
