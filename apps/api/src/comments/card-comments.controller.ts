@@ -10,8 +10,10 @@ import {
 import { ClerkAuthGuard } from "../auth/clerk-auth.guard";
 import { CurrentUser } from "../auth/current-user.decorator";
 import { ZodValidationPipe } from "../common/pipes/zod-validation.pipe";
-import type { UsersService } from "../users/users.service";
-import type { CommentsService } from "./comments.service";
+// biome-ignore lint/style/useImportType: Nest DI needs UsersService as a runtime constructor token
+import { UsersService } from "../users/users.service";
+// biome-ignore lint/style/useImportType: Nest DI needs CommentsService as a runtime constructor token
+import { CommentsService } from "./comments.service";
 import type { CreateCommentInput } from "./schemas/create-comment.schema";
 import { createCommentSchema } from "./schemas/create-comment.schema";
 

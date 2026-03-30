@@ -9,7 +9,8 @@ import {
 } from "@nestjs/common";
 import { ClerkAuthGuard } from "../auth/clerk-auth.guard";
 import { CurrentUser } from "../auth/current-user.decorator";
-import type { ChecklistsService } from "./checklists.service";
+// biome-ignore lint/style/useImportType: Nest DI needs ChecklistsService as a runtime constructor token
+import { ChecklistsService } from "./checklists.service";
 import type { UpdateChecklistDto } from "./dto/update-checklist.dto";
 
 @Controller("checklists")

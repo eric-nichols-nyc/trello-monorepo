@@ -2,7 +2,8 @@ import { Body, Controller, Get, Param, Post, UseGuards } from "@nestjs/common";
 import { ClerkAuthGuard } from "../auth/clerk-auth.guard";
 import { CurrentUser } from "../auth/current-user.decorator";
 import { ZodValidationPipe } from "../common/pipes/zod-validation.pipe";
-import type { CheckItemsService } from "./check-items.service";
+// biome-ignore lint/style/useImportType: Nest DI needs CheckItemsService as a runtime constructor token
+import { CheckItemsService } from "./check-items.service";
 import type { CreateCheckItemInput } from "./schemas/create-check-item.schema";
 import { createCheckItemSchema } from "./schemas/create-check-item.schema";
 

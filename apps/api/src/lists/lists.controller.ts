@@ -10,7 +10,8 @@ import {
 import { ClerkAuthGuard } from "../auth/clerk-auth.guard";
 import { CurrentUser } from "../auth/current-user.decorator";
 import type { UpdateListDto } from "./dto/update-list.dto";
-import type { ListsService } from "./lists.service";
+// biome-ignore lint/style/useImportType: Nest DI needs ListsService as a runtime constructor token
+import { ListsService } from "./lists.service";
 
 @Controller("lists")
 export class ListsController {

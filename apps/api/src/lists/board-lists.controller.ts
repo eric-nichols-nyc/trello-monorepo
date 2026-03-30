@@ -2,7 +2,8 @@ import { Body, Controller, Get, Param, Post, UseGuards } from "@nestjs/common";
 import { ClerkAuthGuard } from "../auth/clerk-auth.guard";
 import { CurrentUser } from "../auth/current-user.decorator";
 import { ZodValidationPipe } from "../common/pipes/zod-validation.pipe";
-import type { ListsService } from "./lists.service";
+// biome-ignore lint/style/useImportType: Nest DI needs ListsService as a runtime constructor token
+import { ListsService } from "./lists.service";
 import type { CreateListInput } from "./schemas/create-list.schema";
 import { createListSchema } from "./schemas/create-list.schema";
 

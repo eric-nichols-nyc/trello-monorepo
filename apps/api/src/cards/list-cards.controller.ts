@@ -14,7 +14,8 @@ import {
 import { ClerkAuthGuard } from "../auth/clerk-auth.guard";
 import { CurrentUser } from "../auth/current-user.decorator";
 import { ZodValidationPipe } from "../common/pipes/zod-validation.pipe";
-import type { CardsService } from "./cards.service";
+// biome-ignore lint/style/useImportType: Nest DI needs CardsService as a runtime constructor token
+import { CardsService } from "./cards.service";
 import type { CreateCardInput } from "./schemas/create-card.schema";
 import { createCardSchema } from "./schemas/create-card.schema";
 

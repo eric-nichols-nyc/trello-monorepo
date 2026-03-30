@@ -53,7 +53,11 @@ function getPopoverPosition(
   };
 }
 
-export function EmptyBoards() {
+export type EmptyBoardsProps = {
+  readonly workspaceId: string | null;
+};
+
+export function EmptyBoards({ workspaceId }: EmptyBoardsProps) {
   const [mounted, setMounted] = useState(false);
   const [open, setOpen] = useState(false);
   const [popoverPosition, setPopoverPosition] = useState({ top: 0, left: 0 });
@@ -142,7 +146,7 @@ export function EmptyBoards() {
               }}
             >
               <div className="pointer-events-auto">
-                <CreateBoardCard onClose={close} />
+                <CreateBoardCard onClose={close} workspaceId={workspaceId} />
               </div>
             </div>
           </div>,

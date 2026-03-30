@@ -33,6 +33,18 @@ export class WorkspacesController {
     return this.workspacesService.findAll();
   }
 
+  @Get("mine")
+  @UseGuards(ClerkAuthGuard)
+  async findMine(@CurrentUser("sub") clerkUserId: string) {
+    const user = await this.usersService.findByClerkId(clerkUserId);
+    if (!user) {
+      throw new NotFoundException(
+        "User not found after authentication (provisioning failed)."
+      );
+    }
+    return this.workspacesService.findByOwnerId(user.id);
+  }
+
   @Get(":id")
   findOne(@Param("id") id: string) {
     return this.workspacesService.findOne(id);

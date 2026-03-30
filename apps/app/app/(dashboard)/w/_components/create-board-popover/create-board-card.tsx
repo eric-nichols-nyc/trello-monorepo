@@ -12,10 +12,15 @@ export const CREATE_BOARD_POPOVER_LAYOUT_ESTIMATE_PX = 520;
 
 export type CreateBoardCardProps = {
   readonly onClose: () => void;
+  readonly workspaceId: string | null;
   readonly className?: string;
 };
 
-export function CreateBoardCard({ onClose, className }: CreateBoardCardProps) {
+export function CreateBoardCard({
+  onClose,
+  workspaceId,
+  className,
+}: CreateBoardCardProps) {
   return (
     <Card
       className={cn(
@@ -28,7 +33,7 @@ export function CreateBoardCard({ onClose, className }: CreateBoardCardProps) {
     >
       <CreateBoardHeader onClose={onClose} />
       <CardContent className="flex flex-col px-4 py-4">
-        <CreateBoardForm />
+        <CreateBoardForm workspaceId={workspaceId} />
       </CardContent>
     </Card>
   );

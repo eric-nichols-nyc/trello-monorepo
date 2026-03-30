@@ -9,7 +9,8 @@ import {
 } from "@nestjs/common";
 import { ClerkAuthGuard } from "../auth/clerk-auth.guard";
 import { CurrentUser } from "../auth/current-user.decorator";
-import type { CommentsService } from "./comments.service";
+// biome-ignore lint/style/useImportType: Nest DI needs CommentsService as a runtime constructor token
+import { CommentsService } from "./comments.service";
 import type { UpdateCommentDto } from "./dto/update-comment.dto";
 
 @Controller("comments")

@@ -9,7 +9,8 @@ import {
 } from "@nestjs/common";
 import { ClerkAuthGuard } from "../auth/clerk-auth.guard";
 import { CurrentUser } from "../auth/current-user.decorator";
-import type { CardsService } from "./cards.service";
+// biome-ignore lint/style/useImportType: Nest DI needs CardsService as a runtime constructor token
+import { CardsService } from "./cards.service";
 import type { UpdateCardDto } from "./dto/update-card.dto";
 
 @Controller("cards")

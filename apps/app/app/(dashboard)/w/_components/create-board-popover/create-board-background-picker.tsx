@@ -1,12 +1,24 @@
 "use client";
 
-import { useState } from "react";
 import { BackgroundColorPicker } from "./background-color-picker";
 import { BackgroundImagePicker } from "./background-image-picker";
 
-export function CreateBoardBackgroundPicker() {
-  const [selectedColor, setSelectedColor] = useState<string | null>("#0079bf");
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+export type CreateBoardBackgroundSelection =
+  | { readonly kind: "color"; readonly colorHex: string }
+  | { readonly kind: "image"; readonly imageRootUrl: string }
+  | null;
+
+export type CreateBoardBackgroundPickerProps = {
+  readonly value: CreateBoardBackgroundSelection;
+  readonly onChange: (value: CreateBoardBackgroundSelection) => void;
+};
+
+export function CreateBoardBackgroundPicker({
+  value,
+  onChange,
+}: CreateBoardBackgroundPickerProps) {
+  const selectedColorHex = value?.kind === "color" ? value.colorHex : null;
+  const selectedImageUrl = value?.kind === "image" ? value.imageRootUrl : null;
 
   return (
     <div className="space-y-4">
@@ -14,21 +26,19 @@ export function CreateBoardBackgroundPicker() {
       <div className="space-y-2">
         <p className="text-muted-foreground text-xs">Colors</p>
         <BackgroundColorPicker
-          onChange={(color) => {
-            setSelectedColor(color);
-            setSelectedImage(null);
+          onChange={(colorHex) => {
+            onChange({ kind: "color", colorHex });
           }}
-          value={selectedColor}
+          value={selectedColorHex}
         />
       </div>
       <div className="space-y-2">
         <p className="text-muted-foreground text-xs">Photos</p>
         <BackgroundImagePicker
           onChange={(url) => {
-            setSelectedImage(url);
-            setSelectedColor(null);
+            onChange({ kind: "image", imageRootUrl: url });
           }}
-          value={selectedImage}
+          value={selectedImageUrl}
         />
       </div>
     </div>

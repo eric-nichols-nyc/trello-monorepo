@@ -1,6 +1,7 @@
 import { verifyToken } from "@clerk/backend";
 import { Injectable } from "@nestjs/common";
-import type { ConfigService } from "@nestjs/config";
+// biome-ignore lint/style/useImportType: Nest DI needs ConfigService as a runtime constructor token for reflect-metadata
+import { ConfigService } from "@nestjs/config";
 
 export type ClerkAuthPayload = {
   sub: string;
