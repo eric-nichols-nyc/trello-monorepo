@@ -11,7 +11,7 @@ type GlobalHeaderProperties = {
 };
 
 export const GlobalHeader = ({
-  title = "Dashboard",
+  title = "Workdpace",
   workspaceId = null,
 }: GlobalHeaderProperties) => (
   <header
