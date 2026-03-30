@@ -7,7 +7,7 @@ import {
   PopoverTrigger,
 } from "@repo/design-system/components/ui/popover";
 import { cn } from "@repo/design-system/lib/utils";
-import type { ComponentProps } from "react";
+import { type ComponentProps, useCallback, useState } from "react";
 import {
   StackedPopoverHeader,
   StackedPopoverProvider,
@@ -15,6 +15,8 @@ import {
   StackedPopoverScreen,
   useStackedPopover,
 } from "@/components/stacked-popover/stacked-popover";
+import { CreateBoardForm } from "../create-board-popover/create-board-form";
+import { CreateBoardHeader } from "../create-board-popover/create-board-header";
 
 type HeaderCreateStackedPopoverProps = {
   className?: string;
@@ -28,7 +30,27 @@ type HeaderCreateStackedPopoverProps = {
     ComponentProps<typeof Button>,
     "children" | "type" | "variant"
   >;
+  readonly workspaceId: string | null;
 };
+
+function HeaderCreateBoardScreen({
+  onBoardCreated,
+  workspaceId,
+}: {
+  onBoardCreated: () => void;
+  workspaceId: string | null;
+}) {
+  const { pop } = useStackedPopover();
+
+  return (
+    <>
+      <CreateBoardHeader onClose={pop} />
+      <div className="px-4 py-4">
+        <CreateBoardForm onCreated={onBoardCreated} workspaceId={workspaceId} />
+      </div>
+    </>
+  );
+}
 
 function ExampleCreateMenuItems({
   templateDisabled = true,
@@ -61,13 +83,14 @@ function ExampleCreateMenuItems({
 }
 
 /**
- * Header “Create” control with stacked drill-down (placeholder flows until real flows exist).
+ * Header “Create” control with stacked drill-down (create board uses {@link CreateBoardForm}).
  */
 export function HeaderCreateStackedPopover({
   className,
   disabled,
   templateDisabled = true,
   triggerProps,
+  workspaceId,
 }: HeaderCreateStackedPopoverProps) {
   const {
     className: triggerClassName,
@@ -77,8 +100,22 @@ export function HeaderCreateStackedPopover({
 
   const isDisabled = disabled ?? triggerDisabled;
 
+  const [open, setOpen] = useState(false);
+  const [menuGeneration, setMenuGeneration] = useState(0);
+
+  const handleOpenChange = useCallback((next: boolean) => {
+    setOpen(next);
+    if (next) {
+      setMenuGeneration((g) => g + 1);
+    }
+  }, []);
+
+  const handleBoardCreated = useCallback(() => {
+    setOpen(false);
+  }, []);
+
   return (
-    <Popover>
+    <Popover onOpenChange={handleOpenChange} open={open}>
       <PopoverTrigger asChild>
         <Button
           className={cn(className, triggerClassName)}
@@ -91,28 +128,20 @@ export function HeaderCreateStackedPopover({
           Create
         </Button>
       </PopoverTrigger>
-      <PopoverContent align="end" className="w-72 p-0">
-        <StackedPopoverProvider>
+      <PopoverContent
+        align="end"
+        className="max-h-[min(90dvh,720px)] w-72 overflow-y-auto p-0"
+      >
+        <StackedPopoverProvider key={menuGeneration}>
           <StackedPopoverRoot>
             <StackedPopoverHeader title="New Board" />
             <ExampleCreateMenuItems templateDisabled={templateDisabled} />
           </StackedPopoverRoot>
           <StackedPopoverScreen id="create-board">
-            <StackedPopoverHeader title="Create board" />
-            <div className="space-y-2 p-3 text-sm">
-              <p className="text-muted-foreground">
-                Example: board name, workspace, background — wire forms here
-                later.
-              </p>
-              <Button
-                className="w-full"
-                size="sm"
-                type="button"
-                variant="secondary"
-              >
-                Placeholder submit
-              </Button>
-            </div>
+            <HeaderCreateBoardScreen
+              onBoardCreated={handleBoardCreated}
+              workspaceId={workspaceId}
+            />
           </StackedPopoverScreen>
           <StackedPopoverScreen id="template">
             <StackedPopoverHeader title="Templates" />
