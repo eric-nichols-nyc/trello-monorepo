@@ -7,7 +7,7 @@ export const DashboardSidebar = () => (
         <li>
           <Link
             className="block rounded-md px-2 py-1.5 text-sidebar-foreground text-sm transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-            href="/dashboard"
+            href="/w"
           >
             Dashboard
           </Link>

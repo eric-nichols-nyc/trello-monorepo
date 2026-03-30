@@ -18,13 +18,16 @@ describe("GlobalHeader", () => {
     expect(header).toBeVisible();
     expect(header).toHaveAttribute("data-testid", "global-header");
 
-    expect(screen.getByText("Dashboard")).toBeVisible();
+    expect(screen.getByText("Trellnode")).toBeVisible();
   });
 
-  it("renders a custom title", () => {
+  it("reflects a custom title in the brand link accessible name", () => {
     render(<GlobalHeader title="Settings" />);
 
-    expect(screen.getByText("Settings")).toBeVisible();
+    expect(screen.getByText("Trellnode")).toBeVisible();
+    expect(
+      screen.getByRole("link", { name: "Settings — workspace home" })
+    ).toBeVisible();
   });
 
   it("includes the user menu and theme toggle", () => {

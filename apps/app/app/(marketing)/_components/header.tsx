@@ -9,21 +9,10 @@ import {
 } from "@repo/clerk/client";
 import { ModeToggle } from "@repo/design-system/components/mode-toggle";
 import { Button } from "@repo/design-system/components/ui/button";
-import { LayoutGrid, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-
-function LogoMark() {
-  return (
-    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-      <LayoutGrid
-        aria-hidden
-        className="h-5 w-5 text-primary-foreground"
-        strokeWidth={2}
-      />
-    </div>
-  );
-}
+import { BrandWordmark } from "./brand-wordmark";
 
 const navLinkClass =
   "text-muted-foreground text-sm transition-colors hover:text-foreground";
@@ -86,13 +75,12 @@ export function Header() {
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
         <div className="flex items-center gap-8">
           <Link
-            aria-label="App home"
+            aria-label="Trellnode home"
             className="flex items-center gap-2"
             href="/"
             onClick={closeMobile}
           >
-            <LogoMark />
-            <span className="font-semibold text-foreground text-xl">App</span>
+            <BrandWordmark />
           </Link>
 
           <nav className="hidden items-center gap-6 md:flex">
