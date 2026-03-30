@@ -4,6 +4,7 @@ import { Button } from "@repo/design-system/components/ui/button";
 import { cn } from "@repo/design-system/lib/utils";
 import { ChevronLeft } from "lucide-react";
 import {
+  type ComponentProps,
   createContext,
   type ReactNode,
   useContext,
@@ -108,6 +109,13 @@ export type StackedPopoverHeaderProps = {
   title?: string;
   className?: string;
   backButtonLabel?: string;
+  /** Disables the back control when shown (deeper than root). */
+  backDisabled?: boolean;
+  /** Extra props for the back `Button` (`onClick` is always wired to `pop`). */
+  backButtonProps?: Omit<
+    ComponentProps<typeof Button>,
+    "children" | "onClick" | "size" | "type" | "variant"
+  >;
 };
 
 /**
@@ -117,8 +125,15 @@ export function StackedPopoverHeader({
   title,
   className,
   backButtonLabel = "Back",
+  backDisabled,
+  backButtonProps,
 }: StackedPopoverHeaderProps) {
   const { depth, pop } = useStackedPopover();
+  const {
+    className: backClassName,
+    disabled: backButtonDisabledProp,
+    ...restBackButtonProps
+  } = backButtonProps ?? {};
 
   if (depth === 0) {
     if (!title) {
@@ -142,11 +157,13 @@ export function StackedPopoverHeader({
     >
       <Button
         aria-label={backButtonLabel}
-        className="size-8 shrink-0"
-        onClick={pop}
+        className={cn("size-8 shrink-0", backClassName)}
         size="icon-sm"
         type="button"
         variant="ghost"
+        {...restBackButtonProps}
+        disabled={backDisabled ?? backButtonDisabledProp}
+        onClick={pop}
       >
         <ChevronLeft aria-hidden className="size-4" strokeWidth={2} />
       </Button>

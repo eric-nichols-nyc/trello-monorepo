@@ -18,13 +18,23 @@ import {
 
 type HeaderCreateStackedPopoverProps = {
   className?: string;
+  /** Disables the Create trigger; overrides `triggerProps.disabled` when set. */
+  disabled?: boolean;
+  /**
+   * “Start with a template” row. Defaults to disabled (greyed, not clickable) until you pass `false`.
+   */
+  templateDisabled?: boolean;
   triggerProps?: Omit<
     ComponentProps<typeof Button>,
     "children" | "type" | "variant"
   >;
 };
 
-function ExampleCreateMenuItems() {
+function ExampleCreateMenuItems({
+  templateDisabled = true,
+}: {
+  templateDisabled?: boolean;
+}) {
   const { push } = useStackedPopover();
 
   return (
@@ -38,7 +48,8 @@ function ExampleCreateMenuItems() {
         Create board
       </Button>
       <Button
-        className="w-full justify-start font-normal"
+        className="w-full justify-start font-normal disabled:text-muted-foreground disabled:hover:bg-transparent"
+        disabled={templateDisabled}
         onClick={() => push("template")}
         type="button"
         variant="ghost"
@@ -54,9 +65,17 @@ function ExampleCreateMenuItems() {
  */
 export function HeaderCreateStackedPopover({
   className,
+  disabled,
+  templateDisabled = true,
   triggerProps,
 }: HeaderCreateStackedPopoverProps) {
-  const { className: triggerClassName, ...restTrigger } = triggerProps ?? {};
+  const {
+    className: triggerClassName,
+    disabled: triggerDisabled,
+    ...restTrigger
+  } = triggerProps ?? {};
+
+  const isDisabled = disabled ?? triggerDisabled;
 
   return (
     <Popover>
@@ -64,6 +83,7 @@ export function HeaderCreateStackedPopover({
         <Button
           className={cn(className, triggerClassName)}
           data-testid="header-create-button"
+          disabled={isDisabled}
           type="button"
           variant="default"
           {...restTrigger}
@@ -74,8 +94,8 @@ export function HeaderCreateStackedPopover({
       <PopoverContent align="end" className="w-72 p-0">
         <StackedPopoverProvider>
           <StackedPopoverRoot>
-            <StackedPopoverHeader title="Create" />
-            <ExampleCreateMenuItems />
+            <StackedPopoverHeader title="New Board" />
+            <ExampleCreateMenuItems templateDisabled={templateDisabled} />
           </StackedPopoverRoot>
           <StackedPopoverScreen id="create-board">
             <StackedPopoverHeader title="Create board" />
