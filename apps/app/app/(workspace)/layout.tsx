@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { GlobalHeader } from "./w/_components/global-header";
+import { GlobalHeader } from "./w/_components/global-header/global-header";
 
 type DashboardLayoutProps = {
   children: ReactNode;

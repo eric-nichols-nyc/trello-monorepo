@@ -1,8 +1,8 @@
 import { ModeToggle } from "@repo/design-system/components/mode-toggle";
 import Link from "next/link";
-import { HeaderCreateButton } from "./search/header-create-button";
-import { HeaderSearchInput } from "./search/header-search-input";
-import { UserMenu } from "./user/user-menu";
+import { HeaderSearchInput } from "../search/header-search-input";
+import { UserMenu } from "../user/user-menu";
+import { HeaderCreateStackedPopover } from "./header-create-stacked-popover";
 
 type GlobalHeaderProperties = {
   readonly title?: string;
@@ -23,7 +23,7 @@ export const GlobalHeader = ({
     </Link>
     <div className="mx-auto flex min-w-0 max-w-[780px] flex-1 items-center gap-2">
       <HeaderSearchInput />
-      <HeaderCreateButton className="shrink-0" />
+      <HeaderCreateStackedPopover className="shrink-0" />
     </div>
     <div className="flex shrink-0 items-center gap-2">
       <UserMenu />

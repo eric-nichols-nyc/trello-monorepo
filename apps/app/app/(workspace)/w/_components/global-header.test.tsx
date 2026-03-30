@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { GlobalHeader } from "./global-header";
+import { GlobalHeader } from "./global-header/global-header";
 
 vi.mock("@repo/design-system/components/mode-toggle", () => ({
   ModeToggle: () => <div data-testid="mode-toggle" />,
