@@ -8,17 +8,16 @@ import {
   CardTitle,
 } from "@repo/design-system/components/ui/card";
 import { cn } from "@repo/design-system/lib/utils";
-import {
-  Activity,
-  Archive,
-  Info,
-  Palette,
-  Star,
-  X,
-  XCircle,
-} from "lucide-react";
+import { Activity, Archive, Info, X } from "lucide-react";
+import type { BoardBackgroundStyleSource } from "@/lib/board/get-board-background-style";
+
+import { ChangeBackgroundMenuButton } from "./change-background-menu-button";
+import { CloseBoardButton } from "./close-board-button";
+import { StarBoardButton } from "./star-board-button";
 
 export type BoardMenuPopoverProps = {
+  boardBackground: BoardBackgroundStyleSource;
+  boardName?: string;
   /** Called only from explicit dismiss controls (header X, footer Close). */
   onDismiss?: () => void;
   className?: string;
@@ -33,6 +32,8 @@ const menuButtonClass = cn(
  * Board overflow actions in a {@link Card} shell with a titled header (wiring TBD).
  */
 export function BoardMenuPopover({
+  boardBackground,
+  boardName,
   className,
   onDismiss,
 }: BoardMenuPopoverProps) {
@@ -43,7 +44,7 @@ export function BoardMenuPopover({
   return (
     <Card
       className={cn(
-        "box-border w-[var(--board-menu-card-width)] max-w-[var(--board-menu-card-width)] shrink-0 gap-0 overflow-hidden border border-white/10 bg-[var(--board-menu-card-bg)] px-[var(--board-menu-card-padding-inline)] py-0 text-white/90 shadow-md",
+        "box-border w-[var(--board-menu-card-width)] max-w-[var(--board-menu-card-width)] shrink-0 gap-0 overflow-visible border border-white/10 bg-[var(--board-menu-card-bg)] px-[var(--board-menu-card-padding-inline)] py-0 text-white/90 shadow-md",
         className
       )}
     >
@@ -70,33 +71,27 @@ export function BoardMenuPopover({
             <Info aria-hidden className="size-4 shrink-0" strokeWidth={2} />
             About this board
           </Button>
-          <Button className={menuButtonClass} type="button" variant="ghost">
-            <Star aria-hidden className="size-4 shrink-0" strokeWidth={2} />
-            Star
-          </Button>
-          <Button className={menuButtonClass} type="button" variant="ghost">
-            <Palette aria-hidden className="size-4 shrink-0" strokeWidth={2} />
-            Change background
-          </Button>
-          <Button className={menuButtonClass} type="button" variant="ghost">
-            <Activity aria-hidden className="size-4 shrink-0" strokeWidth={2} />
-            Activities
-          </Button>
-          <Button className={menuButtonClass} type="button" variant="ghost">
-            <Archive aria-hidden className="size-4 shrink-0" strokeWidth={2} />
-            Archived items
-          </Button>
+          <StarBoardButton />
+          <ChangeBackgroundMenuButton boardBackground={boardBackground} />
           <Button
-            className={cn(
-              menuButtonClass,
-              "text-red-400 hover:bg-red-500/15 hover:text-red-300"
-            )}
+            className={menuButtonClass}
+            disabled
             type="button"
             variant="ghost"
           >
-            <XCircle aria-hidden className="size-4 shrink-0" strokeWidth={2} />
-            Close board
+            <Activity aria-hidden className="size-4 shrink-0" strokeWidth={2} />
+            Activitiy
           </Button>
+          <Button
+            className={menuButtonClass}
+            disabled
+            type="button"
+            variant="ghost"
+          >
+            <Archive aria-hidden className="size-4 shrink-0" strokeWidth={2} />
+            Archived items
+          </Button>
+          <CloseBoardButton boardName={boardName} />
         </div>
       </CardContent>
     </Card>

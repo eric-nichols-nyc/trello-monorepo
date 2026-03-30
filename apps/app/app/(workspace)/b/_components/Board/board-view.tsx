@@ -12,6 +12,10 @@ type BoardViewProps = {
 export const BoardView = ({ board, boardKey }: BoardViewProps) => (
   <div className="flex min-h-0 min-w-0 flex-1 flex-col">
     <BoardHeader
+      boardBackground={{
+        backgroundColor: board.backgroundColor,
+        backgroundImage: board.backgroundImage,
+      }}
       boardId={board.id}
       boardKey={boardKey}
       boardName={board.name}

@@ -6,12 +6,14 @@ import { useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
 import { useClickOutside } from "@/hooks/use-click-outside";
+import type { BoardBackgroundStyleSource } from "@/lib/board/get-board-background-style";
 
 import { BoardMenuPopover } from "./board-menu-popover";
 
 const BOARD_MENU_PANEL_Z = 200;
 
 type BoardMenuButtonProps = {
+  boardBackground: BoardBackgroundStyleSource;
   /** For `aria-label` / future analytics. */
   boardName: string;
   className?: string;
@@ -42,6 +44,7 @@ function placePanelNearTrigger(
 }
 
 export function BoardMenuButton({
+  boardBackground,
   boardName,
   className,
 }: BoardMenuButtonProps) {
@@ -102,7 +105,11 @@ export function BoardMenuButton({
               onPointerDown={(event) => event.stopPropagation()}
               ref={panelRef}
             >
-              <BoardMenuPopover onDismiss={() => setOpen(false)} />
+              <BoardMenuPopover
+                boardBackground={boardBackground}
+                boardName={boardName}
+                onDismiss={() => setOpen(false)}
+              />
             </div>,
             document.body
           )

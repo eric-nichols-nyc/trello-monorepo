@@ -1,13 +1,17 @@
+import type { BoardBackgroundStyleSource } from "@/lib/board/get-board-background-style";
+
 import { BoardMenuButton } from "../BoardMenuPopover/board-menu-button";
 import { BoardName } from "../BoardName/board-name";
 
 type BoardHeaderProps = {
+  boardBackground: BoardBackgroundStyleSource;
   boardId: string;
   boardKey: string;
   boardName: string;
 };
 
 export const BoardHeader = ({
+  boardBackground,
   boardId,
   boardKey,
   boardName,
@@ -21,7 +25,10 @@ export const BoardHeader = ({
       <div className="min-w-0 flex-1">
         <BoardName boardId={boardId} boardKey={boardKey} name={boardName} />
       </div>
-      <BoardMenuButton boardName={boardName} />
+      <BoardMenuButton
+        boardBackground={boardBackground}
+        boardName={boardName}
+      />
     </div>
   </header>
 );
