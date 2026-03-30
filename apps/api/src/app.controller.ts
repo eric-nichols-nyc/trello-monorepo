@@ -2,6 +2,7 @@ import {
   Controller,
   Delete,
   Get,
+  Header,
   NotFoundException,
   UseGuards,
 } from "@nestjs/common";
@@ -20,6 +21,7 @@ export class AppController {
   ) {}
 
   @Get()
+  @Header("Content-Type", "text/html; charset=utf-8")
   getHello(): string {
     return this.appService.getHello();
   }
