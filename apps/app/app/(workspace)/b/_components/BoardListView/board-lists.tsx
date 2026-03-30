@@ -32,14 +32,14 @@ export const BoardLists = ({ board, boardKey }: BoardListsProps) => {
   } = useBoardListsDrag(board, boardKey);
 
   return (
-    <div className="flex min-w-0 shrink-0 items-start gap-4">
-      <DragDropProvider
-        onDragEnd={handleDragEnd}
-        onDragOver={handleDragOver}
-        onDragStart={handleDragStart}
-        sensors={sensors}
-      >
-        <ul className="flex min-w-0 list-none gap-4 p-0">
+    <DragDropProvider
+      onDragEnd={handleDragEnd}
+      onDragOver={handleDragOver}
+      onDragStart={handleDragStart}
+      sensors={sensors}
+    >
+      <div className="flex w-max items-start gap-4">
+        <ul className="m-0 flex list-none gap-4 p-0">
           {listIds.map((id, columnIndex) => (
             <BoardColumn
               boardKey={boardKey}
@@ -56,32 +56,32 @@ export const BoardLists = ({ board, boardKey }: BoardListsProps) => {
             />
           ))}
         </ul>
-        <DragOverlay dropAnimation={{ duration: 180, easing: "ease-out" }}>
-          {(source) => {
-            if (!source) {
-              return null;
-            }
-            const id = String(source.id);
-            if (source.type === "column") {
-              return (
-                <ListColumnDragPreview
-                  cardIds={cardsByList[id] ?? []}
-                  cardTitles={cardTitles}
-                  title={listTitles[id] ?? "List"}
-                />
-              );
-            }
+        <ListComposer boardId={board.id} boardKey={boardKey} />
+      </div>
+      <DragOverlay dropAnimation={{ duration: 180, easing: "ease-out" }}>
+        {(source) => {
+          if (!source) {
+            return null;
+          }
+          const id = String(source.id);
+          if (source.type === "column") {
             return (
-              <div className="pointer-events-none w-[262px] max-w-[calc(270px-8px)] cursor-grabbing">
-                <div className="overflow-hidden rounded-[8px] shadow-lg ring-2 ring-white/20">
-                  <ListCardChrome title={cardTitles[id] ?? "Card"} />
-                </div>
-              </div>
+              <ListColumnDragPreview
+                cardIds={cardsByList[id] ?? []}
+                cardTitles={cardTitles}
+                title={listTitles[id] ?? "List"}
+              />
             );
-          }}
-        </DragOverlay>
-      </DragDropProvider>
-      <ListComposer boardId={board.id} boardKey={boardKey} />
-    </div>
+          }
+          return (
+            <div className="pointer-events-none w-[262px] max-w-[calc(270px-8px)] cursor-grabbing">
+              <div className="overflow-hidden rounded-[8px] shadow-lg ring-2 ring-white/20">
+                <ListCardChrome title={cardTitles[id] ?? "Card"} />
+              </div>
+            </div>
+          );
+        }}
+      </DragOverlay>
+    </DragDropProvider>
   );
 };
