@@ -1,3 +1,7 @@
+/**
+ * Card moves between lists / reorder within list → API-oriented `pos` payloads.
+ * Same three-layer mental model as list columns: `components/dnd-board/README.md`.
+ */
 import {
   type CardPositionResult,
   KanbanCardPositionCalculator,

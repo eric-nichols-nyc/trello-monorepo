@@ -1,5 +1,10 @@
 "use client";
 
+/**
+ * Production nested board drag: `move()` updates `listIds` / `cardsByList`, then
+ * list + card position helpers build PATCH payloads. Overview:
+ * `components/dnd-board/README.md`.
+ */
 import type {
   DragEndEvent as DomDragEndHandler,
   DragOverEvent as DomDragOverHandler,

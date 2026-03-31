@@ -4,6 +4,8 @@
  * (gap or midpoint). Consumed by board UI persistence and optional debug display.
  *
  * `LIST_POS_GAP` matches the card `KanbanCardPositionCalculator` step (1000).
+ *
+ * How this fits with drag order vs stored `pos`: see `components/dnd-board/README.md`.
  */
 const LIST_POS_GAP = 1000;
 
