@@ -1,26 +1,86 @@
 {
   "id": "simple-kanban",
-  "title": "Simple Kanban",
-  "description": "Three columns with a few starter cards.",
+  "title": "Kanban Template",
+  "description": "Backlog through done — starter cards with column-style covers (same-origin image paths).",
   "board": {
-    "backgroundColor": "#0079bf",
-    "backgroundBrightness": "light"
+    "backgroundImage": "/images/photo-1576502200916-3808e07386a5.jpg",
+    "backgroundBrightness": "dark"
   },
   "lists": [
     {
-      "name": "To do",
+      "name": "Backlog",
       "cards": [
-        { "name": "Welcome to your new board" },
-        { "name": "Drag cards to change lists" }
+        {
+          "name": "[Example task]",
+          "description": "Add a description, attachments, and checklists here.",
+          "coverImage": "/images/template/Backlog.png"
+        }
+      ]
+    },
+    {
+      "name": "Design",
+      "cards": [
+        {
+          "name": "[Example task with designs]",
+          "description": "Attach mockups or link to design files.",
+          "coverImage": "/images/template/Design.png"
+        }
+      ]
+    },
+    {
+      "name": "To Do",
+      "cards": [
+        {
+          "name": "[Example task]",
+          "description": "Ready to pick up when you have capacity.",
+          "coverImage": "/images/template/To-Do.png"
+        }
       ]
     },
     {
       "name": "Doing",
-      "cards": [{ "name": "This card is in progress" }]
+      "cards": [
+        {
+          "name": "[Example task]",
+          "description": "Work in progress — move to review when ready.",
+          "coverImage": "/images/template/Doing.png"
+        }
+      ]
+    },
+    {
+      "name": "Code Review",
+      "cards": [
+        {
+          "name": "[Example task]",
+          "description": "Pair this list with a WIP limit in the real product; here are two sample cards."
+        },
+        {
+          "name": "[Example task]",
+          "coverImage": "/images/template/Code_Review.png"
+        }
+      ]
+    },
+    {
+      "name": "Testing",
+      "cards": [
+        {
+          "name": "[Example task]",
+          "description": "QA / verification before release.",
+          "coverImage": "/images/template/Verifying.png"
+        }
+      ]
     },
     {
       "name": "Done",
-      "cards": [{ "name": "Completed work lives here" }]
+      "cards": [
+        {
+          "name": "[Completed task]",
+          "description": "Shipped — archive or keep for history.",
+          "closed": true,
+          "dueDate": "2020-01-23T17:00:00.000Z",
+          "coverImage": "/images/template/Done.png"
+        }
+      ]
     }
   ]
 }

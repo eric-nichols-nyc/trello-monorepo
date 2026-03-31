@@ -6,6 +6,9 @@ const templateCardSchema = z
     description: z.string().optional(),
     coverColor: z.string().min(1).optional(),
     coverImage: z.string().min(1).optional(),
+    closed: z.boolean().optional(),
+    /** ISO-8601 datetime string */
+    dueDate: z.string().min(1).optional(),
   })
   .superRefine((val, ctx) => {
     if (val.coverColor !== undefined && val.coverImage !== undefined) {

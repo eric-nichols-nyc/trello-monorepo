@@ -13,7 +13,7 @@ The API resolves `templateId` to a **bundled** JSON definition under `src/boards
 
 ## Adding a template
 
-1. Add a new file: `src/boards/templates/data/<slug>.template.json` matching the shape validated by `board-template.schema.ts` (`id`, `title`, optional `description`, optional `board` defaults, `lists` with `cards`). Each card may include optional `coverColor` or `coverImage` (not both).
+1. Add a new file: `src/boards/templates/data/<slug>.template.json` matching the shape validated by `board-template.schema.ts` (`id`, `title`, optional `description`, optional `board` defaults, `lists` with `cards`). Each card may include optional `coverColor` or `coverImage` (not both), optional `closed`, optional `dueDate` (ISO-8601 string). Card and board `shortLink` values are always assigned by the API on create, not from JSON.
 2. Import it in `src/boards/templates/registry.ts` and append it to `rawTemplates`.
 3. Rebuild the API (`nest build` copies `*.json` from that folder into `dist` via `nest-cli.json` assets).
 
