@@ -22,6 +22,7 @@ import type {
   Prisma,
 } from "../generated/prisma/client";
 import { PrismaClient } from "../generated/prisma/client";
+import { randomShortLink } from "../src/common/short-link";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -107,6 +108,22 @@ function parseBoardJson(raw: string): JBoard {
   return data as JBoard;
 }
 
+async function allocateUniqueCardShortLinkTx(
+  tx: Prisma.TransactionClient
+): Promise<string> {
+  for (let attempt = 0; attempt < 12; attempt++) {
+    const candidate = randomShortLink();
+    const taken = await tx.card.findUnique({
+      where: { shortLink: candidate },
+      select: { id: true },
+    });
+    if (!taken) {
+      return candidate;
+    }
+  }
+  throw new Error("Could not allocate a unique card shortLink");
+}
+
 function resolveAssigneeId(card: JCard, userId: string): string | null {
   if (card.assigneeId === null || card.assigneeId === undefined) {
     return null;
@@ -123,6 +140,7 @@ async function seedCardGraph(
   ctx: { listId: string; boardId: string; userId: string }
 ): Promise<void> {
   const assigneeId = resolveAssigneeId(card, ctx.userId);
+  const cardShortLink = await allocateUniqueCardShortLinkTx(tx);
 
   const createdCard = await tx.card.create({
     data: {
@@ -131,6 +149,7 @@ async function seedCardGraph(
       pos: card.pos,
       closed: card.closed ?? false,
       dueDate: card.dueDate ? new Date(card.dueDate) : undefined,
+      shortLink: cardShortLink,
       listId: ctx.listId,
       boardId: ctx.boardId,
       assigneeId,

@@ -12,6 +12,8 @@ export const createBoardSchema = z.object({
   backgroundTopColor: z.string().optional(),
   backgroundColor: z.string().optional(),
   starred: z.boolean().optional(),
+  /** Server resolves this id to bundled JSON; the client does not send template JSON. */
+  templateId: z.string().min(1).optional(),
 });
 
 export type CreateBoardInput = z.infer<typeof createBoardSchema>;

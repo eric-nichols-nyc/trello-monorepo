@@ -6,6 +6,8 @@ import {
   IsOptional,
   IsString,
   IsUUID,
+  MaxLength,
+  MinLength,
 } from "class-validator";
 
 export class UpdateCardDto {
@@ -38,4 +40,18 @@ export class UpdateCardDto {
   @IsOptional()
   @IsUUID()
   assigneeId?: string | null;
+
+  @IsOptional()
+  @IsString()
+  coverColor?: string | null;
+
+  @IsOptional()
+  @IsString()
+  coverImage?: string | null;
+
+  @IsOptional()
+  @IsString()
+  @MinLength(1)
+  @MaxLength(64)
+  shortLink?: string;
 }

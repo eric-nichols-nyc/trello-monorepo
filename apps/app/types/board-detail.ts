@@ -40,6 +40,9 @@ export type BoardCard = CardOrderingRow & {
   description: string | null;
   closed: boolean;
   dueDate: string | null;
+  shortLink: string;
+  coverColor: string | null;
+  coverImage: string | null;
   boardId: string;
   assigneeId: string | null;
   createdAt: string;
@@ -137,6 +140,15 @@ function normalizeBoardCard(raw: unknown): BoardCard {
     closed: Boolean(c.closed),
     dueDate:
       c.dueDate === null || c.dueDate === undefined ? null : String(c.dueDate),
+    shortLink: typeof c.shortLink === "string" ? c.shortLink : "",
+    coverColor:
+      c.coverColor === null || c.coverColor === undefined
+        ? null
+        : String(c.coverColor),
+    coverImage:
+      c.coverImage === null || c.coverImage === undefined
+        ? null
+        : String(c.coverImage),
     listId: String(c.listId),
     boardId: String(c.boardId),
     assigneeId:

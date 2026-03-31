@@ -48,6 +48,11 @@ function buildCopyInput(source: BoardCard): CreateCardInput {
   if (source.assigneeId) {
     input.assigneeId = source.assigneeId;
   }
+  if (source.coverImage) {
+    input.coverImage = source.coverImage;
+  } else if (source.coverColor) {
+    input.coverColor = source.coverColor;
+  }
   return input;
 }
 

@@ -6774,6 +6774,9 @@ export namespace Prisma {
     pos: number | null
     closed: boolean | null
     dueDate: Date | null
+    shortLink: string | null
+    coverColor: string | null
+    coverImage: string | null
     listId: string | null
     boardId: string | null
     assigneeId: string | null
@@ -6788,6 +6791,9 @@ export namespace Prisma {
     pos: number | null
     closed: boolean | null
     dueDate: Date | null
+    shortLink: string | null
+    coverColor: string | null
+    coverImage: string | null
     listId: string | null
     boardId: string | null
     assigneeId: string | null
@@ -6802,6 +6808,9 @@ export namespace Prisma {
     pos: number
     closed: number
     dueDate: number
+    shortLink: number
+    coverColor: number
+    coverImage: number
     listId: number
     boardId: number
     assigneeId: number
@@ -6826,6 +6835,9 @@ export namespace Prisma {
     pos?: true
     closed?: true
     dueDate?: true
+    shortLink?: true
+    coverColor?: true
+    coverImage?: true
     listId?: true
     boardId?: true
     assigneeId?: true
@@ -6840,6 +6852,9 @@ export namespace Prisma {
     pos?: true
     closed?: true
     dueDate?: true
+    shortLink?: true
+    coverColor?: true
+    coverImage?: true
     listId?: true
     boardId?: true
     assigneeId?: true
@@ -6854,6 +6869,9 @@ export namespace Prisma {
     pos?: true
     closed?: true
     dueDate?: true
+    shortLink?: true
+    coverColor?: true
+    coverImage?: true
     listId?: true
     boardId?: true
     assigneeId?: true
@@ -6955,6 +6973,9 @@ export namespace Prisma {
     pos: number
     closed: boolean
     dueDate: Date | null
+    shortLink: string | null
+    coverColor: string | null
+    coverImage: string | null
     listId: string
     boardId: string
     assigneeId: string | null
@@ -6988,6 +7009,9 @@ export namespace Prisma {
     pos?: boolean
     closed?: boolean
     dueDate?: boolean
+    shortLink?: boolean
+    coverColor?: boolean
+    coverImage?: boolean
     listId?: boolean
     boardId?: boolean
     assigneeId?: boolean
@@ -7010,6 +7034,9 @@ export namespace Prisma {
     pos?: boolean
     closed?: boolean
     dueDate?: boolean
+    shortLink?: boolean
+    coverColor?: boolean
+    coverImage?: boolean
     listId?: boolean
     boardId?: boolean
     assigneeId?: boolean
@@ -7027,6 +7054,9 @@ export namespace Prisma {
     pos?: boolean
     closed?: boolean
     dueDate?: boolean
+    shortLink?: boolean
+    coverColor?: boolean
+    coverImage?: boolean
     listId?: boolean
     boardId?: boolean
     assigneeId?: boolean
@@ -7044,6 +7074,9 @@ export namespace Prisma {
     pos?: boolean
     closed?: boolean
     dueDate?: boolean
+    shortLink?: boolean
+    coverColor?: boolean
+    coverImage?: boolean
     listId?: boolean
     boardId?: boolean
     assigneeId?: boolean
@@ -7051,7 +7084,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type CardOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "pos" | "closed" | "dueDate" | "listId" | "boardId" | "assigneeId" | "createdAt" | "updatedAt", ExtArgs["result"]["card"]>
+  export type CardOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "pos" | "closed" | "dueDate" | "shortLink" | "coverColor" | "coverImage" | "listId" | "boardId" | "assigneeId" | "createdAt" | "updatedAt", ExtArgs["result"]["card"]>
   export type CardInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     list?: boolean | ListDefaultArgs<ExtArgs>
     board?: boolean | BoardDefaultArgs<ExtArgs>
@@ -7091,6 +7124,18 @@ export namespace Prisma {
       pos: number
       closed: boolean
       dueDate: Date | null
+      /**
+       * Optional public slug (unique among cards). Legacy rows may be null; resolvable by `id` in API.
+       */
+      shortLink: string | null
+      /**
+       * Solid cover (e.g. hex). Mutually exclusive with `coverImage` when both set; prefer image in API normalization.
+       */
+      coverColor: string | null
+      /**
+       * Image URL for the card cover. Mutually exclusive with `coverColor` when both set.
+       */
+      coverImage: string | null
       listId: string
       boardId: string
       assigneeId: string | null
@@ -7532,6 +7577,9 @@ export namespace Prisma {
     readonly pos: FieldRef<"Card", 'Float'>
     readonly closed: FieldRef<"Card", 'Boolean'>
     readonly dueDate: FieldRef<"Card", 'DateTime'>
+    readonly shortLink: FieldRef<"Card", 'String'>
+    readonly coverColor: FieldRef<"Card", 'String'>
+    readonly coverImage: FieldRef<"Card", 'String'>
     readonly listId: FieldRef<"Card", 'String'>
     readonly boardId: FieldRef<"Card", 'String'>
     readonly assigneeId: FieldRef<"Card", 'String'>
@@ -13613,6 +13661,9 @@ export namespace Prisma {
     pos: 'pos',
     closed: 'closed',
     dueDate: 'dueDate',
+    shortLink: 'shortLink',
+    coverColor: 'coverColor',
+    coverImage: 'coverImage',
     listId: 'listId',
     boardId: 'boardId',
     assigneeId: 'assigneeId',
@@ -14130,6 +14181,9 @@ export namespace Prisma {
     pos?: FloatFilter<"Card"> | number
     closed?: BoolFilter<"Card"> | boolean
     dueDate?: DateTimeNullableFilter<"Card"> | Date | string | null
+    shortLink?: StringNullableFilter<"Card"> | string | null
+    coverColor?: StringNullableFilter<"Card"> | string | null
+    coverImage?: StringNullableFilter<"Card"> | string | null
     listId?: StringFilter<"Card"> | string
     boardId?: StringFilter<"Card"> | string
     assigneeId?: StringNullableFilter<"Card"> | string | null
@@ -14151,6 +14205,9 @@ export namespace Prisma {
     pos?: SortOrder
     closed?: SortOrder
     dueDate?: SortOrderInput | SortOrder
+    shortLink?: SortOrderInput | SortOrder
+    coverColor?: SortOrderInput | SortOrder
+    coverImage?: SortOrderInput | SortOrder
     listId?: SortOrder
     boardId?: SortOrder
     assigneeId?: SortOrderInput | SortOrder
@@ -14167,6 +14224,7 @@ export namespace Prisma {
 
   export type CardWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    shortLink?: string
     AND?: CardWhereInput | CardWhereInput[]
     OR?: CardWhereInput[]
     NOT?: CardWhereInput | CardWhereInput[]
@@ -14175,6 +14233,8 @@ export namespace Prisma {
     pos?: FloatFilter<"Card"> | number
     closed?: BoolFilter<"Card"> | boolean
     dueDate?: DateTimeNullableFilter<"Card"> | Date | string | null
+    coverColor?: StringNullableFilter<"Card"> | string | null
+    coverImage?: StringNullableFilter<"Card"> | string | null
     listId?: StringFilter<"Card"> | string
     boardId?: StringFilter<"Card"> | string
     assigneeId?: StringNullableFilter<"Card"> | string | null
@@ -14187,7 +14247,7 @@ export namespace Prisma {
     comments?: CommentListRelationFilter
     labels?: LabelListRelationFilter
     attachments?: AttachmentListRelationFilter
-  }, "id">
+  }, "id" | "shortLink">
 
   export type CardOrderByWithAggregationInput = {
     id?: SortOrder
@@ -14196,6 +14256,9 @@ export namespace Prisma {
     pos?: SortOrder
     closed?: SortOrder
     dueDate?: SortOrderInput | SortOrder
+    shortLink?: SortOrderInput | SortOrder
+    coverColor?: SortOrderInput | SortOrder
+    coverImage?: SortOrderInput | SortOrder
     listId?: SortOrder
     boardId?: SortOrder
     assigneeId?: SortOrderInput | SortOrder
@@ -14218,6 +14281,9 @@ export namespace Prisma {
     pos?: FloatWithAggregatesFilter<"Card"> | number
     closed?: BoolWithAggregatesFilter<"Card"> | boolean
     dueDate?: DateTimeNullableWithAggregatesFilter<"Card"> | Date | string | null
+    shortLink?: StringNullableWithAggregatesFilter<"Card"> | string | null
+    coverColor?: StringNullableWithAggregatesFilter<"Card"> | string | null
+    coverImage?: StringNullableWithAggregatesFilter<"Card"> | string | null
     listId?: StringWithAggregatesFilter<"Card"> | string
     boardId?: StringWithAggregatesFilter<"Card"> | string
     assigneeId?: StringNullableWithAggregatesFilter<"Card"> | string | null
@@ -14900,6 +14966,9 @@ export namespace Prisma {
     pos: number
     closed?: boolean
     dueDate?: Date | string | null
+    shortLink?: string | null
+    coverColor?: string | null
+    coverImage?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     list: ListCreateNestedOneWithoutCardsInput
@@ -14918,6 +14987,9 @@ export namespace Prisma {
     pos: number
     closed?: boolean
     dueDate?: Date | string | null
+    shortLink?: string | null
+    coverColor?: string | null
+    coverImage?: string | null
     listId: string
     boardId: string
     assigneeId?: string | null
@@ -14936,6 +15008,9 @@ export namespace Prisma {
     pos?: FloatFieldUpdateOperationsInput | number
     closed?: BoolFieldUpdateOperationsInput | boolean
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shortLink?: NullableStringFieldUpdateOperationsInput | string | null
+    coverColor?: NullableStringFieldUpdateOperationsInput | string | null
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     list?: ListUpdateOneRequiredWithoutCardsNestedInput
@@ -14954,6 +15029,9 @@ export namespace Prisma {
     pos?: FloatFieldUpdateOperationsInput | number
     closed?: BoolFieldUpdateOperationsInput | boolean
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shortLink?: NullableStringFieldUpdateOperationsInput | string | null
+    coverColor?: NullableStringFieldUpdateOperationsInput | string | null
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
     listId?: StringFieldUpdateOperationsInput | string
     boardId?: StringFieldUpdateOperationsInput | string
     assigneeId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -14972,6 +15050,9 @@ export namespace Prisma {
     pos: number
     closed?: boolean
     dueDate?: Date | string | null
+    shortLink?: string | null
+    coverColor?: string | null
+    coverImage?: string | null
     listId: string
     boardId: string
     assigneeId?: string | null
@@ -14986,6 +15067,9 @@ export namespace Prisma {
     pos?: FloatFieldUpdateOperationsInput | number
     closed?: BoolFieldUpdateOperationsInput | boolean
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shortLink?: NullableStringFieldUpdateOperationsInput | string | null
+    coverColor?: NullableStringFieldUpdateOperationsInput | string | null
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -14997,6 +15081,9 @@ export namespace Prisma {
     pos?: FloatFieldUpdateOperationsInput | number
     closed?: BoolFieldUpdateOperationsInput | boolean
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shortLink?: NullableStringFieldUpdateOperationsInput | string | null
+    coverColor?: NullableStringFieldUpdateOperationsInput | string | null
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
     listId?: StringFieldUpdateOperationsInput | string
     boardId?: StringFieldUpdateOperationsInput | string
     assigneeId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -15720,6 +15807,9 @@ export namespace Prisma {
     pos?: SortOrder
     closed?: SortOrder
     dueDate?: SortOrder
+    shortLink?: SortOrder
+    coverColor?: SortOrder
+    coverImage?: SortOrder
     listId?: SortOrder
     boardId?: SortOrder
     assigneeId?: SortOrder
@@ -15738,6 +15828,9 @@ export namespace Prisma {
     pos?: SortOrder
     closed?: SortOrder
     dueDate?: SortOrder
+    shortLink?: SortOrder
+    coverColor?: SortOrder
+    coverImage?: SortOrder
     listId?: SortOrder
     boardId?: SortOrder
     assigneeId?: SortOrder
@@ -15752,6 +15845,9 @@ export namespace Prisma {
     pos?: SortOrder
     closed?: SortOrder
     dueDate?: SortOrder
+    shortLink?: SortOrder
+    coverColor?: SortOrder
+    coverImage?: SortOrder
     listId?: SortOrder
     boardId?: SortOrder
     assigneeId?: SortOrder
@@ -17162,6 +17258,9 @@ export namespace Prisma {
     pos: number
     closed?: boolean
     dueDate?: Date | string | null
+    shortLink?: string | null
+    coverColor?: string | null
+    coverImage?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     list: ListCreateNestedOneWithoutCardsInput
@@ -17179,6 +17278,9 @@ export namespace Prisma {
     pos: number
     closed?: boolean
     dueDate?: Date | string | null
+    shortLink?: string | null
+    coverColor?: string | null
+    coverImage?: string | null
     listId: string
     boardId: string
     createdAt?: Date | string
@@ -17347,6 +17449,9 @@ export namespace Prisma {
     pos?: FloatFilter<"Card"> | number
     closed?: BoolFilter<"Card"> | boolean
     dueDate?: DateTimeNullableFilter<"Card"> | Date | string | null
+    shortLink?: StringNullableFilter<"Card"> | string | null
+    coverColor?: StringNullableFilter<"Card"> | string | null
+    coverImage?: StringNullableFilter<"Card"> | string | null
     listId?: StringFilter<"Card"> | string
     boardId?: StringFilter<"Card"> | string
     assigneeId?: StringNullableFilter<"Card"> | string | null
@@ -17591,6 +17696,9 @@ export namespace Prisma {
     pos: number
     closed?: boolean
     dueDate?: Date | string | null
+    shortLink?: string | null
+    coverColor?: string | null
+    coverImage?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     list: ListCreateNestedOneWithoutCardsInput
@@ -17608,6 +17716,9 @@ export namespace Prisma {
     pos: number
     closed?: boolean
     dueDate?: Date | string | null
+    shortLink?: string | null
+    coverColor?: string | null
+    coverImage?: string | null
     listId: string
     assigneeId?: string | null
     createdAt?: Date | string
@@ -17845,6 +17956,9 @@ export namespace Prisma {
     pos: number
     closed?: boolean
     dueDate?: Date | string | null
+    shortLink?: string | null
+    coverColor?: string | null
+    coverImage?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     board: BoardCreateNestedOneWithoutCardsInput
@@ -17862,6 +17976,9 @@ export namespace Prisma {
     pos: number
     closed?: boolean
     dueDate?: Date | string | null
+    shortLink?: string | null
+    coverColor?: string | null
+    coverImage?: string | null
     boardId: string
     assigneeId?: string | null
     createdAt?: Date | string
@@ -18400,6 +18517,9 @@ export namespace Prisma {
     pos: number
     closed?: boolean
     dueDate?: Date | string | null
+    shortLink?: string | null
+    coverColor?: string | null
+    coverImage?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     list: ListCreateNestedOneWithoutCardsInput
@@ -18417,6 +18537,9 @@ export namespace Prisma {
     pos: number
     closed?: boolean
     dueDate?: Date | string | null
+    shortLink?: string | null
+    coverColor?: string | null
+    coverImage?: string | null
     listId: string
     boardId: string
     assigneeId?: string | null
@@ -18506,6 +18629,9 @@ export namespace Prisma {
     pos: number
     closed?: boolean
     dueDate?: Date | string | null
+    shortLink?: string | null
+    coverColor?: string | null
+    coverImage?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     list: ListCreateNestedOneWithoutCardsInput
@@ -18523,6 +18649,9 @@ export namespace Prisma {
     pos: number
     closed?: boolean
     dueDate?: Date | string | null
+    shortLink?: string | null
+    coverColor?: string | null
+    coverImage?: string | null
     listId: string
     boardId: string
     assigneeId?: string | null
@@ -18580,6 +18709,9 @@ export namespace Prisma {
     pos?: FloatFieldUpdateOperationsInput | number
     closed?: BoolFieldUpdateOperationsInput | boolean
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shortLink?: NullableStringFieldUpdateOperationsInput | string | null
+    coverColor?: NullableStringFieldUpdateOperationsInput | string | null
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     list?: ListUpdateOneRequiredWithoutCardsNestedInput
@@ -18597,6 +18729,9 @@ export namespace Prisma {
     pos?: FloatFieldUpdateOperationsInput | number
     closed?: BoolFieldUpdateOperationsInput | boolean
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shortLink?: NullableStringFieldUpdateOperationsInput | string | null
+    coverColor?: NullableStringFieldUpdateOperationsInput | string | null
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
     listId?: StringFieldUpdateOperationsInput | string
     boardId?: StringFieldUpdateOperationsInput | string
     assigneeId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -18685,6 +18820,9 @@ export namespace Prisma {
     pos: number
     closed?: boolean
     dueDate?: Date | string | null
+    shortLink?: string | null
+    coverColor?: string | null
+    coverImage?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     list: ListCreateNestedOneWithoutCardsInput
@@ -18702,6 +18840,9 @@ export namespace Prisma {
     pos: number
     closed?: boolean
     dueDate?: Date | string | null
+    shortLink?: string | null
+    coverColor?: string | null
+    coverImage?: string | null
     listId: string
     boardId: string
     assigneeId?: string | null
@@ -18770,6 +18911,9 @@ export namespace Prisma {
     pos?: FloatFieldUpdateOperationsInput | number
     closed?: BoolFieldUpdateOperationsInput | boolean
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shortLink?: NullableStringFieldUpdateOperationsInput | string | null
+    coverColor?: NullableStringFieldUpdateOperationsInput | string | null
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     list?: ListUpdateOneRequiredWithoutCardsNestedInput
@@ -18787,6 +18931,9 @@ export namespace Prisma {
     pos?: FloatFieldUpdateOperationsInput | number
     closed?: BoolFieldUpdateOperationsInput | boolean
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shortLink?: NullableStringFieldUpdateOperationsInput | string | null
+    coverColor?: NullableStringFieldUpdateOperationsInput | string | null
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
     listId?: StringFieldUpdateOperationsInput | string
     boardId?: StringFieldUpdateOperationsInput | string
     assigneeId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -18845,6 +18992,9 @@ export namespace Prisma {
     pos: number
     closed?: boolean
     dueDate?: Date | string | null
+    shortLink?: string | null
+    coverColor?: string | null
+    coverImage?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     list: ListCreateNestedOneWithoutCardsInput
@@ -18862,6 +19012,9 @@ export namespace Prisma {
     pos: number
     closed?: boolean
     dueDate?: Date | string | null
+    shortLink?: string | null
+    coverColor?: string | null
+    coverImage?: string | null
     listId: string
     boardId: string
     assigneeId?: string | null
@@ -18930,6 +19083,9 @@ export namespace Prisma {
     pos?: FloatFieldUpdateOperationsInput | number
     closed?: BoolFieldUpdateOperationsInput | boolean
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shortLink?: NullableStringFieldUpdateOperationsInput | string | null
+    coverColor?: NullableStringFieldUpdateOperationsInput | string | null
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     list?: ListUpdateOneRequiredWithoutCardsNestedInput
@@ -18947,6 +19103,9 @@ export namespace Prisma {
     pos?: FloatFieldUpdateOperationsInput | number
     closed?: BoolFieldUpdateOperationsInput | boolean
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shortLink?: NullableStringFieldUpdateOperationsInput | string | null
+    coverColor?: NullableStringFieldUpdateOperationsInput | string | null
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
     listId?: StringFieldUpdateOperationsInput | string
     boardId?: StringFieldUpdateOperationsInput | string
     assigneeId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -19047,6 +19206,9 @@ export namespace Prisma {
     pos: number
     closed?: boolean
     dueDate?: Date | string | null
+    shortLink?: string | null
+    coverColor?: string | null
+    coverImage?: string | null
     listId: string
     boardId: string
     createdAt?: Date | string
@@ -19194,6 +19356,9 @@ export namespace Prisma {
     pos?: FloatFieldUpdateOperationsInput | number
     closed?: BoolFieldUpdateOperationsInput | boolean
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shortLink?: NullableStringFieldUpdateOperationsInput | string | null
+    coverColor?: NullableStringFieldUpdateOperationsInput | string | null
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     list?: ListUpdateOneRequiredWithoutCardsNestedInput
@@ -19211,6 +19376,9 @@ export namespace Prisma {
     pos?: FloatFieldUpdateOperationsInput | number
     closed?: BoolFieldUpdateOperationsInput | boolean
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shortLink?: NullableStringFieldUpdateOperationsInput | string | null
+    coverColor?: NullableStringFieldUpdateOperationsInput | string | null
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
     listId?: StringFieldUpdateOperationsInput | string
     boardId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19228,6 +19396,9 @@ export namespace Prisma {
     pos?: FloatFieldUpdateOperationsInput | number
     closed?: BoolFieldUpdateOperationsInput | boolean
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shortLink?: NullableStringFieldUpdateOperationsInput | string | null
+    coverColor?: NullableStringFieldUpdateOperationsInput | string | null
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
     listId?: StringFieldUpdateOperationsInput | string
     boardId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19324,6 +19495,9 @@ export namespace Prisma {
     pos: number
     closed?: boolean
     dueDate?: Date | string | null
+    shortLink?: string | null
+    coverColor?: string | null
+    coverImage?: string | null
     listId: string
     assigneeId?: string | null
     createdAt?: Date | string
@@ -19372,6 +19546,9 @@ export namespace Prisma {
     pos?: FloatFieldUpdateOperationsInput | number
     closed?: BoolFieldUpdateOperationsInput | boolean
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shortLink?: NullableStringFieldUpdateOperationsInput | string | null
+    coverColor?: NullableStringFieldUpdateOperationsInput | string | null
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     list?: ListUpdateOneRequiredWithoutCardsNestedInput
@@ -19389,6 +19566,9 @@ export namespace Prisma {
     pos?: FloatFieldUpdateOperationsInput | number
     closed?: BoolFieldUpdateOperationsInput | boolean
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shortLink?: NullableStringFieldUpdateOperationsInput | string | null
+    coverColor?: NullableStringFieldUpdateOperationsInput | string | null
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
     listId?: StringFieldUpdateOperationsInput | string
     assigneeId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19406,6 +19586,9 @@ export namespace Prisma {
     pos?: FloatFieldUpdateOperationsInput | number
     closed?: BoolFieldUpdateOperationsInput | boolean
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shortLink?: NullableStringFieldUpdateOperationsInput | string | null
+    coverColor?: NullableStringFieldUpdateOperationsInput | string | null
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
     listId?: StringFieldUpdateOperationsInput | string
     assigneeId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19439,6 +19622,9 @@ export namespace Prisma {
     pos: number
     closed?: boolean
     dueDate?: Date | string | null
+    shortLink?: string | null
+    coverColor?: string | null
+    coverImage?: string | null
     boardId: string
     assigneeId?: string | null
     createdAt?: Date | string
@@ -19452,6 +19638,9 @@ export namespace Prisma {
     pos?: FloatFieldUpdateOperationsInput | number
     closed?: BoolFieldUpdateOperationsInput | boolean
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shortLink?: NullableStringFieldUpdateOperationsInput | string | null
+    coverColor?: NullableStringFieldUpdateOperationsInput | string | null
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     board?: BoardUpdateOneRequiredWithoutCardsNestedInput
@@ -19469,6 +19658,9 @@ export namespace Prisma {
     pos?: FloatFieldUpdateOperationsInput | number
     closed?: BoolFieldUpdateOperationsInput | boolean
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shortLink?: NullableStringFieldUpdateOperationsInput | string | null
+    coverColor?: NullableStringFieldUpdateOperationsInput | string | null
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
     boardId?: StringFieldUpdateOperationsInput | string
     assigneeId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19486,6 +19678,9 @@ export namespace Prisma {
     pos?: FloatFieldUpdateOperationsInput | number
     closed?: BoolFieldUpdateOperationsInput | boolean
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shortLink?: NullableStringFieldUpdateOperationsInput | string | null
+    coverColor?: NullableStringFieldUpdateOperationsInput | string | null
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
     boardId?: StringFieldUpdateOperationsInput | string
     assigneeId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19614,6 +19809,9 @@ export namespace Prisma {
     pos?: FloatFieldUpdateOperationsInput | number
     closed?: BoolFieldUpdateOperationsInput | boolean
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shortLink?: NullableStringFieldUpdateOperationsInput | string | null
+    coverColor?: NullableStringFieldUpdateOperationsInput | string | null
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     list?: ListUpdateOneRequiredWithoutCardsNestedInput
@@ -19631,6 +19829,9 @@ export namespace Prisma {
     pos?: FloatFieldUpdateOperationsInput | number
     closed?: BoolFieldUpdateOperationsInput | boolean
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shortLink?: NullableStringFieldUpdateOperationsInput | string | null
+    coverColor?: NullableStringFieldUpdateOperationsInput | string | null
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
     listId?: StringFieldUpdateOperationsInput | string
     boardId?: StringFieldUpdateOperationsInput | string
     assigneeId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -19648,6 +19849,9 @@ export namespace Prisma {
     pos?: FloatFieldUpdateOperationsInput | number
     closed?: BoolFieldUpdateOperationsInput | boolean
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    shortLink?: NullableStringFieldUpdateOperationsInput | string | null
+    coverColor?: NullableStringFieldUpdateOperationsInput | string | null
+    coverImage?: NullableStringFieldUpdateOperationsInput | string | null
     listId?: StringFieldUpdateOperationsInput | string
     boardId?: StringFieldUpdateOperationsInput | string
     assigneeId?: NullableStringFieldUpdateOperationsInput | string | null

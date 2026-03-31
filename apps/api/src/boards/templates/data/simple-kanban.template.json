@@ -1,0 +1,26 @@
+{
+  "id": "simple-kanban",
+  "title": "Simple Kanban",
+  "description": "Three columns with a few starter cards.",
+  "board": {
+    "backgroundColor": "#0079bf",
+    "backgroundBrightness": "light"
+  },
+  "lists": [
+    {
+      "name": "To do",
+      "cards": [
+        { "name": "Welcome to your new board" },
+        { "name": "Drag cards to change lists" }
+      ]
+    },
+    {
+      "name": "Doing",
+      "cards": [{ "name": "This card is in progress" }]
+    },
+    {
+      "name": "Done",
+      "cards": [{ "name": "Completed work lives here" }]
+    }
+  ]
+}

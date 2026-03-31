@@ -25,6 +25,7 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
 import type { Prisma } from "../generated/prisma/client";
 import { PrismaClient } from "../generated/prisma/client";
+import { randomShortLink } from "../src/common/short-link";
 
 const SYNTHETIC_CLERK_ID = "user_seed_local_demo";
 const SEED_BOARD_NAME = "Seed board";
@@ -43,6 +44,7 @@ async function seedBoardGraph(
     data: {
       name: SEED_BOARD_NAME,
       background: "#0f766e",
+      shortLink: randomShortLink(),
       userId: user.id,
       workspaceId,
     },
@@ -68,6 +70,7 @@ async function seedBoardGraph(
       name: "First card",
       description: "Try the API",
       pos: 1000,
+      shortLink: randomShortLink(),
       listId: listTodo.id,
       boardId: board.id,
       assigneeId: user.id,
@@ -83,6 +86,7 @@ async function seedBoardGraph(
     data: {
       name: "Second card",
       pos: 2000,
+      shortLink: randomShortLink(),
       listId: listTodo.id,
       boardId: board.id,
     },

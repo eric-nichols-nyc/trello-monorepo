@@ -93,6 +93,12 @@ model Card {
   pos         Float
   closed      Boolean      @default(false)
   dueDate     DateTime?
+  /// Optional public slug (unique among cards). Legacy rows may be null; resolvable by `id` in API.
+  shortLink   String?      @unique
+  /// Solid cover (e.g. hex). Mutually exclusive with `coverImage` when both set; prefer image in API normalization.
+  coverColor  String?
+  /// Image URL for the card cover. Mutually exclusive with `coverColor` when both set.
+  coverImage  String?
   listId      String
   list        List         @relation(fields: [listId], references: [id], onDelete: Cascade)
   boardId     String

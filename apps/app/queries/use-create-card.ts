@@ -44,6 +44,12 @@ export function buildOptimisticCard(
   tempId: string
 ): BoardCard {
   const now = new Date().toISOString();
+  const cover =
+    input.coverImage !== undefined
+      ? { coverImage: input.coverImage, coverColor: null }
+      : input.coverColor !== undefined
+        ? { coverColor: input.coverColor, coverImage: null }
+        : { coverColor: null, coverImage: null };
   return {
     id: tempId,
     name: input.name,
@@ -51,6 +57,9 @@ export function buildOptimisticCard(
     pos: input.pos ?? Date.now(),
     closed: input.closed ?? false,
     dueDate: dueDateToIso(input.dueDate),
+    shortLink: "",
+    coverColor: cover.coverColor,
+    coverImage: cover.coverImage,
     listId,
     boardId,
     assigneeId: input.assigneeId ?? null,

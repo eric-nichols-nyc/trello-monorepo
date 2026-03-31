@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ForbiddenException,
   Injectable,
   InternalServerErrorException,
@@ -6,9 +7,47 @@ import {
 } from "@nestjs/common";
 // biome-ignore lint/style/useImportType: value import needed so PrismaService type includes PrismaClient (.board)
 import { PrismaService } from "../prisma/prisma.service";
-import { randomBoardShortLink } from "./board-short-link";
+import { randomShortLink } from "../common/short-link";
+import type { Prisma } from "../../generated/prisma/client";
 import type { UpdateBoardDto } from "./dto/update-board.dto";
 import type { CreateBoardInput } from "./schemas/create-board.schema";
+import type { BoardTemplateDefinition } from "./templates/board-template.schema";
+import { getBoardTemplateById } from "./templates/registry";
+
+type BoardCreatePayload = Omit<CreateBoardInput, "templateId"> & {
+  userId: string;
+};
+
+function templateCardCoverRow(card: {
+  coverColor?: string;
+  coverImage?: string;
+}): { coverColor: string | null; coverImage: string | null } {
+  if (card.coverImage !== undefined) {
+    return { coverImage: card.coverImage, coverColor: null };
+  }
+  if (card.coverColor !== undefined) {
+    return { coverColor: card.coverColor, coverImage: null };
+  }
+  return { coverColor: null, coverImage: null };
+}
+
+async function allocateUniqueCardShortLinkTx(
+  tx: Prisma.TransactionClient
+): Promise<string> {
+  for (let attempt = 0; attempt < 12; attempt++) {
+    const candidate = randomShortLink();
+    const taken = await tx.card.findUnique({
+      where: { shortLink: candidate },
+      select: { id: true },
+    });
+    if (!taken) {
+      return candidate;
+    }
+  }
+  throw new InternalServerErrorException(
+    "Could not allocate a unique card shortLink; try again."
+  );
+}
 
 @Injectable()
 export class BoardsService {
@@ -51,42 +90,106 @@ export class BoardsService {
   }
 
   async create(data: CreateBoardInput & { userId: string }) {
-    const {
-      name,
-      workspaceId,
-      userId,
-      shortLink,
-      backgroundImage,
-      backgroundBrightness,
-      backgroundBottomColor,
-      backgroundTopColor,
-      backgroundColor,
-      starred,
-    } = data;
+    const { templateId: _ignoreTemplate, ...payload } = data;
     const resolvedShortLink =
-      shortLink ?? (await this.allocateUniqueShortLink());
+      payload.shortLink ?? (await this.allocateUniqueShortLink());
     return this.prisma.board.create({
-      data: {
-        name,
-        workspaceId,
-        userId,
-        shortLink: resolvedShortLink,
-        ...(backgroundImage !== undefined ? { backgroundImage } : {}),
-        ...(backgroundBrightness !== undefined ? { backgroundBrightness } : {}),
-        ...(backgroundBottomColor !== undefined
-          ? { backgroundBottomColor }
-          : {}),
-        ...(backgroundTopColor !== undefined ? { backgroundTopColor } : {}),
-        ...(backgroundColor !== undefined ? { backgroundColor } : {}),
-        ...(starred !== undefined ? { starred } : {}),
-      },
+      data: this.buildBoardCreateData(payload, resolvedShortLink, undefined),
+    });
+  }
+
+  private buildBoardCreateData(
+    data: BoardCreatePayload,
+    resolvedShortLink: string,
+    templateBoard: BoardTemplateDefinition["board"] | undefined
+  ) {
+    const t = templateBoard;
+    return {
+      name: data.name,
+      workspaceId: data.workspaceId,
+      userId: data.userId,
+      shortLink: resolvedShortLink,
+      ...(t?.backgroundImage !== undefined ? { backgroundImage: t.backgroundImage } : {}),
+      ...(t?.backgroundBrightness !== undefined
+        ? { backgroundBrightness: t.backgroundBrightness }
+        : {}),
+      ...(t?.backgroundBottomColor !== undefined
+        ? { backgroundBottomColor: t.backgroundBottomColor }
+        : {}),
+      ...(t?.backgroundTopColor !== undefined
+        ? { backgroundTopColor: t.backgroundTopColor }
+        : {}),
+      ...(t?.backgroundColor !== undefined ? { backgroundColor: t.backgroundColor } : {}),
+      ...(data.backgroundImage !== undefined
+        ? { backgroundImage: data.backgroundImage }
+        : {}),
+      ...(data.backgroundBrightness !== undefined
+        ? { backgroundBrightness: data.backgroundBrightness }
+        : {}),
+      ...(data.backgroundBottomColor !== undefined
+        ? { backgroundBottomColor: data.backgroundBottomColor }
+        : {}),
+      ...(data.backgroundTopColor !== undefined
+        ? { backgroundTopColor: data.backgroundTopColor }
+        : {}),
+      ...(data.backgroundColor !== undefined
+        ? { backgroundColor: data.backgroundColor }
+        : {}),
+      ...(data.starred !== undefined ? { starred: data.starred } : {}),
+    };
+  }
+
+  private async createBoardFromTemplate(
+    data: BoardCreatePayload,
+    template: BoardTemplateDefinition
+  ) {
+    const resolvedShortLink =
+      data.shortLink ?? (await this.allocateUniqueShortLink());
+    const boardRow = this.buildBoardCreateData(
+      data,
+      resolvedShortLink,
+      template.board
+    );
+
+    return this.prisma.$transaction(async (tx) => {
+      const board = await tx.board.create({ data: boardRow });
+      let listPos = 1000;
+      for (const listDef of template.lists) {
+        const list = await tx.list.create({
+          data: {
+            name: listDef.name,
+            pos: listPos,
+            boardId: board.id,
+          },
+        });
+        listPos += 1000;
+        let cardPos = 1000;
+        for (const cardDef of listDef.cards) {
+          const covers = templateCardCoverRow(cardDef);
+          const cardShortLink = await allocateUniqueCardShortLinkTx(tx);
+          await tx.card.create({
+            data: {
+              name: cardDef.name,
+              description: cardDef.description ?? null,
+              pos: cardPos,
+              listId: list.id,
+              boardId: board.id,
+              shortLink: cardShortLink,
+              coverColor: covers.coverColor,
+              coverImage: covers.coverImage,
+            },
+          });
+          cardPos += 1000;
+        }
+      }
+      return board;
     });
   }
 
   /** Picks a fresh `shortLink` not yet in the DB (retries on rare collisions). */
   private async allocateUniqueShortLink(): Promise<string> {
     for (let attempt = 0; attempt < 12; attempt++) {
-      const candidate = randomBoardShortLink();
+      const candidate = randomShortLink();
       const taken = await this.prisma.board.findUnique({
         where: { shortLink: candidate },
         select: { id: true },
@@ -170,6 +273,14 @@ export class BoardsService {
       throw new ForbiddenException(
         "Cannot create board in another user workspace"
       );
+    }
+    const { templateId, ...boardPayload } = data;
+    if (templateId !== undefined) {
+      const template = getBoardTemplateById(templateId);
+      if (!template) {
+        throw new BadRequestException(`Unknown board template: ${templateId}`);
+      }
+      return await this.createBoardFromTemplate(boardPayload, template);
     }
     return await this.create(data);
   }

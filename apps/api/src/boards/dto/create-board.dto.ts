@@ -50,4 +50,9 @@ export class CreateBoardDto {
   @IsOptional()
   @IsBoolean()
   starred?: boolean;
+
+  @IsOptional()
+  @IsString()
+  @MinLength(1)
+  templateId?: string;
 }
