@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { GlobalHeader } from "./global-header/global-header";
+import { GlobalHeader } from "./global-header";
 
 vi.mock("./user/user-menu", () => ({
   UserMenu: () => <div data-testid="user-menu" />,

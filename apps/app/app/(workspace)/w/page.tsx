@@ -26,7 +26,7 @@ export default async function DashboardPage() {
   }
 
   return (
-    <div className="mx-auto max-w-[914px] space-y-6">
+    <div className="mx-auto max-w-[914px] px-12 space-y-6">
       <WorkspaceBanner
         editable
         visibilityLabel="Private"
