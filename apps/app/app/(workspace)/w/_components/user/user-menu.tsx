@@ -6,21 +6,26 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@repo/design-system/components/ui/dropdown-menu";
 import { cn } from "@repo/design-system/lib/utils";
 import { initialsFromPersonNameFields } from "@/lib/user/user-initials";
 
 type UserMenuAvatarProperties = {
+  readonly className?: string;
   readonly imageUrl: string | undefined;
   readonly initials: string;
+  readonly initialsSurfaceClassName?: string;
+  readonly initialsTextClassName?: string;
   readonly isLoaded: boolean;
 };
 
 const UserMenuAvatar = ({
+  className,
   imageUrl,
   initials,
+  initialsSurfaceClassName,
+  initialsTextClassName,
   isLoaded,
 }: UserMenuAvatarProperties) => {
   const [imageFailed, setImageFailed] = useState(false);
@@ -30,9 +35,20 @@ const UserMenuAvatar = ({
   }, [imageUrl]);
 
   const showPhoto = Boolean(imageUrl) && !imageFailed;
+  const surface = showPhoto
+    ? "bg-muted"
+    : (initialsSurfaceClassName ?? "bg-muted");
+  const initialsText =
+    initialsTextClassName ?? "font-medium text-muted-foreground text-sm";
 
   return (
-    <div className="relative flex size-9 shrink-0 overflow-hidden rounded-full bg-muted">
+    <div
+      className={cn(
+        "relative flex size-9 shrink-0 overflow-hidden rounded-full",
+        surface,
+        className
+      )}
+    >
       {showPhoto ? (
         <img
           alt=""
@@ -44,7 +60,12 @@ const UserMenuAvatar = ({
           src={imageUrl}
         />
       ) : (
-        <span className="flex size-full items-center justify-center font-medium text-muted-foreground text-sm">
+        <span
+          className={cn(
+            "flex size-full items-center justify-center",
+            initialsText
+          )}
+        >
           {isLoaded ? initials : "…"}
         </span>
       )}
@@ -98,35 +119,42 @@ export const UserMenu = ({ className }: UserMenuProperties) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="end"
-        className="min-w-56 bg-[var(--board-menu-card-bg)]"
+        className="box-border w-[var(--user-menu-card-width)] max-w-[var(--user-menu-card-width)] bg-[var(--board-menu-card-bg)]"
         sideOffset={8}
       >
         <div
-          className="flex items-center gap-3 px-2 py-2"
-          data-testid="user-menu-row-name"
+          className="flex items-center gap-3 border-b border-white/10 px-[var(--board-menu-card-padding-inline)] py-3"
+          data-testid="user-menu-profile"
         >
           <UserMenuAvatar
+            className="size-10"
             imageUrl={imageUrl}
             initials={initials}
+            initialsSurfaceClassName="bg-[#0c66e4]"
+            initialsTextClassName="font-semibold text-sm text-white"
             isLoaded={isLoaded}
           />
-          <span className="truncate font-medium text-foreground text-sm">
-            {isLoaded ? name : "…"}
-          </span>
+          <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+            <span
+              className="truncate font-medium text-sm text-white/90"
+              data-testid="user-menu-row-name"
+            >
+              {isLoaded ? name : "…"}
+            </span>
+            <span
+              className="truncate text-white/55 text-xs"
+              data-testid="user-menu-row-email"
+            >
+              {isLoaded ? email : "…"}
+            </span>
+          </div>
         </div>
-        <div
-          className="border-border border-t px-2 py-2 text-muted-foreground text-sm"
-          data-testid="user-menu-row-email"
-        >
-          {isLoaded ? email : "…"}
-        </div>
-        <DropdownMenuSeparator />
         <DropdownMenuItem
+          className="text-white focus:bg-white/10 focus:text-white"
           data-testid="user-menu-logout"
           onSelect={() => {
             signOut();
           }}
-          variant="destructive"
         >
           Log out
         </DropdownMenuItem>
