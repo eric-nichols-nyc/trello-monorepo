@@ -1,4 +1,3 @@
-import { ModeToggle } from "@repo/design-system/components/mode-toggle";
 import Link from "next/link";
 import { BrandWordmark } from "@/app/(marketing)/_components/brand-wordmark";
 import { HeaderSearchInput } from "../search/header-search-input";
@@ -35,7 +34,6 @@ export const GlobalHeader = ({
     </div>
     <div className="flex shrink-0 items-center gap-2">
       <UserMenu />
-      <ModeToggle />
     </div>
   </header>
 );

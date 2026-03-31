@@ -19,6 +19,7 @@ const getBoardStringField = (
     | "shortLink"
     | "name"
     | "backgroundColor"
+    | "backgroundImage"
     | "backgroundTopColor"
     | "backgroundBottomColor"
     | "workspaceName"
@@ -53,6 +54,11 @@ const getBoardId = (board: unknown): string | undefined => {
 };
 
 const getPreviewBackgroundStyle = (board: unknown): CSSProperties => {
+  const imageUrl = getBoardStringField(board, "backgroundImage");
+  if (imageUrl !== undefined) {
+    return { backgroundImage: `url(${JSON.stringify(imageUrl)})` };
+  }
+
   const top = getBoardStringField(board, "backgroundTopColor");
   const bottom = getBoardStringField(board, "backgroundBottomColor");
   const solid = getBoardStringField(board, "backgroundColor");

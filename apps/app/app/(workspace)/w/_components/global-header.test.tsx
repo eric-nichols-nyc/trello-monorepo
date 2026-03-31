@@ -2,10 +2,6 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { GlobalHeader } from "./global-header/global-header";
 
-vi.mock("@repo/design-system/components/mode-toggle", () => ({
-  ModeToggle: () => <div data-testid="mode-toggle" />,
-}));
-
 vi.mock("./user/user-menu", () => ({
   UserMenu: () => <div data-testid="user-menu" />,
 }));
@@ -30,10 +26,9 @@ describe("GlobalHeader", () => {
     ).toBeVisible();
   });
 
-  it("includes the user menu and theme toggle", () => {
+  it("includes the user menu", () => {
     render(<GlobalHeader />);
     expect(screen.getByTestId("user-menu")).toBeInTheDocument();
-    expect(screen.getByTestId("mode-toggle")).toBeInTheDocument();
   });
 
   it("renders search and create actions", () => {
