@@ -16,7 +16,7 @@ export class BoardsService {
 
   findAllByUserId(userId: string) {
     return this.prisma.board.findMany({
-      where: { userId },
+      where: { userId, closed: false },
       orderBy: { createdAt: "desc" },
       select: {
         id: true,
