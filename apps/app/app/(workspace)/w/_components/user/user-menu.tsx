@@ -96,7 +96,11 @@ export const UserMenu = ({ className }: UserMenuProperties) => {
           />
         </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="min-w-56" sideOffset={8}>
+      <DropdownMenuContent
+        align="end"
+        className="min-w-56 bg-[var(--board-menu-card-bg)]"
+        sideOffset={8}
+      >
         <div
           className="flex items-center gap-3 px-2 py-2"
           data-testid="user-menu-row-name"
