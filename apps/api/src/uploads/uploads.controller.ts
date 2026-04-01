@@ -10,7 +10,8 @@ import { FileInterceptor } from "@nestjs/platform-express";
 import type { Express } from "express";
 import { memoryStorage } from "multer";
 import { ClerkAuthGuard } from "../auth/clerk-auth.guard";
-import type { CloudinaryService } from "./cloudinary.service";
+// biome-ignore lint/style/useImportType: Nest DI needs the CloudinaryService class reference
+import { CloudinaryService } from "./cloudinary.service";
 
 const MAX_FILE_BYTES = 5 * 1024 * 1024;
 

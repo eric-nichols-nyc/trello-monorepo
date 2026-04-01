@@ -5,6 +5,7 @@ import { BoardApiError } from "@/lib/api/boards/board-api-error";
 export type MyWorkspaceSummary = {
   readonly id: string;
   readonly name: string;
+  readonly shortLink: string | null;
 };
 
 /**
@@ -23,15 +24,26 @@ export async function getMyWorkspaces(): Promise<MyWorkspaceSummary[]> {
     throw new Error("API_URL is not set");
   }
 
-  const response = await fetch(`${baseUrl}/api/workspaces/mine`, {
-    headers: { Authorization: `Bearer ${token}` },
-    cache: "no-store",
-  });
+  const url = `${baseUrl}/api/workspaces/mine`;
+  let response: Response;
+  try {
+    response = await fetch(url, {
+      headers: { Authorization: `Bearer ${token}` },
+      cache: "no-store",
+    });
+  } catch (cause) {
+    const msg =
+      cause instanceof Error ? cause.message : String(cause);
+    throw new Error(`getMyWorkspaces: fetch failed (${url}): ${msg}`, {
+      cause,
+    });
+  }
 
   if (!response.ok) {
+    const body = await response.text();
     throw new BoardApiError(
       response.status,
-      `${response.status} ${await response.text()}`
+      `${response.status} ${body}`.trim(),
     );
   }
 
@@ -40,13 +52,36 @@ export async function getMyWorkspaces(): Promise<MyWorkspaceSummary[]> {
     return [];
   }
 
-  return data.filter(
-    (row): row is MyWorkspaceSummary =>
-      typeof row === "object" &&
-      row !== null &&
-      "id" in row &&
-      typeof (row as { id: unknown }).id === "string" &&
-      "name" in row &&
-      typeof (row as { name: unknown }).name === "string"
-  );
+  const rows = data
+    .filter(
+      (row): row is Record<string, unknown> =>
+        typeof row === "object" && row !== null,
+    )
+    .map((row): MyWorkspaceSummary | null => {
+      const id = row.id;
+      const name = row.name;
+      if (typeof id !== "string" || typeof name !== "string") {
+        return null;
+      }
+      const raw = row.shortLink;
+      const shortLink =
+        raw === null || raw === undefined
+          ? null
+          : typeof raw === "string"
+            ? raw
+            : null;
+      return { id, name, shortLink };
+    })
+    .filter((row): row is MyWorkspaceSummary => row !== null);
+
+  if (data.length > 0 && rows.length === 0) {
+    console.error(
+      "[getMyWorkspaces] API returned",
+      data.length,
+      "row(s) but none matched expected shape. First item:",
+      JSON.stringify(data[0]),
+    );
+  }
+
+  return rows;
 }
