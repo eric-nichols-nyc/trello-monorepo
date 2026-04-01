@@ -159,7 +159,7 @@ export const BoardName = ({ boardId, boardKey, name }: BoardNameProperties) => {
           autoComplete="off"
           autoFocus
           className={cn(
-            "h-auto w-auto min-w-0 border-white/25 bg-black/25 py-1.5 font-bold text-foreground text-lg shadow-none md:text-2xl",
+            "h-auto w-auto min-w-0 border-white/25 bg-black/25 py-1.5 font-bold text-foreground text-lg shadow-none md:text-xl",
             "focus-visible:border-white/40 focus-visible:ring-white/30"
           )}
           disabled={updateBoard.isPending}
@@ -185,7 +185,7 @@ export const BoardName = ({ boardId, boardKey, name }: BoardNameProperties) => {
     <button
       className={cn(
         "max-w-full cursor-pointer truncate rounded-sm px-1 py-0.5 text-left font-bold text-foreground text-lg transition-colors",
-        "hover:bg-black/15 focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring",
+        "hover:bg-white/15 focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring",
         "md:text-xl"
       )}
       disabled={updateBoard.isPending}
