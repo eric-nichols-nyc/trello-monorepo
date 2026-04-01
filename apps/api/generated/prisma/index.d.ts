@@ -3229,6 +3229,7 @@ export namespace Prisma {
   export type WorkspaceMinAggregateOutputType = {
     id: string | null
     name: string | null
+    shortLink: string | null
     description: string | null
     ownerId: string | null
     createdAt: Date | null
@@ -3238,6 +3239,7 @@ export namespace Prisma {
   export type WorkspaceMaxAggregateOutputType = {
     id: string | null
     name: string | null
+    shortLink: string | null
     description: string | null
     ownerId: string | null
     createdAt: Date | null
@@ -3247,6 +3249,7 @@ export namespace Prisma {
   export type WorkspaceCountAggregateOutputType = {
     id: number
     name: number
+    shortLink: number
     description: number
     ownerId: number
     createdAt: number
@@ -3258,6 +3261,7 @@ export namespace Prisma {
   export type WorkspaceMinAggregateInputType = {
     id?: true
     name?: true
+    shortLink?: true
     description?: true
     ownerId?: true
     createdAt?: true
@@ -3267,6 +3271,7 @@ export namespace Prisma {
   export type WorkspaceMaxAggregateInputType = {
     id?: true
     name?: true
+    shortLink?: true
     description?: true
     ownerId?: true
     createdAt?: true
@@ -3276,6 +3281,7 @@ export namespace Prisma {
   export type WorkspaceCountAggregateInputType = {
     id?: true
     name?: true
+    shortLink?: true
     description?: true
     ownerId?: true
     createdAt?: true
@@ -3358,6 +3364,7 @@ export namespace Prisma {
   export type WorkspaceGroupByOutputType = {
     id: string
     name: string
+    shortLink: string | null
     description: string | null
     ownerId: string
     createdAt: Date
@@ -3384,6 +3391,7 @@ export namespace Prisma {
   export type WorkspaceSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    shortLink?: boolean
     description?: boolean
     ownerId?: boolean
     createdAt?: boolean
@@ -3396,6 +3404,7 @@ export namespace Prisma {
   export type WorkspaceSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    shortLink?: boolean
     description?: boolean
     ownerId?: boolean
     createdAt?: boolean
@@ -3406,6 +3415,7 @@ export namespace Prisma {
   export type WorkspaceSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    shortLink?: boolean
     description?: boolean
     ownerId?: boolean
     createdAt?: boolean
@@ -3416,13 +3426,14 @@ export namespace Prisma {
   export type WorkspaceSelectScalar = {
     id?: boolean
     name?: boolean
+    shortLink?: boolean
     description?: boolean
     ownerId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type WorkspaceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "ownerId" | "createdAt" | "updatedAt", ExtArgs["result"]["workspace"]>
+  export type WorkspaceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "shortLink" | "description" | "ownerId" | "createdAt" | "updatedAt", ExtArgs["result"]["workspace"]>
   export type WorkspaceInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     owner?: boolean | UserDefaultArgs<ExtArgs>
     boards?: boolean | Workspace$boardsArgs<ExtArgs>
@@ -3444,6 +3455,10 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       name: string
+      /**
+       * Optional public slug (unique among workspaces). Legacy rows may be null; resolvable by `id` in API.
+       */
+      shortLink: string | null
       description: string | null
       ownerId: string
       createdAt: Date
@@ -3875,6 +3890,7 @@ export namespace Prisma {
   interface WorkspaceFieldRefs {
     readonly id: FieldRef<"Workspace", 'String'>
     readonly name: FieldRef<"Workspace", 'String'>
+    readonly shortLink: FieldRef<"Workspace", 'String'>
     readonly description: FieldRef<"Workspace", 'String'>
     readonly ownerId: FieldRef<"Workspace", 'String'>
     readonly createdAt: FieldRef<"Workspace", 'DateTime'>
@@ -13611,6 +13627,7 @@ export namespace Prisma {
   export const WorkspaceScalarFieldEnum: {
     id: 'id',
     name: 'name',
+    shortLink: 'shortLink',
     description: 'description',
     ownerId: 'ownerId',
     createdAt: 'createdAt',
@@ -13927,6 +13944,7 @@ export namespace Prisma {
     NOT?: WorkspaceWhereInput | WorkspaceWhereInput[]
     id?: StringFilter<"Workspace"> | string
     name?: StringFilter<"Workspace"> | string
+    shortLink?: StringNullableFilter<"Workspace"> | string | null
     description?: StringNullableFilter<"Workspace"> | string | null
     ownerId?: StringFilter<"Workspace"> | string
     createdAt?: DateTimeFilter<"Workspace"> | Date | string
@@ -13938,6 +13956,7 @@ export namespace Prisma {
   export type WorkspaceOrderByWithRelationInput = {
     id?: SortOrder
     name?: SortOrder
+    shortLink?: SortOrderInput | SortOrder
     description?: SortOrderInput | SortOrder
     ownerId?: SortOrder
     createdAt?: SortOrder
@@ -13948,6 +13967,7 @@ export namespace Prisma {
 
   export type WorkspaceWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    shortLink?: string
     AND?: WorkspaceWhereInput | WorkspaceWhereInput[]
     OR?: WorkspaceWhereInput[]
     NOT?: WorkspaceWhereInput | WorkspaceWhereInput[]
@@ -13958,11 +13978,12 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Workspace"> | Date | string
     owner?: XOR<UserScalarRelationFilter, UserWhereInput>
     boards?: BoardListRelationFilter
-  }, "id">
+  }, "id" | "shortLink">
 
   export type WorkspaceOrderByWithAggregationInput = {
     id?: SortOrder
     name?: SortOrder
+    shortLink?: SortOrderInput | SortOrder
     description?: SortOrderInput | SortOrder
     ownerId?: SortOrder
     createdAt?: SortOrder
@@ -13978,6 +13999,7 @@ export namespace Prisma {
     NOT?: WorkspaceScalarWhereWithAggregatesInput | WorkspaceScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Workspace"> | string
     name?: StringWithAggregatesFilter<"Workspace"> | string
+    shortLink?: StringNullableWithAggregatesFilter<"Workspace"> | string | null
     description?: StringNullableWithAggregatesFilter<"Workspace"> | string | null
     ownerId?: StringWithAggregatesFilter<"Workspace"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Workspace"> | Date | string
@@ -14687,6 +14709,7 @@ export namespace Prisma {
   export type WorkspaceCreateInput = {
     id?: string
     name: string
+    shortLink?: string | null
     description?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -14697,6 +14720,7 @@ export namespace Prisma {
   export type WorkspaceUncheckedCreateInput = {
     id?: string
     name: string
+    shortLink?: string | null
     description?: string | null
     ownerId: string
     createdAt?: Date | string
@@ -14707,6 +14731,7 @@ export namespace Prisma {
   export type WorkspaceUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    shortLink?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -14717,6 +14742,7 @@ export namespace Prisma {
   export type WorkspaceUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    shortLink?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     ownerId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -14727,6 +14753,7 @@ export namespace Prisma {
   export type WorkspaceCreateManyInput = {
     id?: string
     name: string
+    shortLink?: string | null
     description?: string | null
     ownerId: string
     createdAt?: Date | string
@@ -14736,6 +14763,7 @@ export namespace Prisma {
   export type WorkspaceUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    shortLink?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -14744,6 +14772,7 @@ export namespace Prisma {
   export type WorkspaceUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    shortLink?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     ownerId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -15566,6 +15595,7 @@ export namespace Prisma {
   export type WorkspaceCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    shortLink?: SortOrder
     description?: SortOrder
     ownerId?: SortOrder
     createdAt?: SortOrder
@@ -15575,6 +15605,7 @@ export namespace Prisma {
   export type WorkspaceMaxOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    shortLink?: SortOrder
     description?: SortOrder
     ownerId?: SortOrder
     createdAt?: SortOrder
@@ -15584,6 +15615,7 @@ export namespace Prisma {
   export type WorkspaceMinOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    shortLink?: SortOrder
     description?: SortOrder
     ownerId?: SortOrder
     createdAt?: SortOrder
@@ -17172,6 +17204,7 @@ export namespace Prisma {
   export type WorkspaceCreateWithoutOwnerInput = {
     id?: string
     name: string
+    shortLink?: string | null
     description?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -17181,6 +17214,7 @@ export namespace Prisma {
   export type WorkspaceUncheckedCreateWithoutOwnerInput = {
     id?: string
     name: string
+    shortLink?: string | null
     description?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -17360,6 +17394,7 @@ export namespace Prisma {
     NOT?: WorkspaceScalarWhereInput | WorkspaceScalarWhereInput[]
     id?: StringFilter<"Workspace"> | string
     name?: StringFilter<"Workspace"> | string
+    shortLink?: StringNullableFilter<"Workspace"> | string | null
     description?: StringNullableFilter<"Workspace"> | string | null
     ownerId?: StringFilter<"Workspace"> | string
     createdAt?: DateTimeFilter<"Workspace"> | Date | string
@@ -17639,6 +17674,7 @@ export namespace Prisma {
   export type WorkspaceCreateWithoutBoardsInput = {
     id?: string
     name: string
+    shortLink?: string | null
     description?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -17648,6 +17684,7 @@ export namespace Prisma {
   export type WorkspaceUncheckedCreateWithoutBoardsInput = {
     id?: string
     name: string
+    shortLink?: string | null
     description?: string | null
     ownerId: string
     createdAt?: Date | string
@@ -17818,6 +17855,7 @@ export namespace Prisma {
   export type WorkspaceUpdateWithoutBoardsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    shortLink?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -17827,6 +17865,7 @@ export namespace Prisma {
   export type WorkspaceUncheckedUpdateWithoutBoardsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    shortLink?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     ownerId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19177,6 +19216,7 @@ export namespace Prisma {
   export type WorkspaceCreateManyOwnerInput = {
     id?: string
     name: string
+    shortLink?: string | null
     description?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -19275,6 +19315,7 @@ export namespace Prisma {
   export type WorkspaceUpdateWithoutOwnerInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    shortLink?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19284,6 +19325,7 @@ export namespace Prisma {
   export type WorkspaceUncheckedUpdateWithoutOwnerInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    shortLink?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -19293,6 +19335,7 @@ export namespace Prisma {
   export type WorkspaceUncheckedUpdateManyWithoutOwnerInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    shortLink?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string

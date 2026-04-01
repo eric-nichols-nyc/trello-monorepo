@@ -36,6 +36,8 @@ model User {
 model Workspace {
   id          String   @id @default(uuid())
   name        String
+  /// Optional public slug (unique among workspaces). Legacy rows may be null; resolvable by `id` in API.
+  shortLink   String?  @unique
   description String?
   ownerId     String
   owner       User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)

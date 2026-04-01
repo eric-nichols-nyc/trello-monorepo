@@ -5,7 +5,7 @@ const ALPHABET =
   "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
 /**
- * Random URL slug for `Board.shortLink` / `Card.shortLink` (default 8 chars).
+ * Random URL slug for `Workspace.shortLink` / `Board.shortLink` / `Card.shortLink` (default 8 chars).
  * Allocate on create via services unless the client sends `shortLink`.
  * Legacy rows may keep `shortLink: null` and stay addressable by primary `id`.
  */

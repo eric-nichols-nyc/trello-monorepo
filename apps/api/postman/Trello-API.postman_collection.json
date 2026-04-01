@@ -59,6 +59,31 @@
       ]
     },
     {
+      "name": "Uploads",
+      "item": [
+        {
+          "name": "POST uploads image (multipart)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/uploads/image"
+          }
+        }
+      ]
+    },
+    {
       "name": "Workspaces",
       "item": [
         {
@@ -70,7 +95,7 @@
           }
         },
         {
-          "name": "GET workspace by id",
+          "name": "GET workspace by id or shortLink",
           "request": {
             "method": "GET",
             "header": [],
@@ -102,7 +127,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Renamed workspace\"\n}"
+              "raw": "{\n  \"name\": \"Renamed workspace\",\n  \"shortLink\": \"my-workspace-slug\"\n}"
             },
             "url": "{{baseUrl}}/workspaces/{{workspaceId}}"
           }

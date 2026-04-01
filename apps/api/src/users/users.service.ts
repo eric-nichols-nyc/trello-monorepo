@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import type { ClerkAuthPayload } from "../auth/clerk-auth.service";
 // biome-ignore lint/style/useImportType: value import needed so PrismaService type includes PrismaClient (.user)
 import { PrismaService } from "../prisma/prisma.service";
+import { allocateUniqueWorkspaceShortLink } from "../workspaces/allocate-workspace-short-link";
 import type { CreateUserInput, UpdateUserInput } from "./users.schema";
 
 @Injectable()
@@ -111,6 +112,7 @@ export class UsersService {
         await tx.workspace.create({
           data: {
             name: "My workspace",
+            shortLink: await allocateUniqueWorkspaceShortLink(tx),
             ownerId: user.id,
           },
         });

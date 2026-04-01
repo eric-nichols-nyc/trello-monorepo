@@ -2,6 +2,7 @@ import type { UserJSON } from "@clerk/backend";
 import { Injectable } from "@nestjs/common";
 // biome-ignore lint/style/useImportType: value import needed so PrismaService type includes PrismaClient (.user)
 import { PrismaService } from "../prisma/prisma.service";
+import { allocateUniqueWorkspaceShortLink } from "../workspaces/allocate-workspace-short-link";
 
 @Injectable()
 export class ClerkWebhooksService {
@@ -45,6 +46,7 @@ export class ClerkWebhooksService {
         data: {
           name: "My workspace",
           description: null,
+          shortLink: await allocateUniqueWorkspaceShortLink(this.prisma),
           ownerId: user.id,
         },
       });

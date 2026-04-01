@@ -167,6 +167,7 @@ async function resolveWorkspaceId(
     data: {
       name: "Seed workspace",
       description: "Created by db:seed (no workspace existed)",
+      shortLink: randomShortLink(),
       ownerId: userId,
     },
   });
@@ -270,6 +271,7 @@ async function runSyntheticSeed(prisma: PrismaClient) {
       data: {
         name: "Seed workspace",
         description: "Created by db:seed",
+        shortLink: randomShortLink(),
         ownerId: user.id,
       },
     });

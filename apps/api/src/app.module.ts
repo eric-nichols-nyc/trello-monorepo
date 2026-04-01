@@ -11,6 +11,7 @@ import { ChecklistsModule } from "./checklists/checklists.module";
 import { CommentsModule } from "./comments/comments.module";
 import { ListsModule } from "./lists/lists.module";
 import { PrismaModule } from "./prisma/prisma.module";
+import { UploadsModule } from "./uploads/uploads.module";
 import { UsersModule } from "./users/users.module";
 import { WebhooksModule } from "./webhooks/webhooks.module";
 import { WorkspacesModule } from "./workspaces/workspaces.module";
@@ -34,6 +35,7 @@ import { WorkspacesModule } from "./workspaces/workspaces.module";
     ChecklistsModule,
     WorkspacesModule,
     WebhooksModule,
+    UploadsModule,
   ],
   controllers: [AppController],
   providers: [
