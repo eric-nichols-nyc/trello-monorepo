@@ -1,12 +1,15 @@
 import "dotenv/config";
 import { ValidationPipe } from "@nestjs/common";
 import { HttpAdapterHost, NestFactory } from "@nestjs/core";
-import type { NextFunction, Request, Response } from "express";
+import { ExpressAdapter } from "@nestjs/platform-express";
+import express, { type NextFunction, type Request, type Response } from "express";
 import { AllExceptionsFilter } from "./all-exceptions.filter";
 import { AppModule } from "./app.module";
 
-async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {
+const expressApp = express();
+
+async function createApp() {
+  const app = await NestFactory.create(AppModule, new ExpressAdapter(expressApp), {
     // Required for Clerk webhook signature verification (exact raw JSON bytes)
     rawBody: true,
   });
@@ -50,9 +53,32 @@ async function bootstrap() {
     res.status(204).end();
   });
 
-  const port = process.env.PORT ?? 3000;
+  await app.init();
+  return app;
+}
+
+let bootstrapPromise: ReturnType<typeof createApp> | undefined;
+
+function ensureApp() {
+  if (!bootstrapPromise) {
+    bootstrapPromise = createApp();
+  }
+  return bootstrapPromise;
+}
+
+/** Vercel Functions / Fluid Compute require a default export that handles the request. */
+export default async function handler(req: Request, res: Response): Promise<void> {
+  await ensureApp();
+  expressApp(req, res);
+}
+
+async function listenLocally() {
+  const app = await ensureApp();
+  const port = Number(process.env.PORT ?? 3000);
   await app.listen(port);
   console.log(`Server running on http://localhost:${port}`);
 }
 
-bootstrap();
+if (process.env.VERCEL !== "1") {
+  void listenLocally();
+}
