@@ -18,9 +18,11 @@ export default async function DashboardLayout({
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
+    <div className="flex h-dvh min-h-0 flex-col overflow-hidden bg-background">
       <GlobalHeader workspaceId={defaultWorkspaceId} />
-      <div className="flex min-h-0 min-w-0 flex-1">{children}</div>
+      <div className="flex min-h-0 min-w-0 flex-1 overflow-hidden">
+        {children}
+      </div>
     </div>
   );
 }

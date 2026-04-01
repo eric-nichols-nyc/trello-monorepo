@@ -52,4 +52,9 @@ export class ClerkWebhooksService {
       });
     }
   }
+
+  /** Idempotent: no-op if the user was never synced to the DB. */
+  async deleteUserByClerkId(clerkUserId: string): Promise<{ count: number }> {
+    return this.prisma.user.deleteMany({ where: { clerkUserId } });
+  }
 }

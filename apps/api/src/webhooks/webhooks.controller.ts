@@ -44,6 +44,18 @@ function getUserPayloadForSync(evt: WebhookEvent): unknown | null {
   return null;
 }
 
+function getClerkUserIdForUserDeleted(evt: WebhookEvent): string | null {
+  if (evt.type !== "user.deleted") {
+    return null;
+  }
+  const data = evt.data;
+  if (typeof data !== "object" || data === null) {
+    return null;
+  }
+  const id = (data as { id?: unknown }).id;
+  return typeof id === "string" ? id : null;
+}
+
 /** Build a Web `Request` for Clerk's `verifyWebhook` from Express + raw body. */
 function buildClerkWebhookRequestFromExpress(
   req: ExpressRequest,
@@ -108,6 +120,20 @@ export class ClerkWebhooksController {
       throw new BadRequestException(msg);
     }
 
+    const deletedClerkUserId = getClerkUserIdForUserDeleted(evt);
+    if (deletedClerkUserId) {
+      const { count } =
+        await this.clerkWebhooksService.deleteUserByClerkId(deletedClerkUserId);
+      this.logger.log(
+        `user.deleted: removed ${count} DB row(s) for clerkUserId=${deletedClerkUserId}`
+      );
+      return {
+        ok: true,
+        type: evt.type,
+        deleted: count,
+      };
+    }
+
     const userPayload = getUserPayloadForSync(evt);
     if (userPayload && isUserJSON(userPayload)) {
       await this.clerkWebhooksService.ensureUserAndDefaultWorkspace(
@@ -125,13 +151,13 @@ export class ClerkWebhooksController {
 
     this.logger.warn(
       `Webhook ok but no user sync for type=${evt.type}. ` +
-        `Use Testing → event "user.created", or subscribe to user.created / session.created in the endpoint.`
+        `Use Testing → event "user.created", or subscribe to user.created / session.created / user.deleted in the endpoint.`
     );
     return {
       ok: true,
       type: evt.type,
       synced: false,
-      hint: "Only user.created, user.updated (user payload), and session.created (with data.user) create rows.",
+      hint: "Handled: user.created, user.updated, session.created (with data.user), user.deleted. Other types are ignored.",
     };
   }
 }

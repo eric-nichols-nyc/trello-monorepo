@@ -17,7 +17,7 @@ const accordionLinkClassName =
   "flex items-center gap-3 rounded-md py-1.5 pr-2 pl-8 text-sidebar-foreground text-sm transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground [&_svg]:size-4 [&_svg]:shrink-0 [&_svg]:opacity-80";
 
 export const DashboardSidebar = () => (
-  <aside className="w-[288px] shrink-0 border-sidebar-border border-r p-8 text-sidebar-foreground">
+  <aside className="flex min-h-0 w-[288px] shrink-0 flex-col overflow-y-auto border-sidebar-border border-r p-8 text-sidebar-foreground">
     <nav className="-mx-8 border-chrome-divider border-b px-8 pb-4">
       <ul className="list-none space-y-2 p-0">
         <li>
