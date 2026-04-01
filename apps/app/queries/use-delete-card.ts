@@ -1,5 +1,6 @@
 "use client";
 
+import { useAuth } from "@repo/clerk/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { deleteCardClient } from "@/lib/api/cards/delete-card-client";
@@ -26,16 +27,18 @@ type DeleteCardMutationContext = {
   previous: BoardDetail | undefined;
 };
 
-/**
- * DELETE card via Next proxy; optimistically removes the card from cached
- * {@link BoardDetail}, rolls back on error, then invalidates board detail.
- */
 export function useDeleteCard() {
   const queryClient = useQueryClient();
+  const { getToken } = useAuth();
 
   return useMutation({
-    mutationFn: ({ cardId }: DeleteCardMutationVariables) =>
-      deleteCardClient(cardId),
+    mutationFn: async ({ cardId }: DeleteCardMutationVariables) => {
+      const token = await getToken();
+      if (!token) {
+        throw new Error("Not authenticated");
+      }
+      return deleteCardClient(cardId, token);
+    },
     onMutate: async ({
       boardKey,
       cardId,

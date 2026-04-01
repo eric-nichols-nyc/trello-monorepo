@@ -1,6 +1,7 @@
 "use client";
 
 import type { CreateCardInput } from "@repo/schemas";
+import { useAuth } from "@repo/clerk/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { postCardClient } from "@/lib/api/cards/post-card-client";
@@ -9,17 +10,12 @@ import type { BoardCard, BoardDetail } from "@/types/board-detail";
 import { boardDetailQueryKey } from "./board-detail-query";
 
 export type CreateCardMutationVariables = {
-  /** Target list UUID (Nest `POST /lists/:listId/cards`). */
   listId: string;
-  /** Same URL/cache key as `useBoardDetail` — used for optimistic + invalidate. */
   boardKey: string;
-  /** Validated body (e.g. from `createCardSchema`); quick-add usually sends `{ name }`. */
   input: CreateCardInput;
 };
 
-type CreateCardMutationContext = {
-  previous: BoardDetail | undefined;
-};
+type CreateCardMutationContext = { previous: BoardDetail | undefined };
 
 function dueDateToIso(value: CreateCardInput["dueDate"]): string | null {
   if (value === undefined) {
@@ -31,12 +27,7 @@ function dueDateToIso(value: CreateCardInput["dueDate"]): string | null {
   return String(value);
 }
 
-/**
- * Builds a `BoardCard` placeholder for the cache before the server responds.
- * `invalidateQueries` in `onSettled` replaces it with the real row shape.
- *
- * Exported for {@link useCopyCard} optimistic updates.
- */
+/** Optimistic row before the server responds; `onSettled` invalidates for real data. */
 export function buildOptimisticCard(
   listId: string,
   boardId: string,
@@ -70,16 +61,18 @@ export function buildOptimisticCard(
   };
 }
 
-/**
- * Creates a card via `postCardClient`, appends an optimistic row under the
- * matching list, rolls back on error, then invalidates board detail to sync.
- */
 export function useCreateCard() {
   const queryClient = useQueryClient();
+  const { getToken } = useAuth();
 
   return useMutation({
-    mutationFn: ({ listId, input }: CreateCardMutationVariables) =>
-      postCardClient(listId, input),
+    mutationFn: async ({ listId, input }: CreateCardMutationVariables) => {
+      const token = await getToken();
+      if (!token) {
+        throw new Error("Not authenticated");
+      }
+      return postCardClient(listId, input, token);
+    },
     onMutate: async ({
       boardKey,
       listId,
@@ -87,7 +80,6 @@ export function useCreateCard() {
     }): Promise<CreateCardMutationContext> => {
       const key = boardDetailQueryKey(boardKey);
       await queryClient.cancelQueries({ queryKey: key });
-
       const previous = queryClient.getQueryData<BoardDetail>(key);
       const tempId = `temp-${crypto.randomUUID()}`;
 

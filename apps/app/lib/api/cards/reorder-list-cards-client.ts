@@ -2,10 +2,12 @@ import type { ReorderListCardsInput } from "@repo/schemas";
 import { reorderListCardsSchema } from "@repo/schemas";
 
 import { BoardApiError } from "@/lib/api/boards/board-api-error";
+import { nestPublicBaseUrl } from "@/lib/api/nest-public-base-url";
 
 export async function reorderListCardsClient(
   listId: string,
-  body: ReorderListCardsInput
+  body: ReorderListCardsInput,
+  token: string
 ): Promise<unknown> {
   const parsed = reorderListCardsSchema.safeParse(body);
   if (!parsed.success) {
@@ -13,10 +15,13 @@ export async function reorderListCardsClient(
   }
 
   const response = await fetch(
-    `/api/lists/${encodeURIComponent(listId)}/cards/positions`,
+    `${nestPublicBaseUrl()}/api/lists/${encodeURIComponent(listId)}/cards/positions`,
     {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify(parsed.data),
       cache: "no-store",
     }

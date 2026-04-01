@@ -1,4 +1,5 @@
 import { BoardApiError } from "@/lib/api/boards/board-api-error";
+import { nestPublicBaseUrl } from "@/lib/api/nest-public-base-url";
 
 export type UpdateBoardPatchBody = {
   name?: string;
@@ -13,27 +14,14 @@ export type UpdateBoardPatchBody = {
   backgroundColor?: string | null;
 };
 
-function nestBoardsBaseUrl(): string {
-  const raw = process.env.NEXT_PUBLIC_API_URL;
-  if (!raw || raw.trim() === "") {
-    throw new Error(
-      "NEXT_PUBLIC_API_URL is not set. Use your Nest base URL (same as API_URL), e.g. http://localhost:3001",
-    );
-  }
-  return raw.replace(/\/$/, "");
-}
-
-/**
- * PATCH board on Nest (`PATCH /api/boards/:id`). Call from the browser with a
- * Clerk session token from `useAuth().getToken()`.
- */
+/** PATCH `/api/boards/:id` on Nest; pass `await useAuth().getToken()`. */
 export async function patchBoardClient(
   boardId: string,
   body: UpdateBoardPatchBody,
   token: string,
 ): Promise<unknown> {
   const response = await fetch(
-    `${nestBoardsBaseUrl()}/api/boards/${encodeURIComponent(boardId)}`,
+    `${nestPublicBaseUrl()}/api/boards/${encodeURIComponent(boardId)}`,
     {
       method: "PATCH",
       headers: {

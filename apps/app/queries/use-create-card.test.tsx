@@ -12,6 +12,12 @@ const postCardClientMock = vi.hoisted(() =>
   vi.fn().mockResolvedValue({ id: "server-card" })
 );
 
+vi.mock("@repo/clerk/client", () => ({
+  useAuth: () => ({
+    getToken: vi.fn().mockResolvedValue("test-token"),
+  }),
+}));
+
 vi.mock("@/lib/api/cards/post-card-client", () => ({
   postCardClient: postCardClientMock,
 }));
@@ -107,9 +113,11 @@ describe("useCreateCard", () => {
       });
     });
 
-    expect(postCardClientMock).toHaveBeenCalledWith("list-1", {
-      name: "New task",
-    });
+    expect(postCardClientMock).toHaveBeenCalledWith(
+      "list-1",
+      { name: "New task" },
+      "test-token"
+    );
   });
 
   it("restores previous cache data when the request fails", async () => {

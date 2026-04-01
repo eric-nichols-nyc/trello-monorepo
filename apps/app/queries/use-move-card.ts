@@ -1,6 +1,7 @@
 "use client";
 
 import type { MoveCardPatchInput } from "@repo/schemas";
+import { useAuth } from "@repo/clerk/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { patchCardClient } from "@/lib/api/cards/patch-card-client";
@@ -31,26 +32,20 @@ type MoveCardMutationContext = {
 
 export function useMoveCard() {
   const queryClient = useQueryClient();
+  const { getToken } = useAuth();
 
   return useMutation({
-    mutationFn: (variables: MoveCardMutationVariables) => {
-      if (variables.mode === "patch") {
-        console.log("[useMoveCard] sending PATCH /api/cards/:id", {
-          cardId: variables.cardId,
-          body: variables.body,
-        });
-        return patchCardClient(variables.cardId, variables.body);
+    mutationFn: async (variables: MoveCardMutationVariables) => {
+      const token = await getToken();
+      if (!token) {
+        throw new Error("Not authenticated");
       }
-      console.log(
-        "[useMoveCard] sending PATCH /api/lists/:listId/cards/positions",
-        {
-          listId: variables.listId,
-          body: { cardIds: variables.cardIds },
-        }
-      );
+      if (variables.mode === "patch") {
+        return patchCardClient(variables.cardId, variables.body, token);
+      }
       return reorderListCardsClient(variables.listId, {
         cardIds: variables.cardIds,
-      });
+      }, token);
     },
     onMutate: async (
       variables: MoveCardMutationVariables

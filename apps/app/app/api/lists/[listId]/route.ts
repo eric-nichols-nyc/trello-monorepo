@@ -1,6 +1,5 @@
 /**
- * `PATCH` / `DELETE` `/api/lists/:listId` — sibling to `[listId]/cards/*` routes.
- * Forwards to Nest `ListsController`; maps auth/API errors to HTTP status.
+ * `PATCH` / `DELETE` `/api/lists/:listId` — Next proxy to Nest `ListsController`.
  */
 import { NextResponse } from "next/server";
 

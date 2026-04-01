@@ -9,17 +9,13 @@ import { type FormEvent, useState } from "react";
 import { useCreateCard } from "@/queries/use-create-card";
 
 type CardQuickAddFormProperties = {
-  /** Nest list id — `POST /api/lists/:listId/cards`. */
   readonly listId: string;
-  /** Same key as `useBoardDetail` / `useCreateCard` cache + invalidation. */
+  /** Board cache key (matches `useBoardDetail`). */
   readonly boardKey: string;
   readonly onClose: () => void;
 };
 
-/**
- * Validates with `createCardSchema` (typically `{ name }`), then `useCreateCard`.
- * On success: `console.log`, close panel. On mutation error: `alert` (temporary).
- */
+/** Quick-add uses `useCreateCard` → Nest `POST /api/lists/:listId/cards`. */
 export const CardQuickAddForm = ({
   listId,
   boardKey,

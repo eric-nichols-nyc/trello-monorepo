@@ -1,6 +1,7 @@
 "use client";
 
 import type { CreateCardInput } from "@repo/schemas";
+import { useAuth } from "@repo/clerk/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { postCardClient } from "@/lib/api/cards/post-card-client";
@@ -56,15 +57,12 @@ function buildCopyInput(source: BoardCard): CreateCardInput {
   return input;
 }
 
-/**
- * Duplicates a card in its current list via `postCardClient` (same endpoint as
- * create). Uses cached board detail to build the payload and for optimistic UI.
- */
 export function useCopyCard() {
   const queryClient = useQueryClient();
+  const { getToken } = useAuth();
 
   return useMutation({
-    mutationFn: ({
+    mutationFn: async ({
       boardKey,
       cardId,
     }: CopyCardMutationVariables): Promise<unknown> => {
@@ -78,8 +76,12 @@ export function useCopyCard() {
       if (!found) {
         throw new Error("Card not found");
       }
+      const token = await getToken();
+      if (!token) {
+        throw new Error("Not authenticated");
+      }
       const input = buildCopyInput(found.card);
-      return postCardClient(found.list.id, input);
+      return postCardClient(found.list.id, input, token);
     },
     onMutate: async ({
       boardKey,

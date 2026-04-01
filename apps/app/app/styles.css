@@ -6,6 +6,8 @@
   --board-menu-card-bg: rgb(43, 44, 47);
   --board-menu-card-width: 354px;
   --board-menu-card-padding-inline: 8px;
+  /* List column overflow menu (`OverflowMenu`) — width matches workspace sidebar. */
+  --list-overflow-menu-width: 288px;
   /* Workspace header account menu (`UserMenu`). */
   --user-menu-card-width: 300px;
 }
