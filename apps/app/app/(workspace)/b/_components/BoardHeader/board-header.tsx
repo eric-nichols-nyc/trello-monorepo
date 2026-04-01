@@ -16,7 +16,7 @@ export const BoardHeader = ({
   boardKey,
   boardName,
 }: BoardHeaderProps) => (
-  <header className="relative p-[12px]">
+  <header className="relative p-[12px] js-board-header">
     <div
       aria-hidden
       className="pointer-events-none absolute inset-0 bg-black/40"
