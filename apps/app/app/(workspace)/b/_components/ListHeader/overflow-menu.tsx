@@ -58,11 +58,11 @@ export function OverflowMenu({
       <DropdownMenuContent
         align="start"
         className={cn(
-          "box-border w-[var(--list-overflow-menu-width)] max-w-[var(--list-overflow-menu-width)] min-w-[var(--list-overflow-menu-width)]",
-          "gap-0 border-0 bg-transparent p-0 shadow-none",
-          "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
-          "[&_[data-slot=dropdown-menu-item]]:text-white/90 [&_[data-slot=dropdown-menu-item]]:focus:bg-white/10 [&_[data-slot=dropdown-menu-item]]:focus:text-white",
-          "[&_[data-slot=dropdown-menu-item]]:data-[variant=destructive]:text-red-300 [&_[data-slot=dropdown-menu-item]]:data-[variant=destructive]:focus:bg-red-500/15 [&_[data-slot=dropdown-menu-item]]:data-[variant=destructive]:focus:text-red-200",
+          "box-border w-[var(--list-overflow-menu-width)] min-w-[var(--list-overflow-menu-width)] max-w-[var(--list-overflow-menu-width)]",
+          "border-0 bg-transparent gap-0 p-0 shadow-none",
+          "data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
+          "[&_[data-slot=dropdown-menu-item]]:focus:bg-white/10 [&_[data-slot=dropdown-menu-item]]:focus:text-white [&_[data-slot=dropdown-menu-item]]:text-white/90",
+          "[&_[data-slot=dropdown-menu-item]]:data-[variant=destructive]:focus:bg-red-500/15 [&_[data-slot=dropdown-menu-item]]:data-[variant=destructive]:focus:text-red-200 [&_[data-slot=dropdown-menu-item]]:data-[variant=destructive]:text-red-300",
           "[&_[data-slot=dropdown-menu-item]_svg]:text-white/70 [&_[data-slot=dropdown-menu-item]]:focus:[&_svg]:text-white"
         )}
         onCloseAutoFocus={(event) => event.preventDefault()}
