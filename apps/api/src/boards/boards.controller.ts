@@ -18,7 +18,8 @@ import { UsersService } from "../users/users.service";
 import { BoardsService } from "./boards.service";
 // biome-ignore lint/style/useImportType: DTO classes required at runtime for ValidationPipe metadata
 import { CreateBoardDto } from "./dto/create-board.dto";
-import type { UpdateBoardDto } from "./dto/update-board.dto";
+// biome-ignore lint/style/useImportType: DTO class required at runtime for ValidationPipe metadata
+import { UpdateBoardDto } from "./dto/update-board.dto";
 import { createBoardSchema } from "./schemas/create-board.schema";
 
 @Controller("boards")

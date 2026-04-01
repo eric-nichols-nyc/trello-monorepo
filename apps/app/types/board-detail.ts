@@ -209,3 +209,62 @@ export function normalizeBoardDetailPayload(raw: unknown): BoardDetail {
     lists: lists.map(normalizeBoardList),
   };
 }
+
+/**
+ * Nest `PATCH /boards/:id` returns the updated `Board` row **without** `lists`.
+ * Merge only scalar fields into the cached {@link BoardDetail} so rename (and
+ * similar patches) match the server without wiping columns/cards.
+ */
+export function mergeBoardPatchResponseIntoDetail(
+  previous: BoardDetail,
+  patch: unknown,
+): BoardDetail {
+  if (patch === null || typeof patch !== "object") {
+    return previous;
+  }
+  const p = patch as Record<string, unknown>;
+  const next: BoardDetail = { ...previous };
+
+  if (typeof p.name === "string") {
+    next.name = p.name;
+  }
+  if (typeof p.shortLink === "string") {
+    next.shortLink = p.shortLink;
+  }
+  if (p.background !== undefined) {
+    next.background =
+      p.background === null ? null : String(p.background);
+  }
+  if (p.backgroundImage !== undefined) {
+    next.backgroundImage =
+      p.backgroundImage === null ? null : String(p.backgroundImage);
+  }
+  if (typeof p.backgroundBrightness === "string") {
+    next.backgroundBrightness = p.backgroundBrightness;
+  }
+  if (p.backgroundBottomColor !== undefined) {
+    next.backgroundBottomColor =
+      p.backgroundBottomColor === null
+        ? null
+        : String(p.backgroundBottomColor);
+  }
+  if (p.backgroundTopColor !== undefined) {
+    next.backgroundTopColor =
+      p.backgroundTopColor === null ? null : String(p.backgroundTopColor);
+  }
+  if (p.backgroundColor !== undefined) {
+    next.backgroundColor =
+      p.backgroundColor === null ? null : String(p.backgroundColor);
+  }
+  if (typeof p.starred === "boolean") {
+    next.starred = p.starred;
+  }
+  if (typeof p.closed === "boolean") {
+    next.closed = p.closed;
+  }
+  if (typeof p.updatedAt === "string") {
+    next.updatedAt = p.updatedAt;
+  }
+
+  return next;
+}

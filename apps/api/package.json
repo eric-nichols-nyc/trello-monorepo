@@ -16,7 +16,8 @@
     "start:prod": "node dist/main.js",
     "clean": "git clean -xdf .cache .turbo dist node_modules",
     "typecheck": "tsc --noEmit",
-    "test": "echo 0",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "get-token": "tsx scripts/get-clerk-token.ts"
   },
   "dependencies": {
@@ -54,7 +55,8 @@
     "@types/pg": "^8.15.4",
     "prisma": "7.1.0",
     "tsx": "^4.19.2",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.15"
   },
   "engines": {
     "node": "20.x"

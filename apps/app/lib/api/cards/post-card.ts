@@ -6,7 +6,7 @@ import { BoardApiError } from "@/lib/api/boards/board-api-error";
  * Server-only: `POST` a new card on Nest (`ListCardsController#create`).
  *
  * Forwards to `POST {API_URL}/api/lists/:listId/cards` with the Clerk session
- * token — same auth pattern as `patchBoard` / `getBoard`.
+ * token — same auth pattern as `getBoard` and browser `patchBoardClient`.
  *
  * `body` should match Nest’s Zod `createCardSchema` (at minimum `{ name }`).
  */

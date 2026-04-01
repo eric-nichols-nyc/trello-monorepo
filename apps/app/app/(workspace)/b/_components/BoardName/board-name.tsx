@@ -64,6 +64,7 @@ export const BoardName = ({ boardId, boardKey, name }: BoardNameProperties) => {
       return;
     }
 
+
     updateBoard.mutate(
       { boardId, boardKey, updates: { name: trimmed } },
       {
@@ -99,6 +100,7 @@ export const BoardName = ({ boardId, boardKey, name }: BoardNameProperties) => {
   if (isEditing) {
     return (
       <form
+        autoComplete="off"
         className="min-w-48 max-w-full"
         onSubmit={(event) => {
           event.preventDefault();
@@ -111,13 +113,14 @@ export const BoardName = ({ boardId, boardKey, name }: BoardNameProperties) => {
       >
         <Input
           aria-label="Board name"
+          autoComplete="off"
           autoFocus
           className={cn(
             "h-auto w-full min-w-0 border-white/25 bg-black/25 py-1.5 font-bold text-foreground text-xl shadow-none md:text-2xl",
             "focus-visible:border-white/40 focus-visible:ring-white/30"
           )}
           disabled={updateBoard.isPending}
-          name="boardName"
+          name="trellnode-board-title"
           onBlur={commitOnBlur}
           onChange={(event) => setDraft(event.target.value)}
           onKeyDown={(event) => {

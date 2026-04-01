@@ -24,12 +24,17 @@ export function BoardPageContent({
   boardKey,
   initialBoard,
 }: BoardPageContentProperties) {
-  const { data, isError, error, isPending } = useBoardDetail(
-    boardKey,
-    initialBoard
-  );
+  const { data, isPending, error } = useBoardDetail(boardKey, initialBoard);
 
-  if (isPending && !data) {
+  // Keep showing the board when we already have payload (e.g. from SSR
+  // `initialData`). TanStack Query sets `isError` for refetch failures too
+  // (`isRefetchError`) while `data` is still defined — treating that as fatal
+  // hid the board after PATCH invalidation or focus refetch.
+  if (data !== undefined) {
+    return <TrelloBoard board={data} boardKey={boardKey} />;
+  }
+
+  if (isPending) {
     return (
       <div className="flex min-h-[40vh] flex-1 items-center justify-center text-white/80">
         Loading board…
@@ -37,13 +42,9 @@ export function BoardPageContent({
     );
   }
 
-  if (isError || data === undefined) {
-    return (
-      <div className="flex min-h-[40vh] flex-1 items-center justify-center text-red-300">
-        {error instanceof Error ? error.message : "Failed to load board"}
-      </div>
-    );
-  }
-
-  return <TrelloBoard board={data} boardKey={boardKey} />;
+  return (
+    <div className="flex min-h-[40vh] flex-1 items-center justify-center text-red-300">
+      {error instanceof Error ? error.message : "Failed to load board"}
+    </div>
+  );
 }

@@ -13,6 +13,7 @@ import type { UpdateBoardDto } from "./dto/update-board.dto";
 import type { CreateBoardInput } from "./schemas/create-board.schema";
 import type { BoardTemplateDefinition } from "./templates/board-template.schema";
 import { getBoardTemplateById } from "./templates/registry";
+import { updateBoardDtoToPrismaData } from "./dto/update-board-dto-to-prisma";
 
 type BoardCreatePayload = Omit<CreateBoardInput, "templateId"> & {
   userId: string;
@@ -209,9 +210,10 @@ export class BoardsService {
   }
 
   update(id: string, data: UpdateBoardDto) {
+    const payload = updateBoardDtoToPrismaData(data);
     return this.prisma.board.update({
       where: { id },
-      data,
+      data: payload,
     });
   }
 
@@ -291,6 +293,7 @@ export class BoardsService {
   }
 
   async updateForUser(id: string, userId: string, data: UpdateBoardDto) {
+    console.log('[UPDATE FOR USER]',data)
     const board = await this.prisma.board.findFirst({
       where: { id, userId },
       select: { id: true },
@@ -298,9 +301,10 @@ export class BoardsService {
     if (!board) {
       throw new NotFoundException(`Board ${id} not found`);
     }
+    const payload = updateBoardDtoToPrismaData(data);
     return this.prisma.board.update({
       where: { id: board.id },
-      data,
+      data: payload,
     });
   }
 

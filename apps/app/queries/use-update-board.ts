@@ -1,12 +1,16 @@
 "use client";
 
+import { useAuth } from "@repo/clerk/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import {
   patchBoardClient,
   type UpdateBoardPatchBody,
 } from "@/lib/api/boards/patch-board-client";
-import type { BoardDetail } from "@/types/board-detail";
+import {
+  type BoardDetail,
+  mergeBoardPatchResponseIntoDetail,
+} from "@/types/board-detail";
 
 import { boardDetailQueryKey } from "./board-detail-query";
 
@@ -23,15 +27,30 @@ type UpdateBoardMutationContext = {
 };
 
 /**
- * PATCH board fields with optimistic cache merge, rollback on error, then
- * invalidate to reconcile with the server.
+ * PATCH board fields on Nest with optimistic cache merge, rollback on error,
+ * then invalidate to reconcile with the server.
  */
 export function useUpdateBoard() {
   const queryClient = useQueryClient();
+  const { getToken } = useAuth();
 
   return useMutation({
-    mutationFn: ({ boardId, updates }: UpdateBoardMutationVariables) =>
-      patchBoardClient(boardId, updates),
+    mutationFn: async ({
+      boardId,
+      updates,
+    }: UpdateBoardMutationVariables) => {
+      const token = await getToken();
+      if (!token) {
+        throw new Error("Not authenticated");
+      }
+      return patchBoardClient(boardId, updates, token);
+    },
+    onSuccess: (data, { boardKey }) => {
+      const key = boardDetailQueryKey(boardKey);
+      queryClient.setQueryData<BoardDetail>(key, (old) =>
+        old ? mergeBoardPatchResponseIntoDetail(old, data) : old,
+      );
+    },
     onMutate: async ({
       boardKey,
       updates,
@@ -42,7 +61,7 @@ export function useUpdateBoard() {
       const previous = queryClient.getQueryData<BoardDetail>(key);
 
       queryClient.setQueryData<BoardDetail>(key, (old) =>
-        old ? { ...old, ...updates } : old
+        old ? { ...old, ...updates } : old,
       );
 
       return { previous };
