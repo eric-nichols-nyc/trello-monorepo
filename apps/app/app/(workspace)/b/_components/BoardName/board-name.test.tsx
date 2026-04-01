@@ -57,4 +57,38 @@ describe("BoardName", () => {
     expect(screen.getByRole("button", { name: "Sprint board" })).toBeVisible();
     expect(boardMutate).not.toHaveBeenCalled();
   });
+
+  it("calls updateBoard.mutate with the new name when blur commits a change", () => {
+    render(<BoardName boardId="b-1" boardKey="my-board" name="Sprint board" />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Sprint board" }));
+
+    const field = screen.getByRole("textbox", { name: "Board name" });
+    fireEvent.change(field, { target: { value: "Release train" } });
+    fireEvent.blur(field);
+
+    expect(boardMutate).toHaveBeenCalledTimes(1);
+    expect(boardMutate.mock.calls[0]?.[0]).toEqual({
+      boardId: "b-1",
+      boardKey: "my-board",
+      updates: { name: "Release train" },
+    });
+  });
+
+  it("commits rename on Enter via blur (same mutate payload)", () => {
+    render(<BoardName boardId="b-1" boardKey="my-board" name="Sprint board" />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Sprint board" }));
+
+    const field = screen.getByRole("textbox", { name: "Board name" });
+    fireEvent.change(field, { target: { value: "Q1 goals" } });
+    fireEvent.keyUp(field, { key: "Enter", code: "Enter" });
+
+    expect(boardMutate).toHaveBeenCalledTimes(1);
+    expect(boardMutate.mock.calls[0]?.[0]).toEqual({
+      boardId: "b-1",
+      boardKey: "my-board",
+      updates: { name: "Q1 goals" },
+    });
+  });
 });

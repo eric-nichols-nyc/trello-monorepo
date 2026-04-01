@@ -2,7 +2,14 @@
 
 import { Input } from "@repo/design-system/components/ui/input";
 import { cn } from "@repo/design-system/lib/utils";
-import {  type KeyboardEventHandler, type FocusEventHandler, useCallback, useEffect, useRef, useState } from "react";
+import {
+  type FocusEventHandler,
+  type KeyboardEventHandler,
+  useCallback,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { useClickOutside } from "@/hooks/use-click-outside";
 import { useUpdateBoard } from "@/queries/use-update-board";
 
@@ -19,64 +26,61 @@ type BoardNameProperties = {
  */
 export const BoardName = ({ boardId, boardKey, name }: BoardNameProperties) => {
   const [isEditing, setIsEditing] = useState(false);
-  //const [draft, setDraft] = useState(name);
   const containerReference = useRef<HTMLFormElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  // const draftReference = useRef(draft);
-  // const nameReference = useRef(name);
-
-  // draftReference.current = draft;
-  // nameReference.current = name;
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  /** Width of the title button measured before swap to input (avoids unmount). */
+  const widthSeedFromButtonRef = useRef<number | null>(null);
 
   const boardName = name;
 
-
   const updateBoard = useUpdateBoard();
 
-  // useEffect(() => {
-  //   if (!isEditing) {
-  //     setDraft(name);
-  //   }
-  // }, [name, isEditing]);
-
   const startEditing = () => {
-    //setDraft(name);
+    const button = buttonRef.current;
+    widthSeedFromButtonRef.current = button
+      ? Math.round(button.getBoundingClientRect().width)
+      : null;
     setIsEditing(true);
   };
 
   const cancelWithoutSave = () => {
-    //setDraft(nameReference.current);
     setIsEditing(false);
   };
 
-    /**
-   * Resizes the board name input up to the maximum width of the board header. Currently,
-   * this gets the board header width via a document query, but once the board header is
-   * completely in react should be done via a passed ref instead
+  /**
+   * Sizes the input to its text, capped by the board header. Uses the pre-edit button width
+   * as a floor so the field matches the clicked title (incl. truncate). Header width: document
+   * query until the header exposes a ref.
    */
-    const resizeInput = useCallback(() => {
-      if (!inputRef?.current) {
-        return;
-      }
-      inputRef.current.style.width = '0';
-      let inputWidthForNewValue = inputRef.current.offsetWidth;
+  const resizeInput = useCallback(() => {
+    const input = inputRef.current;
+    if (!input) {
+      return;
+    }
+    input.style.width = "0";
+    let contentWidth = input.offsetWidth;
+    input.scrollLeft = 1e10;
+    contentWidth += input.scrollLeft;
 
-      inputRef.current.scrollLeft = 1e10;
-      // With the width set to zero and the input scrolled to the end of the content, the element's
-      // scrollLeft value is the width of the content! Now we add that to the offset.
-      inputWidthForNewValue += inputRef.current.scrollLeft;
+    // eslint-disable-next-line @trello/no-query-selector
+    const boardHeader = document.querySelector<HTMLElement>(".js-board-header");
+    const maxWidth = (boardHeader?.offsetWidth ?? Number.POSITIVE_INFINITY) - 24;
 
-      // Here we make sure the input doesn't fall off the side of the page. The "-24" is for padding.
-      // eslint-disable-next-line @trello/no-query-selector
-      const boardHeader = document.querySelector<HTMLElement>('.js-board-header');
-      const headerOffsetWidth = boardHeader?.offsetWidth;
-      const maxWidth = (headerOffsetWidth || 1e10) - 24;
+    const seed = widthSeedFromButtonRef.current;
+    const withSeed =
+      seed !== null ? Math.max(contentWidth, seed) : contentWidth;
+    const inputWidth = Math.min(withSeed, maxWidth);
+    input.style.width = `${inputWidth}px`;
+  }, []);
 
-      const inputWidth =
-        inputWidthForNewValue < maxWidth ? inputWidthForNewValue : maxWidth;
-      // Now we have an input that's only as wide as the content needs, without running off the page.
-      inputRef.current.style.width = inputWidth + 'px';
-    }, [inputRef]);
+  useLayoutEffect(() => {
+    if (!isEditing) {
+      widthSeedFromButtonRef.current = null;
+      return;
+    }
+    resizeInput();
+  }, [isEditing, resizeInput]);
 
 
   const commitOnBlur:FocusEventHandler<HTMLInputElement>  = useCallback((e) => {
@@ -159,7 +163,7 @@ export const BoardName = ({ boardId, boardKey, name }: BoardNameProperties) => {
           autoComplete="off"
           autoFocus
           className={cn(
-            "h-auto w-auto min-w-0 border-white/25 bg-black/25 py-1.5 font-bold text-foreground text-lg shadow-none md:text-xl",
+            "h-auto w-auto min-w-0 border-white/25 bg-black/25 px-1 py-0 font-bold text-foreground text-lg shadow-none md:text-xl",
             "focus-visible:border-white/40 focus-visible:ring-white/30"
           )}
           disabled={updateBoard.isPending}
@@ -183,10 +187,10 @@ export const BoardName = ({ boardId, boardKey, name }: BoardNameProperties) => {
 
   return (
     <button
+      ref={buttonRef}
       className={cn(
         "max-w-full cursor-pointer truncate rounded-sm px-1 py-0.5 text-left font-bold text-foreground text-lg transition-colors",
-        "hover:bg-white/15 focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring",
-        "md:text-xl"
+        "hover:bg-white/15 focus-visible:outline focus-visible:ring-2 focus-visible:ring-ring"
       )}
       disabled={updateBoard.isPending}
       onClick={startEditing}

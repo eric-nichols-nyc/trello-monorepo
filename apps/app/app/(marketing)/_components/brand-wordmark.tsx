@@ -24,7 +24,7 @@ export function BrandWordmark({ label = "Trellnode" }: BrandWordmarkProps) {
   return (
     <>
       <LogoMark />
-      <span className="font-semibold text-foreground text-xl">{label}</span>
+      <span className="font-semibold text-foreground text-md">{label}</span>
     </>
   );
 }
