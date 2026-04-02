@@ -27,6 +27,8 @@ export const BoardHeader = ({
       </div>
       <BoardMenuButton
         boardBackground={boardBackground}
+        boardId={boardId}
+        boardKey={boardKey}
         boardName={boardName}
       />
     </div>

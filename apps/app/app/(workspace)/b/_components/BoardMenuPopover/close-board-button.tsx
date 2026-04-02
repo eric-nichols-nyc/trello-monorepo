@@ -4,8 +4,12 @@ import { Button } from "@repo/design-system/components/ui/button";
 import { cn } from "@repo/design-system/lib/utils";
 import { X, XCircle } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import type { ComponentProps } from "react";
 import { useCallback, useId, useState } from "react";
+
+import { BoardApiError } from "@/lib/api/boards/board-api-error";
+import { useUpdateBoard } from "@/queries/use-update-board";
 
 const closeBoardRowClass = cn(
   "h-auto w-full justify-start rounded-sm px-2 py-2 font-normal",
@@ -21,30 +25,54 @@ export type CloseBoardButtonProps = Omit<
   ComponentProps<typeof Button>,
   "children" | "size" | "type" | "variant"
 > & {
-  /** Called when the user confirms (board close API TBD). */
-  onConfirm?: () => void;
-  /** Reserved for future copy; Trello-style panel uses generic reopen text. */
+  boardId: string;
+  boardKey: string;
+  /** Closes the board menu (e.g. before navigation). */
+  onDismiss?: () => void;
   boardName?: string;
 };
 
 export function CloseBoardButton({
+  boardId,
+  boardKey,
   boardName: _boardName,
   className,
-  onConfirm,
+  onDismiss,
   ...props
 }: CloseBoardButtonProps) {
+  const router = useRouter();
+  const { mutateAsync, isPending } = useUpdateBoard();
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [archiveError, setArchiveError] = useState<string | null>(null);
   const titleId = useId();
   const descId = useId();
 
   const closeConfirm = useCallback(() => {
     setConfirmOpen(false);
+    setArchiveError(null);
   }, []);
 
-  const handleConfirm = useCallback(() => {
-    onConfirm?.();
-    setConfirmOpen(false);
-  }, [onConfirm]);
+  const handleConfirm = useCallback(async () => {
+    setArchiveError(null);
+    try {
+      await mutateAsync({
+        boardId,
+        boardKey,
+        updates: { closed: true },
+      });
+      setConfirmOpen(false);
+      onDismiss?.();
+      router.push("/w");
+    } catch (error) {
+      const message =
+        error instanceof BoardApiError
+          ? error.message
+          : error instanceof Error
+            ? error.message
+            : "Something went wrong";
+      setArchiveError(message);
+    }
+  }, [boardId, boardKey, mutateAsync, onDismiss, router]);
 
   return (
     <div className="relative">
@@ -65,6 +93,7 @@ export function CloseBoardButton({
             <Button
               aria-label="Dismiss"
               className="-translate-y-1/2 absolute top-1/2 right-0 size-8 shrink-0 text-white/60 hover:bg-white/10 hover:text-white"
+              disabled={isPending}
               onClick={closeConfirm}
               size="icon-sm"
               type="button"
@@ -84,18 +113,27 @@ export function CloseBoardButton({
             </Link>
             .
           </p>
+          {archiveError ? (
+            <p className="mt-2 text-center text-red-300 text-xs" role="alert">
+              {archiveError}
+            </p>
+          ) : null}
           <Button
-            className="mt-4 h-10 w-full rounded-lg border-0 bg-[#f5b5b0] font-medium text-neutral-900 hover:bg-[#f0a8a2]"
-            onClick={handleConfirm}
+            className="mt-4 h-10 w-full rounded-lg border-0 bg-[#f5b5b0] font-medium text-neutral-900 hover:bg-[#f0a8a2] disabled:opacity-60"
+            disabled={isPending}
+            onClick={() => {
+              void handleConfirm();
+            }}
             type="button"
           >
-            Close
+            {isPending ? "Closing…" : "Close"}
           </Button>
         </div>
       ) : null}
       <Button
         aria-expanded={confirmOpen}
         className={cn(closeBoardRowClass, className)}
+        disabled={isPending}
         onClick={() => {
           setConfirmOpen((open) => !open);
         }}

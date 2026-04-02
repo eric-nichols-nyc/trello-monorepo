@@ -17,6 +17,8 @@ import { StarBoardButton } from "./star-board-button";
 
 export type BoardMenuPopoverProps = {
   boardBackground: BoardBackgroundStyleSource;
+  boardId: string;
+  boardKey: string;
   boardName?: string;
   /** Called only from explicit dismiss controls (header X, footer Close). */
   onDismiss?: () => void;
@@ -33,6 +35,8 @@ const menuButtonClass = cn(
  */
 export function BoardMenuPopover({
   boardBackground,
+  boardId,
+  boardKey,
   boardName,
   className,
   onDismiss,
@@ -91,7 +95,12 @@ export function BoardMenuPopover({
             <Archive aria-hidden className="size-4 shrink-0" strokeWidth={2} />
             Archived items
           </Button>
-          <CloseBoardButton boardName={boardName} />
+          <CloseBoardButton
+            boardId={boardId}
+            boardKey={boardKey}
+            boardName={boardName}
+            onDismiss={dismiss}
+          />
         </div>
       </CardContent>
     </Card>

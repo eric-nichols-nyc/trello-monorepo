@@ -14,6 +14,8 @@ const BOARD_MENU_PANEL_Z = 200;
 
 type BoardMenuButtonProps = {
   boardBackground: BoardBackgroundStyleSource;
+  boardId: string;
+  boardKey: string;
   /** For `aria-label` / future analytics. */
   boardName: string;
   className?: string;
@@ -45,6 +47,8 @@ function placePanelNearTrigger(
 
 export function BoardMenuButton({
   boardBackground,
+  boardId,
+  boardKey,
   boardName,
   className,
 }: BoardMenuButtonProps) {
@@ -107,6 +111,8 @@ export function BoardMenuButton({
             >
               <BoardMenuPopover
                 boardBackground={boardBackground}
+                boardId={boardId}
+                boardKey={boardKey}
                 boardName={boardName}
                 onDismiss={() => setOpen(false)}
               />
