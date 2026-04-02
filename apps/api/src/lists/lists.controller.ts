@@ -9,7 +9,8 @@ import {
 } from "@nestjs/common";
 import { ClerkAuthGuard } from "../auth/clerk-auth.guard";
 import { CurrentUser } from "../auth/current-user.decorator";
-import type { UpdateListDto } from "./dto/update-list.dto";
+// biome-ignore lint/style/useImportType: ValidationPipe needs the class at runtime for @Body() metadata
+import { UpdateListDto } from "./dto/update-list.dto";
 // biome-ignore lint/style/useImportType: Nest DI needs ListsService as a runtime constructor token
 import { ListsService } from "./lists.service";
 

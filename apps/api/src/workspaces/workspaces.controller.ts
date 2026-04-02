@@ -16,7 +16,8 @@ import { ZodValidationPipe } from "../common/pipes/zod-validation.pipe";
 import { UsersService } from "../users/users.service";
 // biome-ignore lint/style/useImportType: DTO classes required at runtime for ValidationPipe metadata
 import { CreateWorkspaceDto } from "./dto/create-workspace.dto";
-import type { UpdateWorkspaceDto } from "./dto/update-workspace.dto";
+// biome-ignore lint/style/useImportType: ValidationPipe needs the class at runtime for @Body() metadata
+import { UpdateWorkspaceDto } from "./dto/update-workspace.dto";
 import { createWorkspaceSchema } from "./schemas/create-workspace.schema";
 // biome-ignore lint/style/useImportType: Nest DI needs the WorkspacesService class reference
 import { WorkspacesService } from "./workspaces.service";

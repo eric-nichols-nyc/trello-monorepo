@@ -11,7 +11,8 @@ import { ClerkAuthGuard } from "../auth/clerk-auth.guard";
 import { CurrentUser } from "../auth/current-user.decorator";
 // biome-ignore lint/style/useImportType: Nest DI needs CommentsService as a runtime constructor token
 import { CommentsService } from "./comments.service";
-import type { UpdateCommentDto } from "./dto/update-comment.dto";
+// biome-ignore lint/style/useImportType: ValidationPipe needs the class at runtime for @Body() metadata
+import { UpdateCommentDto } from "./dto/update-comment.dto";
 
 @Controller("comments")
 export class CommentsController {

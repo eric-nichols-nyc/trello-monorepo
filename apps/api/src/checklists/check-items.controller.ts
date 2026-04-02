@@ -11,7 +11,8 @@ import { ClerkAuthGuard } from "../auth/clerk-auth.guard";
 import { CurrentUser } from "../auth/current-user.decorator";
 // biome-ignore lint/style/useImportType: Nest DI needs CheckItemsService as a runtime constructor token
 import { CheckItemsService } from "./check-items.service";
-import type { UpdateCheckItemDto } from "./dto/update-check-item.dto";
+// biome-ignore lint/style/useImportType: ValidationPipe needs the class at runtime for @Body() metadata
+import { UpdateCheckItemDto } from "./dto/update-check-item.dto";
 
 /** Flat resource for a single checklist item (avoids route clashes with `lists`). */
 @Controller("checklist-items")
