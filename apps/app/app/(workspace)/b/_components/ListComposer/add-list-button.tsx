@@ -10,7 +10,7 @@ export type AddListButtonProps = {
 /** Column-width control to open the “add list” flow (matches board list column width). */
 export const AddListButton = ({ onClick }: AddListButtonProps) => (
   <Button
-    className="h-11 w-[270px] shrink-0 justify-start bg-white/10 text-white/90 hover:bg-white/15"
+    className="h-11 w-[270px] shrink-0 justify-start border border-white/20 bg-white/15 font-bold text-white/95 shadow-sm backdrop-blur-xl backdrop-saturate-150 hover:border-white/30 hover:bg-white/25"
     onClick={onClick}
     type="button"
     variant="secondary"
