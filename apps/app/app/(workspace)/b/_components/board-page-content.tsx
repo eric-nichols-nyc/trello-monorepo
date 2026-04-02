@@ -10,8 +10,7 @@ type BoardPageContentProperties = {
   readonly boardKey: string;
   /**
    * First paint from the server (`getBoard` in `page.tsx`). Passed into
-   * `useBoardDetail` as `initialData` so TanStack starts warm; refetches still
-   * go through the hook + `/api/boards/...`.
+   * `useBoardDetail` as `initialData` so TanStack starts warm; refetches call Nest.
    */
   readonly initialBoard: BoardDetail;
 };

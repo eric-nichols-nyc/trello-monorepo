@@ -1,5 +1,6 @@
 "use client";
 
+import { useAuth } from "@repo/clerk/client";
 import { useQuery } from "@tanstack/react-query";
 
 import { fetchBoardDetailClient } from "@/lib/api/boards/fetch-board-detail-client";
@@ -8,18 +9,21 @@ import type { BoardDetail } from "@/types/board-detail";
 import { boardDetailQueryKey } from "./board-detail-query";
 
 /**
- * Subscribes to TanStack Query’s cache for one board.
- *
- * - **Server** (`b/[id]/page.tsx`): still loads the board for fast HTML + `notFound()`.
- * - **This hook**: seeds the cache with that payload (`initialData`), then can refetch
- *   (background updates, mutations, `invalidateQueries`, etc.).
- *
- * Call only from client components (e.g. `BoardPageContent`).
+ * Client board detail cache: seeds from SSR `initialBoard`, refetches via Nest
+ * with Clerk session token.
  */
 export function useBoardDetail(boardKey: string, initialBoard: BoardDetail) {
+  const { getToken } = useAuth();
+
   return useQuery({
     queryKey: boardDetailQueryKey(boardKey),
-    queryFn: () => fetchBoardDetailClient(boardKey),
+    queryFn: async () => {
+      const token = await getToken();
+      if (!token) {
+        throw new Error("Not authenticated");
+      }
+      return fetchBoardDetailClient(boardKey, token);
+    },
     initialData: initialBoard,
     staleTime: 60 * 1000,
   });
