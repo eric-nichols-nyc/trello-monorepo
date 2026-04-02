@@ -1,5 +1,6 @@
 "use client";
 
+import { useAuth } from "@repo/clerk/client";
 import { Input } from "@repo/design-system/components/ui/input";
 import { Label } from "@repo/design-system/components/ui/label";
 import { useRouter } from "next/navigation";
@@ -24,6 +25,7 @@ export function CreateBoardForm({
   onCreated,
 }: CreateBoardFormProps) {
   const router = useRouter();
+  const { getToken } = useAuth();
   const [title, setTitle] = useState("");
   const [touched, setTouched] = useState(true);
   const [background, setBackground] =
@@ -73,7 +75,11 @@ export function CreateBoardForm({
             : { backgroundImage: background.imageRootUrl }),
         };
 
-        const { boardKey } = await createBoardClient(body);
+        const token = await getToken();
+        if (!token) {
+          throw new Error("Not authenticated");
+        }
+        const { boardKey } = await createBoardClient(body, token);
         onCreated?.();
         router.push(`/b/${encodeURIComponent(boardKey)}`);
       } catch (error) {
@@ -88,7 +94,7 @@ export function CreateBoardForm({
         setPending(false);
       }
     },
-    [background, onCreated, router, title, workspaceId]
+    [background, getToken, onCreated, router, title, workspaceId]
   );
 
   return (

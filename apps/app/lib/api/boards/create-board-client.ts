@@ -1,8 +1,9 @@
 import { z } from "zod";
 
 import { BoardApiError } from "@/lib/api/boards/board-api-error";
+import { nestPublicBaseUrl } from "@/lib/api/nest-public-base-url";
 
-const createBoardRequestSchema = z
+const requestSchema = z
   .object({
     name: z.string().min(1, "name is required").trim(),
     workspaceId: z.string().uuid("workspaceId must be a valid UUID"),
@@ -10,30 +11,33 @@ const createBoardRequestSchema = z
     backgroundImage: z.string().min(1).optional(),
   })
   .refine(
-    (value) =>
-      value.backgroundColor !== undefined ||
-      value.backgroundImage !== undefined,
+    (v) => v.backgroundColor !== undefined || v.backgroundImage !== undefined,
     { message: "Choose a solid color or a photo background" }
   );
 
-export type CreateBoardClientInput = z.infer<typeof createBoardRequestSchema>;
+export type CreateBoardClientInput = z.infer<typeof requestSchema>;
 
-const createdBoardSchema = z.object({
+const responseSchema = z.object({
   shortLink: z.string().min(1).nullable().optional(),
   id: z.string().uuid(),
 });
 
+/** POST `/api/boards` on Nest; pass `await useAuth().getToken()`. */
 export async function createBoardClient(
-  input: CreateBoardClientInput
+  input: CreateBoardClientInput,
+  token: string
 ): Promise<{ boardKey: string }> {
-  const parsed = createBoardRequestSchema.safeParse(input);
+  const parsed = requestSchema.safeParse(input);
   if (!parsed.success) {
     throw new Error(parsed.error.flatten().formErrors.join("; "));
   }
 
-  const response = await fetch("/api/boards", {
+  const response = await fetch(`${nestPublicBaseUrl()}/api/boards`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify(parsed.data),
     cache: "no-store",
   });
@@ -46,11 +50,10 @@ export async function createBoardClient(
   }
 
   const raw: unknown = await response.json();
-  const board = createdBoardSchema.safeParse(raw);
+  const board = responseSchema.safeParse(raw);
   if (!board.success) {
     throw new Error("Create board response was not valid");
   }
 
-  const key = board.data.shortLink ?? board.data.id;
-  return { boardKey: key };
+  return { boardKey: board.data.shortLink ?? board.data.id };
 }
