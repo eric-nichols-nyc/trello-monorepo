@@ -8,7 +8,7 @@ import { ClerkAuthService } from "./clerk-auth.service";
 @Module({
   imports: [ConfigModule, UsersModule],
   providers: [ClerkAuthService, ClerkAuthGuard],
-  // Re-export UsersModule so ClerkAuthGuard’s UsersService dep resolves in every feature module.
+  // Re-export UsersModule so feature modules can inject UsersService without importing UsersModule.
   exports: [ClerkAuthService, ClerkAuthGuard, UsersModule],
 })
 export class AuthModule {}

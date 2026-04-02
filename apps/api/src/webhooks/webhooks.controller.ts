@@ -120,6 +120,10 @@ export class ClerkWebhooksController {
       throw new BadRequestException(msg);
     }
 
+    this.logger.log(
+      `Clerk webhook verified: type=${evt.type} data=${JSON.stringify(evt.data)}`
+    );
+
     const deletedClerkUserId = getClerkUserIdForUserDeleted(evt);
     if (deletedClerkUserId) {
       const { count } =
@@ -136,6 +140,9 @@ export class ClerkWebhooksController {
 
     const userPayload = getUserPayloadForSync(evt);
     if (userPayload && isUserJSON(userPayload)) {
+      this.logger.log(
+        `Clerk user payload for DB sync (from getUserPayloadForSync): ${JSON.stringify(userPayload)}`
+      );
       await this.clerkWebhooksService.ensureUserAndDefaultWorkspace(
         userPayload
       );

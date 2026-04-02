@@ -93,21 +93,20 @@ Collection variables: `baseUrl` (default `http://localhost:3000`), `boardId` (se
 
 ### User & default workspace provisioning
 
-Provisioning runs on **every** request that uses **`ClerkAuthGuard`** (after the JWT is verified). Implementation: `src/auth/clerk-auth.guard.ts` → `UsersService.ensureUserAndDefaultWorkspace()` in `src/users/users.service.ts`.
+Provisioning runs from **Clerk webhooks** (`POST /webhooks/clerk`), not from the JWT guard. Implementation: `src/webhooks/webhooks.controller.ts` → `ClerkWebhooksService.ensureUserAndDefaultWorkspace()` in `src/webhooks/webhooks.service.ts`.
 
 **User**
 
-- The app **upserts** a `User` row keyed by **`clerkUserId`** (from the JWT `sub`).
-- If this Clerk user is **new** → **insert**.
-- If they **already exist** → **update** profile fields from the token when present (email, first/last name, image).
+- On **`user.created`**, **`user.updated`**, or **`session.created`** (with `data.user`), the API **upserts** a `User` row keyed by **`clerkUserId`** using the Clerk user payload (with optional Backend API enrichment when the webhook body has no email yet).
 
 **Workspace**
 
-- After the user row is settled, the app checks whether **any** `Workspace` exists with **`ownerId`** equal to that user’s id.
+- After the user row is settled, the handler checks whether **any** `Workspace` exists with **`ownerId`** equal to that user’s id.
 - If **none** → creates **one** default workspace named **`"My workspace"`** with that **`ownerId`**.
-- If **at least one** already exists → **does not** create another default (you can still add more via **`POST /workspaces`**).
 
-This is **not** tied to Clerk’s “sign up” event in the dashboard; it runs on the **first authenticated API call** (and keeps the user row updated on later calls). For provisioning at signup without hitting the API, use a **Clerk webhook** instead.
+**`ClerkAuthGuard`** only **verifies** the JWT and attaches claims to the request; it does **not** write to the database.
+
+Until the webhook has run for a given Clerk user, authenticated routes that expect a DB user may return **404** (“user not found”).
 
 ### Clerk webhook (`POST /webhooks/clerk`)
 

@@ -2,18 +2,13 @@ import type { CanActivate, ExecutionContext } from "@nestjs/common";
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import type { Request } from "express";
 // biome-ignore lint/style/useImportType: Nest DI needs class references for ClerkAuthGuard
-import { UsersService } from "../users/users.service";
-// biome-ignore lint/style/useImportType: Nest DI needs class references for ClerkAuthGuard
 import { ClerkAuthService } from "./clerk-auth.service";
 
 export const CLERK_AUTH_PAYLOAD = "clerkAuthPayload";
 
 @Injectable()
 export class ClerkAuthGuard implements CanActivate {
-  constructor(
-    private readonly clerkAuthService: ClerkAuthService,
-    private readonly usersService: UsersService
-  ) {}
+  constructor(private readonly clerkAuthService: ClerkAuthService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<Request>();
@@ -30,7 +25,6 @@ export class ClerkAuthGuard implements CanActivate {
 
     try {
       const payload = await this.clerkAuthService.verifyAndGetPayload(token);
-      await this.usersService.ensureUserAndDefaultWorkspace(payload);
       (request as Request & { [CLERK_AUTH_PAYLOAD]: typeof payload })[
         CLERK_AUTH_PAYLOAD
       ] = payload;

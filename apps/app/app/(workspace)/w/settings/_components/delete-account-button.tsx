@@ -1,6 +1,6 @@
 "use client";
 
-import { useUser } from "@repo/clerk/client";
+import { useClerk, useUser } from "@repo/clerk/client";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -11,7 +11,6 @@ import {
   AlertDialogTitle,
 } from "@repo/design-system/components/ui/alert-dialog";
 import { Button } from "@repo/design-system/components/ui/button";
-import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 
 /**
@@ -20,7 +19,7 @@ import { useCallback, useState } from "react";
  * breaks in dev for OAuth-only test users.
  */
 export function DeleteAccountButton() {
-  const router = useRouter();
+  const { signOut } = useClerk();
   const { isLoaded, user } = useUser();
   const [open, setOpen] = useState(false);
   const [pending, setPending] = useState(false);
@@ -57,14 +56,20 @@ export function DeleteAccountButton() {
         return;
       }
       setOpen(false);
-      router.push("/sign-in");
-      router.refresh();
+      // Avoid router.refresh / soft navigation: they can refetch /workspaces/mine
+      // while the JWT is still valid and the user.deleted webhook has already
+      // removed the Prisma row → Nest 404 "User not found after authentication".
+      try {
+        await signOut({ redirectUrl: "/sign-in" });
+      } catch {
+        window.location.replace("/sign-in");
+      }
     } catch {
       setError("Could not delete your account");
     } finally {
       setPending(false);
     }
-  }, [router]);
+  }, [signOut]);
 
   const disabled = !isLoaded || !user;
 
