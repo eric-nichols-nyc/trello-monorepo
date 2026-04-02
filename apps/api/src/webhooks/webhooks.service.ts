@@ -1,11 +1,13 @@
 import type { UserJSON } from "@clerk/backend";
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 // biome-ignore lint/style/useImportType: value import needed so PrismaService type includes PrismaClient (.user)
 import { PrismaService } from "../prisma/prisma.service";
 import { allocateUniqueWorkspaceShortLink } from "../workspaces/allocate-workspace-short-link";
 
 @Injectable()
 export class ClerkWebhooksService {
+  private readonly logger = new Logger(ClerkWebhooksService.name);
+
   constructor(private readonly prisma: PrismaService) {}
 
   async ensureUserAndDefaultWorkspace(clerkUser: UserJSON): Promise<void> {
@@ -55,6 +57,18 @@ export class ClerkWebhooksService {
 
   /** Idempotent: no-op if the user was never synced to the DB. */
   async deleteUserByClerkId(clerkUserId: string): Promise<{ count: number }> {
-    return this.prisma.user.deleteMany({ where: { clerkUserId } });
+    const result = await this.prisma.user.deleteMany({
+      where: { clerkUserId },
+    });
+    if (result.count > 0) {
+      this.logger.log(
+        `User deleted from database (clerk user.deleted webhook): clerkUserId=${clerkUserId}, rows=${result.count}`
+      );
+    } else {
+      this.logger.log(
+        `User delete webhook: no local user for clerkUserId=${clerkUserId} (already removed or never synced)`
+      );
+    }
+    return result;
   }
 }
