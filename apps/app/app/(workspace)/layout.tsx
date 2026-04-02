@@ -2,13 +2,13 @@ import type { ReactNode } from "react";
 import { getMyWorkspaces } from "@/lib/api/workspaces/get-my-workspaces";
 import { GlobalHeader } from "./w/_components/global-header/global-header";
 
-type DashboardLayoutProps = {
+type WorkspaceLayoutProps = {
   children: ReactNode;
 };
 
-export default async function DashboardLayout({
+export default async function WorkspaceLayout({
   children,
-}: DashboardLayoutProps) {
+}: WorkspaceLayoutProps) {
   let defaultWorkspaceId: string | null = null;
   try {
     const workspaces = await getMyWorkspaces();

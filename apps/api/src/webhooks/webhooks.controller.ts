@@ -15,6 +15,7 @@ import type { Request as ExpressRequest } from "express";
 // biome-ignore lint/style/useImportType: Nest DI needs ClerkWebhooksService for constructor injection
 import { ClerkWebhooksService } from "./webhooks.service";
 
+/** True when `value` looks like Clerk’s `User` JSON (`object: "user"` + string `id`). */
 function isUserJSON(value: unknown): value is UserJSON {
   if (typeof value !== "object" || value === null) {
     return false;
@@ -44,6 +45,7 @@ function getUserPayloadForSync(evt: WebhookEvent): unknown | null {
   return null;
 }
 
+/** For `user.deleted`, `data.id` is the Clerk user id to remove from our DB. */
 function getClerkUserIdForUserDeleted(evt: WebhookEvent): string | null {
   if (evt.type !== "user.deleted") {
     return null;
@@ -79,6 +81,18 @@ function buildClerkWebhookRequestFromExpress(
   });
 }
 
+/**
+ * Clerk → Svix-signed HTTP webhooks. Configure in Clerk Dashboard to `POST` this app’s
+ * `/webhooks/clerk` URL with the same signing secret as `CLERK_WEBHOOK_SECRET` (or
+ * `CLERK_WEBHOOK_SIGNING_SECRET`).
+ *
+ * **Handled event types**
+ * - `user.deleted` — delete local `User` by `clerkUserId` (cascades per Prisma).
+ * - `user.created` / `user.updated` / `session.created` (with `data.user`) — upsert `User`
+ *   and create default workspace if none exists (`ClerkWebhooksService.ensureUserAndDefaultWorkspace`).
+ *
+ * Other event types verify successfully but do not sync; response includes `synced: false`.
+ */
 @Controller("webhooks")
 export class ClerkWebhooksController {
   private readonly logger = new Logger(ClerkWebhooksController.name);
@@ -88,11 +102,16 @@ export class ClerkWebhooksController {
     private readonly clerkWebhooksService: ClerkWebhooksService
   ) {}
 
+  /**
+   * Entry point for all Clerk webhook deliveries to this API.
+   * Requires the **raw** JSON body (byte-for-byte) for signature verification.
+   */
   @Post("clerk")
   async handleClerkWebhook(
     @Req() req: ExpressRequest,
     @RawBody() rawBody: Buffer | undefined
   ) {
+    // --- Signing secret (Clerk Dashboard → Webhooks → signing secret) ---
     const secret =
       this.config.get<string>("CLERK_WEBHOOK_SECRET") ??
       this.config.get<string>("CLERK_WEBHOOK_SIGNING_SECRET");
@@ -103,6 +122,7 @@ export class ClerkWebhooksController {
       );
     }
 
+    // --- Raw body: must match what Clerk signed (see `main.ts` rawBody: true) ---
     if (!rawBody?.length) {
       throw new InternalServerErrorException(
         "Missing raw body. Ensure NestFactory.create(..., { rawBody: true }) in main.ts."
@@ -111,6 +131,7 @@ export class ClerkWebhooksController {
 
     const incomingRequest = buildClerkWebhookRequestFromExpress(req, rawBody);
 
+    // --- Verify Svix signature and parse `evt.type` + `evt.data` ---
     let evt: WebhookEvent;
     try {
       evt = await verifyWebhook(incomingRequest, { signingSecret: secret });
@@ -120,10 +141,7 @@ export class ClerkWebhooksController {
       throw new BadRequestException(msg);
     }
 
-    this.logger.log(
-      `Clerk webhook verified: type=${evt.type} data=${JSON.stringify(evt.data)}`
-    );
-
+    // --- Branch: account removed in Clerk ---
     const deletedClerkUserId = getClerkUserIdForUserDeleted(evt);
     if (deletedClerkUserId) {
       const { count } =
@@ -138,11 +156,9 @@ export class ClerkWebhooksController {
       };
     }
 
+    // --- Branch: upsert app user + default workspace from Clerk user JSON ---
     const userPayload = getUserPayloadForSync(evt);
     if (userPayload && isUserJSON(userPayload)) {
-      this.logger.log(
-        `Clerk user payload for DB sync (from getUserPayloadForSync): ${JSON.stringify(userPayload)}`
-      );
       await this.clerkWebhooksService.ensureUserAndDefaultWorkspace(
         userPayload
       );
@@ -156,6 +172,7 @@ export class ClerkWebhooksController {
       };
     }
 
+    // --- Verified event we do not map to DB actions (e.g. `organizationMembership.*`) ---
     this.logger.warn(
       `Webhook ok but no user sync for type=${evt.type}. ` +
         `Use Testing → event "user.created", or subscribe to user.created / session.created / user.deleted in the endpoint.`

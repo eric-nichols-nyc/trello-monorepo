@@ -146,9 +146,6 @@ export class ClerkWebhooksService {
       const clerk = createClerkClient({ secretKey });
       const full = await clerk.users.getUser(clerkUser.id);
       if (full.raw) {
-        this.logger.log(
-          `Clerk user ${clerkUser.id}: filled missing email via Backend API (webhook payload was incomplete).`
-        );
         return full.raw;
       }
     } catch (e) {
@@ -168,17 +165,6 @@ export class ClerkWebhooksService {
     const email = resolveClerkUserEmail(merged);
     const { firstName, lastName } = resolveClerkUserNames(merged);
     const imageUrl = resolveClerkUserImageUrl(merged);
-
-    const upsertPayload = {
-      clerkUserId,
-      email,
-      firstName,
-      lastName,
-      imageUrl,
-    };
-    this.logger.log(
-      `Prisma user upsert payload: ${JSON.stringify(upsertPayload)}`
-    );
 
     const user = await this.prisma.user.upsert({
       where: { clerkUserId },
@@ -215,18 +201,8 @@ export class ClerkWebhooksService {
 
   /** Idempotent: no-op if the user was never synced to the DB. */
   async deleteUserByClerkId(clerkUserId: string): Promise<{ count: number }> {
-    const result = await this.prisma.user.deleteMany({
+    return this.prisma.user.deleteMany({
       where: { clerkUserId },
     });
-    if (result.count > 0) {
-      this.logger.log(
-        `User deleted from database (clerk user.deleted webhook): clerkUserId=${clerkUserId}, rows=${result.count}`
-      );
-    } else {
-      this.logger.log(
-        `User delete webhook: no local user for clerkUserId=${clerkUserId} (already removed or never synced)`
-      );
-    }
-    return result;
   }
 }
