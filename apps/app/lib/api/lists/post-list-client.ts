@@ -2,10 +2,13 @@ import type { CreateListInput } from "@repo/schemas";
 import { createListSchema } from "@repo/schemas";
 
 import { BoardApiError } from "@/lib/api/boards/board-api-error";
+import { nestPublicBaseUrl } from "@/lib/api/nest-public-base-url";
 
+/** POST `/api/boards/:boardId/lists` on Nest; pass `await useAuth().getToken()`. */
 export async function postListClient(
   boardId: string,
-  body: CreateListInput
+  body: CreateListInput,
+  token: string
 ): Promise<unknown> {
   const parsed = createListSchema.safeParse(body);
   if (!parsed.success) {
@@ -13,10 +16,13 @@ export async function postListClient(
   }
 
   const response = await fetch(
-    `/api/boards/id/${encodeURIComponent(boardId)}/lists`,
+    `${nestPublicBaseUrl()}/api/boards/${encodeURIComponent(boardId)}/lists`,
     {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify(parsed.data),
       cache: "no-store",
     }

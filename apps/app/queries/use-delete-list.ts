@@ -1,5 +1,6 @@
 "use client";
 
+import { useAuth } from "@repo/clerk/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { deleteListClient } from "@/lib/api/lists/delete-list-client";
@@ -19,37 +20,33 @@ export type DeleteListMutationVariables = {
   boardKey: string;
 };
 
-type DeleteListMutationContext = {
-  previous: BoardDetail | undefined;
-};
+type DeleteListMutationContext = { previous: BoardDetail | undefined };
 
-/**
- * DELETE list via Next proxy; optimistically drops the column from cached
- * {@link BoardDetail}, rolls back on error, then invalidates board detail.
- */
 export function useDeleteList() {
   const queryClient = useQueryClient();
+  const { getToken } = useAuth();
 
   return useMutation({
-    mutationFn: ({ listId }: DeleteListMutationVariables) =>
-      deleteListClient(listId),
+    mutationFn: async ({ listId }: DeleteListMutationVariables) => {
+      const token = await getToken();
+      if (!token) {
+        throw new Error("Not authenticated");
+      }
+      return deleteListClient(listId, token);
+    },
     onMutate: async ({
       boardKey,
       listId,
     }): Promise<DeleteListMutationContext> => {
       const key = boardDetailQueryKey(boardKey);
       await queryClient.cancelQueries({ queryKey: key });
-
       const previous = queryClient.getQueryData<BoardDetail>(key);
-
       queryClient.setQueryData<BoardDetail>(key, (old) =>
         old ? removeListFromBoard(old, listId) : old
       );
-
       return { previous };
     },
-    onError: (error, { boardKey }, context) => {
-      console.error("[useDeleteList] error", { boardKey, error });
+    onError: (_error, { boardKey }, context) => {
       const key = boardDetailQueryKey(boardKey);
       if (context?.previous !== undefined) {
         queryClient.setQueryData(key, context.previous);

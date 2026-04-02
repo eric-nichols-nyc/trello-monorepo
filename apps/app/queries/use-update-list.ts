@@ -1,10 +1,6 @@
 "use client";
 
-/**
- * TanStack Query mutation for `PATCH /lists/:id`. Keeps `useBoardDetail` cache in
- * sync via optimistic updates on `boardDetailQueryKey(boardKey)` and refetch on settle.
- */
-
+import { useAuth } from "@repo/clerk/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import {
@@ -15,7 +11,6 @@ import type { BoardDetail } from "@/types/board-detail";
 
 import { boardDetailQueryKey } from "./board-detail-query";
 
-/** Applies patch to one list row; re-sorts `lists` by `pos` when `pos` is set. */
 function mergeListPatchIntoBoard(
   old: BoardDetail,
   listId: string,
@@ -39,27 +34,25 @@ function mergeListPatchIntoBoard(
 }
 
 export type UpdateListMutationVariables = {
-  /** Target list UUID. */
   listId: string;
-  /** Must match the key passed to `useBoardDetail` (e.g. board short link). */
   boardKey: string;
   updates: UpdateListPatchBody;
 };
 
-type UpdateListMutationContext = {
-  previous: BoardDetail | undefined;
-};
+type UpdateListMutationContext = { previous: BoardDetail | undefined };
 
-/**
- * PATCH list fields with optimistic `BoardDetail` merge, rollback on error,
- * and `invalidateQueries` on settle so list rows match the server response.
- */
 export function useUpdateList() {
   const queryClient = useQueryClient();
+  const { getToken } = useAuth();
 
   return useMutation({
-    mutationFn: ({ listId, updates }: UpdateListMutationVariables) =>
-      patchListClient(listId, updates),
+    mutationFn: async ({ listId, updates }: UpdateListMutationVariables) => {
+      const token = await getToken();
+      if (!token) {
+        throw new Error("Not authenticated");
+      }
+      return patchListClient(listId, updates, token);
+    },
     onMutate: async ({
       boardKey,
       listId,
@@ -67,27 +60,19 @@ export function useUpdateList() {
     }): Promise<UpdateListMutationContext> => {
       const key = boardDetailQueryKey(boardKey);
       await queryClient.cancelQueries({ queryKey: key });
-
       const previous = queryClient.getQueryData<BoardDetail>(key);
-
       const hasListPatch =
         updates.pos !== undefined ||
         updates.name !== undefined ||
         updates.closed !== undefined;
-
       if (hasListPatch) {
         queryClient.setQueryData<BoardDetail>(key, (old) =>
           old ? mergeListPatchIntoBoard(old, listId, updates) : old
         );
       }
-
       return { previous };
     },
-    onSuccess: (data, { listId, updates }) => {
-      console.log("[useUpdateList] success", { listId, updates, data });
-    },
-    onError: (error, { boardKey, listId, updates }, context) => {
-      console.error("[useUpdateList] error", { listId, updates, error });
+    onError: (_error, { boardKey }, context) => {
       const key = boardDetailQueryKey(boardKey);
       if (context?.previous !== undefined) {
         queryClient.setQueryData(key, context.previous);

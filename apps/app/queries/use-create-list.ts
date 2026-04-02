@@ -1,6 +1,7 @@
 "use client";
 
 import type { CreateListInput } from "@repo/schemas";
+import { useAuth } from "@repo/clerk/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { postListClient } from "@/lib/api/lists/post-list-client";
@@ -14,9 +15,7 @@ export type CreateListMutationVariables = {
   input: CreateListInput;
 };
 
-type CreateListMutationContext = {
-  previous: BoardDetail | undefined;
-};
+type CreateListMutationContext = { previous: BoardDetail | undefined };
 
 function nextListPos(lists: BoardList[]): number {
   if (lists.length === 0) {
@@ -46,10 +45,16 @@ function buildOptimisticList(
 
 export function useCreateList() {
   const queryClient = useQueryClient();
+  const { getToken } = useAuth();
 
   return useMutation({
-    mutationFn: ({ boardId, input }: CreateListMutationVariables) =>
-      postListClient(boardId, input),
+    mutationFn: async ({ boardId, input }: CreateListMutationVariables) => {
+      const token = await getToken();
+      if (!token) {
+        throw new Error("Not authenticated");
+      }
+      return postListClient(boardId, input, token);
+    },
     onMutate: async ({
       boardKey,
       boardId,
@@ -57,7 +62,6 @@ export function useCreateList() {
     }): Promise<CreateListMutationContext> => {
       const key = boardDetailQueryKey(boardKey);
       await queryClient.cancelQueries({ queryKey: key });
-
       const previous = queryClient.getQueryData<BoardDetail>(key);
       const tempId = `temp-${crypto.randomUUID()}`;
 

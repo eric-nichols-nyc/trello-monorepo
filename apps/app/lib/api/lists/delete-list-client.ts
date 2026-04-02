@@ -1,13 +1,19 @@
-/**
- * Browser-safe `DELETE` to the Next proxy at `/api/lists/:listId`.
- */
 import { BoardApiError } from "@/lib/api/boards/board-api-error";
+import { nestPublicBaseUrl } from "@/lib/api/nest-public-base-url";
 
-export async function deleteListClient(listId: string): Promise<unknown> {
-  const response = await fetch(`/api/lists/${encodeURIComponent(listId)}`, {
-    method: "DELETE",
-    cache: "no-store",
-  });
+/** DELETE `/api/lists/:id` on Nest; pass `await useAuth().getToken()`. */
+export async function deleteListClient(
+  listId: string,
+  token: string
+): Promise<unknown> {
+  const response = await fetch(
+    `${nestPublicBaseUrl()}/api/lists/${encodeURIComponent(listId)}`,
+    {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` },
+      cache: "no-store",
+    }
+  );
 
   if (!response.ok) {
     throw new BoardApiError(
