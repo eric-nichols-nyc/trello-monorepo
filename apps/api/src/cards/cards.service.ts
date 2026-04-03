@@ -127,7 +127,11 @@ export class CardsService {
       },
       include: {
         list: true,
-        board: true,
+        board: {
+          include: {
+            lists: { orderBy: { pos: "asc" } },
+          },
+        },
         comments: { orderBy: { createdAt: "asc" }, include: { author: true } },
         checklists: {
           orderBy: { pos: "asc" },

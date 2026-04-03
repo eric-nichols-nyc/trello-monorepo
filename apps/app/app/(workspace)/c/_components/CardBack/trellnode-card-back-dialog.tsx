@@ -8,11 +8,14 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 
+import type { CardRouteBoardList } from "@/lib/api/cards/load-card-route";
 import type { BoardCard } from "@/types/board-detail";
 
 import { CardBackPanel } from "../CardBackPanel/card-back-panel";
 
 type CardRouteDetailProps = {
+  boardLists: CardRouteBoardList[];
+  boardName: string;
   boardRouteKey: string;
   card: BoardCard;
   listName: string;
@@ -20,6 +23,8 @@ type CardRouteDetailProps = {
 };
 
 export function TrellnodeCardBackDialog({
+  boardLists,
+  boardName,
   boardRouteKey,
   card,
   listName,
@@ -46,6 +51,8 @@ export function TrellnodeCardBackDialog({
           showCloseButton={false}
         >
           <CardBackPanel
+            boardLists={boardLists}
+            boardName={boardName}
             boardRouteKey={boardRouteKey}
             card={card}
             listName={listName}
@@ -67,6 +74,8 @@ export function TrellnodeCardBackDialog({
           ← Back to board
         </Link>
         <CardBackPanel
+          boardLists={boardLists}
+          boardName={boardName}
           boardRouteKey={boardRouteKey}
           card={card}
           listName={listName}

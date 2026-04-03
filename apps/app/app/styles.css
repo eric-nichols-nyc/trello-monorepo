@@ -10,6 +10,10 @@
   --list-overflow-menu-width: 288px;
   /* Workspace header account menu (`UserMenu`). */
   --user-menu-card-width: 300px;
+  /* Card back header move popover (`CardBackActionsMenu`) — same tone as board menu. */
+  --card-back-move-popover-bg: var(--board-menu-card-bg);
+  /* Slightly deeper than panel for selects (was zinc-950). */
+  --card-back-move-popover-field-bg: rgb(36, 37, 40);
 }
 
 html,

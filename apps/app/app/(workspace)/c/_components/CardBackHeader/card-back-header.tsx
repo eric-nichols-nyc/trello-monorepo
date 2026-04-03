@@ -4,9 +4,14 @@ import { Button } from "@repo/design-system/components/ui/button";
 import { ArrowLeft, Image, MoreHorizontal, X } from "lucide-react";
 import Link from "next/link";
 
+import type { CardRouteBoardList } from "@/lib/api/cards/load-card-route";
+
 import { CardBackActionsMenu } from "../CardBackActionsMenu/card-back-actions-menu";
 
 export type CardBackHeaderProps = {
+  boardLists: CardRouteBoardList[];
+  boardName: string;
+  currentListId: string;
   listName: string;
   mode: "modal" | "page";
   backHref: string;
@@ -14,6 +19,9 @@ export type CardBackHeaderProps = {
 };
 
 export function CardBackHeader({
+  boardLists,
+  boardName,
+  currentListId,
   listName,
   mode,
   backHref,
@@ -21,7 +29,12 @@ export function CardBackHeader({
 }: CardBackHeaderProps) {
   return (
     <div className="flex items-center justify-between border-zinc-800 border-b px-4 py-3">
-      <CardBackActionsMenu listName={listName} />
+      <CardBackActionsMenu
+        boardLists={boardLists}
+        boardName={boardName}
+        currentListId={currentListId}
+        listName={listName}
+      />
       <div className="flex items-center gap-2">
         <Button
           className="size-8 text-zinc-400 hover:bg-zinc-800 hover:text-zinc-100"
