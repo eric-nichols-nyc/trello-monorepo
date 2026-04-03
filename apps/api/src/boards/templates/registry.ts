@@ -24,12 +24,18 @@ export function listBoardTemplateCatalog(): {
   id: string;
   title: string;
   description?: string;
+  backgroundImage?: string;
 }[] {
-  return [...definitions.values()].map(({ id, title, description }) => ({
-    id,
-    title,
-    ...(description !== undefined ? { description } : {}),
-  }));
+  return [...definitions.values()].map(
+    ({ id, title, description, board }) => ({
+      id,
+      title,
+      ...(description !== undefined ? { description } : {}),
+      ...(board?.backgroundImage !== undefined && board.backgroundImage !== ""
+        ? { backgroundImage: board.backgroundImage }
+        : {}),
+    })
+  );
 }
 
 export function getBoardTemplateById(

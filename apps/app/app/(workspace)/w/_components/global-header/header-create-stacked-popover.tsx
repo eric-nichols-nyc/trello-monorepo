@@ -24,6 +24,7 @@ import {
   useStackedPopover,
 } from "@/components/stacked-popover/stacked-popover";
 import { CreateNewBoard } from "../create-board-popover/create-new-board";
+import { TemplateGallery } from "../TemplateGallery/template-gallery";
 
 type HeaderCreateStackedPopoverProps = {
   /** Merged onto the Create trigger {@link Button} (e.g. layout). */
@@ -186,9 +187,12 @@ export function HeaderCreateStackedPopover({
             />
           </StackedPopoverScreen>
           <StackedPopoverScreen id="template">
-            <StackedPopoverHeader title="Templates" />
-            <div className="p-3 text-muted-foreground text-sm">
-              Example: template gallery placeholder.
+            <StackedPopoverHeader
+              className="bg-(--card-back-actions-menu-bg)"
+              title="Templates"
+            />
+            <div className="bg-(--card-back-actions-menu-bg)">
+              <TemplateGallery />
             </div>
           </StackedPopoverScreen>
         </StackedPopoverProvider>
