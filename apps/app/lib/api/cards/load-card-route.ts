@@ -10,25 +10,20 @@ export type CardRoutePayload = {
   card: BoardCard;
   listName: string;
   boardName: string;
+  /** Segment for `/b/:key` (board `shortLink` when set, else id). */
+  boardRouteKey: string;
 };
 
-function boardKeyMatchesBoard(
-  boardKey: string,
-  board: Record<string, unknown>
-): boolean {
-  if (String(board.id) === boardKey) {
-    return true;
-  }
+function boardRouteKeyFromBoard(board: Record<string, unknown>): string {
   const sl = board.shortLink;
-  return typeof sl === "string" && sl === boardKey;
+  if (typeof sl === "string" && sl.length > 0) {
+    return sl;
+  }
+  return String(board.id);
 }
 
-/**
- * Server load for `/b/:boardKey/c/:shortlink`: fetches the card and ensures it
- * belongs to the board implied by the URL (id or board `shortLink`).
- */
-export async function loadCardForBoardRoute(
-  boardKey: string,
+/** Server load for `/c/:shortlink` (and modal intercept). */
+export async function loadCardRoute(
   cardShortLink: string
 ): Promise<CardRoutePayload> {
   let raw: unknown;
@@ -47,9 +42,6 @@ export async function loadCardForBoardRoute(
     notFound();
   }
   const boardRecord = board as Record<string, unknown>;
-  if (!boardKeyMatchesBoard(boardKey, boardRecord)) {
-    notFound();
-  }
 
   const list = record.list;
   const listName =
@@ -61,5 +53,6 @@ export async function loadCardForBoardRoute(
     card: normalizeBoardCard(raw),
     listName,
     boardName: String(boardRecord.name ?? "Board"),
+    boardRouteKey: boardRouteKeyFromBoard(boardRecord),
   };
 }

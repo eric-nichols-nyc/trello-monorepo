@@ -9,6 +9,7 @@ import { GlobalHeader } from "./w/_components/global-header/global-header";
 
 type WorkspaceLayoutProps = {
   children: ReactNode;
+  modal: ReactNode;
 };
 
 /**
@@ -59,16 +60,20 @@ async function loadWorkspaceGateState(): Promise<WorkspaceGateState> {
  */
 export default async function WorkspaceLayout({
   children,
+  modal,
 }: WorkspaceLayoutProps) {
   const state = await loadWorkspaceGateState();
 
   // Full-screen wait UI only — no `GlobalHeader` / no `children` (avoids nested 404 flashes).
   if (state.kind === "wait") {
     return (
-      <WorkspaceProvisionWait
-        detail={state.detail}
-        variant={state.variant}
-      />
+      <>
+        <WorkspaceProvisionWait
+          detail={state.detail}
+          variant={state.variant}
+        />
+        {modal}
+      </>
     );
   }
 
@@ -77,8 +82,9 @@ export default async function WorkspaceLayout({
   return (
     <div className="flex h-dvh min-h-0 flex-col overflow-hidden bg-background">
       <GlobalHeader workspaceId={defaultWorkspaceId} />
-      <div className="flex min-h-0 min-w-0 flex-1 overflow-hidden">
+      <div className="relative flex min-h-0 min-w-0 flex-1 overflow-hidden">
         {children}
+        {modal}
       </div>
     </div>
   );

@@ -52,11 +52,9 @@ export const BoardLists = ({ board, boardKey }: BoardListsProps) => {
       if (!segment) {
         return;
       }
-      router.push(
-        `/b/${encodeURIComponent(boardKey)}/c/${encodeURIComponent(segment)}`
-      );
+      router.push(`/c/${encodeURIComponent(segment)}`);
     },
-    [boardKey, cardPathSegments, router]
+    [cardPathSegments, router]
   );
 
   return (

@@ -41,6 +41,18 @@
           }
         }
       }
+    },
+    {
+      "includes": ["**/*.{tsx,jsx}"],
+      "linter": {
+        "rules": {
+          "nursery": {
+            "useSortedClasses": {
+              "fix": "safe"
+            }
+          }
+        }
+      }
     }
   ]
 }
