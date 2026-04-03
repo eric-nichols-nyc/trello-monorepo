@@ -1,6 +1,20 @@
 @import "tailwindcss";
 @import "@repo/design-system/styles/globals.css";
 
+@font-face {
+  font-display: swap;
+  font-family: "Atlassian Sans";
+  font-style: normal;
+  font-weight: 100 900;
+  src: url("/images/AtlassianSans-latin.woff2") format("woff2");
+}
+
+@theme inline {
+  --font-sans:
+    "Atlassian Sans", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
 :root {
   /* Board overflow menu card (`BoardMenuPopover`). Total width includes horizontal padding. */
   --board-menu-card-bg: rgb(43, 44, 47);
@@ -17,6 +31,8 @@
   /* Card back header actions menu: trigger + move popover surface. */
   --card-back-actions-menu-bg: #2b2c2f;
   --card-back-actions-menu-hover-bg: #35363c;
+  /* Primary blue accent (e.g. search, links). */
+  --app-blue-accent: #669df1;
 }
 
 html,

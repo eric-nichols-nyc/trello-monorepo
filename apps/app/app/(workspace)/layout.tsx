@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { BoardApiError } from "@/lib/api/boards/board-api-error";
+import { getMyBoards } from "@/lib/api/boards/get-boards";
 import {
   getMyWorkspaces,
   type MyWorkspaceSummary,
@@ -80,9 +81,21 @@ export default async function WorkspaceLayout({
 
   const defaultWorkspaceId = state.workspaces[0]?.id ?? null;
 
+  let initialBoards: readonly unknown[] = [];
+  try {
+    const raw = await getMyBoards();
+    initialBoards = Array.isArray(raw) ? raw : [];
+  } catch {
+    initialBoards = [];
+  }
+
   return (
     <div className="flex h-dvh min-h-0 flex-col overflow-hidden bg-background">
-      <GlobalHeader workspaceId={defaultWorkspaceId} />
+      <GlobalHeader
+        initialBoards={initialBoards}
+        workspaceId={defaultWorkspaceId}
+        workspaceSummaries={state.workspaces}
+      />
       <WorkspaceShellProvider workspaces={state.workspaces}>
         <div className="relative flex min-h-0 min-w-0 flex-1 overflow-hidden">
           {children}

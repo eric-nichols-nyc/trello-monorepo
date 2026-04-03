@@ -1,6 +1,9 @@
 import Link from "next/link";
 import { BrandWordmark } from "@/app/(marketing)/_components/brand-wordmark";
-import { HeaderSearchInput } from "../search/header-search-input";
+import {
+  HeaderSearchBoardsPopover,
+  type HeaderSearchWorkspaceSummary,
+} from "../search/header-search-boards-popover";
 import { UserMenu } from "../user/user-menu";
 import { HeaderCreateStackedPopover } from "./header-create-stacked-popover";
 
@@ -8,11 +11,15 @@ type GlobalHeaderProperties = {
   readonly title?: string;
   /** Default workspace for header “Create board” (first of mine). */
   readonly workspaceId?: string | null;
+  readonly initialBoards?: readonly unknown[];
+  readonly workspaceSummaries?: readonly HeaderSearchWorkspaceSummary[];
 };
 
 export const GlobalHeader = ({
   title = "Dashboard",
   workspaceId = null,
+  initialBoards = [],
+  workspaceSummaries = [],
 }: GlobalHeaderProperties) => (
   <header
     className="flex min-h-14 items-center gap-4 border-chrome-divider border-b bg-background px-8"
@@ -26,7 +33,10 @@ export const GlobalHeader = ({
       <BrandWordmark />
     </Link>
     <div className="mx-auto flex min-w-0 max-w-[780px] flex-1 items-center gap-2">
-      <HeaderSearchInput />
+      <HeaderSearchBoardsPopover
+        initialBoards={initialBoards}
+        workspaceSummaries={workspaceSummaries}
+      />
       <HeaderCreateStackedPopover
         className="shrink-0"
         workspaceId={workspaceId}

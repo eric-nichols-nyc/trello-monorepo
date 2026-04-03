@@ -2,75 +2,17 @@
 
 import { Card } from "@repo/design-system/components/ui/card";
 import { cn } from "@repo/design-system/lib/utils";
+import {
+  getBoardBooleanField,
+  getBoardId,
+  getBoardStringField,
+  getPreviewBackgroundStyle,
+} from "@/lib/boards/board-list-utils";
 import { Star } from "lucide-react";
 import Link from "next/link";
-import type { CSSProperties } from "react";
 
 type BoardTileProperties = {
   readonly board: unknown;
-};
-
-const DEFAULT_TILE_GRADIENT =
-  "linear-gradient(135deg, #2d1b4e 0%, #5c1f4a 42%, #c44c9c 100%)";
-
-const getBoardStringField = (
-  board: unknown,
-  key:
-    | "shortLink"
-    | "name"
-    | "backgroundColor"
-    | "backgroundImage"
-    | "backgroundTopColor"
-    | "backgroundBottomColor"
-    | "workspaceName"
-): string | undefined => {
-  if (
-    board !== null &&
-    typeof board === "object" &&
-    key in board &&
-    typeof (board as Record<string, unknown>)[key] === "string"
-  ) {
-    const value = (board as Record<string, string>)[key];
-    return value.length > 0 ? value : undefined;
-  }
-  return;
-};
-
-const getBoardBooleanField = (board: unknown, key: "starred"): boolean => {
-  if (board !== null && typeof board === "object" && key in board) {
-    return (board as Record<string, unknown>)[key] === true;
-  }
-  return false;
-};
-
-const getBoardId = (board: unknown): string | undefined => {
-  if (board !== null && typeof board === "object" && "id" in board) {
-    const value = (board as Record<string, unknown>).id;
-    if (typeof value === "string" && value.length > 0) {
-      return value;
-    }
-  }
-  return;
-};
-
-const getPreviewBackgroundStyle = (board: unknown): CSSProperties => {
-  const imageUrl = getBoardStringField(board, "backgroundImage");
-  if (imageUrl !== undefined) {
-    return { backgroundImage: `url(${JSON.stringify(imageUrl)})` };
-  }
-
-  const top = getBoardStringField(board, "backgroundTopColor");
-  const bottom = getBoardStringField(board, "backgroundBottomColor");
-  const solid = getBoardStringField(board, "backgroundColor");
-  if (top !== undefined && bottom !== undefined) {
-    return {
-      backgroundImage: `linear-gradient(135deg, ${top}, ${bottom})`,
-    };
-  }
-  if (solid !== undefined) {
-    return { backgroundColor: solid };
-  }
-  return { backgroundImage: DEFAULT_TILE_GRADIENT };
 };
 
 export const BoardTile = ({ board }: BoardTileProperties) => {
