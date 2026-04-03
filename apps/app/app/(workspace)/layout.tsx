@@ -4,6 +4,7 @@ import {
   getMyWorkspaces,
   type MyWorkspaceSummary,
 } from "@/lib/api/workspaces/get-my-workspaces";
+import { WorkspaceShellProvider } from "./_components/workspace-shell-context";
 import { WorkspaceProvisionWait } from "./_components/workspace-provision-wait";
 import { GlobalHeader } from "./w/_components/global-header/global-header";
 
@@ -82,10 +83,12 @@ export default async function WorkspaceLayout({
   return (
     <div className="flex h-dvh min-h-0 flex-col overflow-hidden bg-background">
       <GlobalHeader workspaceId={defaultWorkspaceId} />
-      <div className="relative flex min-h-0 min-w-0 flex-1 overflow-hidden">
-        {children}
-        {modal}
-      </div>
+      <WorkspaceShellProvider workspaces={state.workspaces}>
+        <div className="relative flex min-h-0 min-w-0 flex-1 overflow-hidden">
+          {children}
+          {modal}
+        </div>
+      </WorkspaceShellProvider>
     </div>
   );
 }

@@ -131,7 +131,7 @@ export function EmptyBoards({ workspaceId }: EmptyBoardsProps) {
           <div className="fixed inset-0 z-50">
             <button
               aria-label="Close dialog"
-              className="absolute inset-0 bg-black/40"
+              className="absolute inset-0 bg-transparent"
               onClick={close}
               type="button"
             />

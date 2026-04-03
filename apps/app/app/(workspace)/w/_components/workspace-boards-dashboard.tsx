@@ -45,7 +45,7 @@ export const WorkspaceBoardsDashboard = ({
       {scopedBoards.length === 0 ? (
         <EmptyBoards workspaceId={workspaceId} />
       ) : (
-        <WorkspaceBoardsHome boards={scopedBoards} />
+        <WorkspaceBoardsHome boards={scopedBoards} workspaceId={workspaceId} />
       )}
     </div>
   );

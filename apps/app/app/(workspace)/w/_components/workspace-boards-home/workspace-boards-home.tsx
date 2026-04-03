@@ -6,6 +6,7 @@ import { WorkspaceHeader } from "../workspace-header/workspace-header";
 type WorkspaceBoardsHomeProperties = {
   readonly boards: readonly unknown[];
   readonly heading?: string;
+  readonly workspaceId: string | null;
 };
 
 const getBoardKey = (board: unknown, index: number): string => {
@@ -23,6 +24,7 @@ const getBoardKey = (board: unknown, index: number): string => {
 export const WorkspaceBoardsHome = ({
   boards,
   heading = "Your boards",
+  workspaceId,
 }: WorkspaceBoardsHomeProperties) => {
   const list = [...boards];
 
@@ -48,7 +50,7 @@ export const WorkspaceBoardsHome = ({
         {list.map((board, index) => (
           <BoardTile board={board} key={getBoardKey(board, index)} />
         ))}
-        <CreateNewBoardButton />
+        <CreateNewBoardButton workspaceId={workspaceId} />
       </div>
     </section>
   );

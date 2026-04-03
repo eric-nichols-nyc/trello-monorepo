@@ -14,12 +14,14 @@ export type CreateBoardCardProps = {
   readonly onClose: () => void;
   readonly workspaceId: string | null;
   readonly className?: string;
+  readonly onCreated?: () => void;
 };
 
 export function CreateBoardCard({
   onClose,
   workspaceId,
   className,
+  onCreated,
 }: CreateBoardCardProps) {
   return (
     <Card
@@ -33,7 +35,7 @@ export function CreateBoardCard({
     >
       <CreateBoardHeader onClose={onClose} />
       <CardContent className="flex flex-col px-4 py-4">
-        <CreateBoardForm workspaceId={workspaceId} />
+        <CreateBoardForm onCreated={onCreated} workspaceId={workspaceId} />
       </CardContent>
     </Card>
   );
