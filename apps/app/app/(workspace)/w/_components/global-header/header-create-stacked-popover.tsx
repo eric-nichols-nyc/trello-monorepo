@@ -23,8 +23,7 @@ import {
   StackedPopoverScreen,
   useStackedPopover,
 } from "@/components/stacked-popover/stacked-popover";
-import { CreateBoardForm } from "../create-board-popover/create-board-form";
-import { CreateBoardHeader } from "../create-board-popover/create-board-header";
+import { CreateNewBoard } from "../create-board-popover/create-new-board";
 
 type HeaderCreateStackedPopoverProps = {
   /** Merged onto the Create trigger {@link Button} (e.g. layout). */
@@ -38,11 +37,11 @@ type HeaderCreateStackedPopoverProps = {
     ComponentProps<typeof Button>,
     "children" | "type" | "variant"
   >;
-  /** Passed to {@link CreateBoardForm}; null blocks submit until a workspace exists. */
+  /** Passed through to the create-board form; null blocks submit until a workspace exists. */
   readonly workspaceId: string | null;
 };
 
-/** Stacked screen `create-board`: hero header + {@link CreateBoardForm}. */
+/** Stacked screen `create-board`: {@link CreateNewBoard}. */
 function HeaderCreateBoardScreen({
   onBoardCreated,
   workspaceId,
@@ -53,12 +52,11 @@ function HeaderCreateBoardScreen({
   const { pop } = useStackedPopover();
 
   return (
-    <div className="bg-(--card-back-actions-menu-bg)">
-      <CreateBoardHeader onClose={pop} />
-      <div className="px-4 py-4">
-        <CreateBoardForm onCreated={onBoardCreated} workspaceId={workspaceId} />
-      </div>
-    </div>
+    <CreateNewBoard
+      onClose={pop}
+      onCreated={onBoardCreated}
+      workspaceId={workspaceId}
+    />
   );
 }
 
