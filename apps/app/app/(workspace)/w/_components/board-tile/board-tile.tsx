@@ -10,6 +10,7 @@ import {
 } from "@/lib/boards/board-list-utils";
 import { Star } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 type BoardTileProperties = {
   readonly board: unknown;
@@ -21,13 +22,19 @@ export const BoardTile = ({ board }: BoardTileProperties) => {
   const name = getBoardStringField(board, "name");
   const workspaceLabel = getBoardStringField(board, "workspaceName");
   const starred = getBoardBooleanField(board, "starred");
+  const [isStarred, setIsStarred] = useState(starred);
+
+  useEffect(() => {
+    setIsStarred(starred);
+  }, [starred]);
+
   const title = name ?? shortLink ?? id;
   const boardKey = shortLink ?? id;
   const href = boardKey !== undefined ? `/b/${boardKey}` : null;
   const previewStyle = getPreviewBackgroundStyle(board);
 
   const tile = (
-    <div className="relative">
+    <div className="group relative">
       {href !== null ? (
         <Link
           aria-label={
@@ -49,18 +56,23 @@ export const BoardTile = ({ board }: BoardTileProperties) => {
         >
           <div className="pointer-events-auto absolute top-2 right-2 z-2">
             <button
-              aria-label={starred ? "Unstar board" : "Star board"}
-              className="flex size-8 items-center justify-center rounded-md border border-white/20 bg-black/35 shadow-sm backdrop-blur-[2px] transition-colors hover:bg-black/45"
+              aria-label={isStarred ? "Unstar board" : "Star board"}
+              className={cn(
+                "flex size-8 items-center justify-center rounded-md border border-white/20 bg-black/35 shadow-sm backdrop-blur-[2px] transition-[opacity,colors] duration-200",
+                "opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 hover:bg-black/45",
+                "focus-visible:opacity-100"
+              )}
               onClick={(event) => {
                 event.preventDefault();
                 event.stopPropagation();
+                setIsStarred((previous) => !previous);
               }}
               type="button"
             >
               <Star
                 className={cn(
                   "size-4 text-white",
-                  starred ? "fill-white" : "fill-transparent"
+                  isStarred ? "fill-white" : "fill-transparent"
                 )}
                 strokeWidth={2}
               />
