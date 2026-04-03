@@ -14,6 +14,9 @@
   --card-back-move-popover-bg: var(--board-menu-card-bg);
   /* Slightly deeper than panel for selects (was zinc-950). */
   --card-back-move-popover-field-bg: rgb(36, 37, 40);
+  /* Card back header actions menu: trigger + move popover surface. */
+  --card-back-actions-menu-bg: #2b2c2f;
+  --card-back-actions-menu-hover-bg: #35363c;
 }
 
 html,
@@ -24,4 +27,20 @@ body {
 body {
   position: relative;
   overflow: hidden;
+}
+
+/* CardBackActionsMenu — explicit !important so surfaces win over Button / Popover / Select. */
+.card-back-actions-menu__trigger {
+  background-color: var(--card-back-actions-menu-bg) !important;
+}
+.card-back-actions-menu__trigger:hover {
+  background-color: var(--card-back-actions-menu-hover-bg) !important;
+}
+
+.card-back-actions-menu__popover {
+  background-color: var(--card-back-actions-menu-bg) !important;
+}
+
+.card-back-actions-menu__select-content {
+  background-color: var(--card-back-actions-menu-bg) !important;
 }

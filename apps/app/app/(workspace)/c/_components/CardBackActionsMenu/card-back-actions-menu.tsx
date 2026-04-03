@@ -45,23 +45,23 @@ export function CardBackActionsMenu({
     <Popover onOpenChange={setOpen} open={open}>
       <PopoverTrigger asChild>
         <Button
-          className="h-auto min-h-8 gap-2 bg-[#4c4d51] py-1.5 text-left text-zinc-300 hover:bg-[#5a5b60] hover:text-zinc-100"
+          className="card-back-actions-menu__trigger h-auto min-h-8 max-w-full items-start gap-2 whitespace-normal py-1.5 text-left text-zinc-300 hover:text-zinc-100"
           size="sm"
           title={`${listName}`}
           type="button"
           variant="ghost"
         >
-          <span className="flex min-w-0 flex-col items-start gap-0 leading-tight">
-            <span className="max-w-44 truncate text-left font-medium text-sm text-zinc-100">
+          <span className="min-w-0 max-w-44 flex-1 text-left leading-tight">
+            <span className="block wrap-break-word font-medium text-sm text-zinc-100">
               {listName}
             </span>
           </span>
-          <ChevronDown className="size-4 shrink-0 self-center" />
+          <ChevronDown className="mt-0.5 size-4 shrink-0 self-start" />
         </Button>
       </PopoverTrigger>
       <PopoverContent
         align="start"
-        className="w-[min(calc(100vw-2rem),22rem)] border-zinc-800 bg-(--card-back-move-popover-bg)! p-0 text-zinc-100 shadow-xl"
+        className="card-back-actions-menu__popover w-[min(calc(100vw-2rem),22rem)] border-zinc-800 p-0 text-zinc-100 shadow-xl"
         onInteractOutside={(event) => {
           const target = event.target as HTMLElement | null;
           if (target?.closest?.('[data-slot="select-content"]')) {
@@ -97,7 +97,7 @@ export function CardBackActionsMenu({
               <SelectTrigger className="h-9 w-full cursor-not-allowed border-zinc-700 bg-(--card-back-move-popover-field-bg) text-zinc-100 opacity-70 shadow-none">
                 <SelectValue placeholder="Board" />
               </SelectTrigger>
-              <SelectContent className="border-zinc-700 bg-(--card-back-move-popover-bg)! text-zinc-100">
+              <SelectContent className="card-back-actions-menu__select-content border-zinc-700 text-zinc-100">
                 <SelectItem value={CURRENT_BOARD_VALUE}>{boardName}</SelectItem>
               </SelectContent>
             </Select>
@@ -112,7 +112,7 @@ export function CardBackActionsMenu({
                 <SelectTrigger className="h-9 w-full border-zinc-700 bg-(--card-back-move-popover-field-bg) text-zinc-100 shadow-none">
                   <SelectValue placeholder="List" />
                 </SelectTrigger>
-                <SelectContent className="border-zinc-700 bg-(--card-back-move-popover-bg)! text-zinc-100">
+                <SelectContent className="card-back-actions-menu__select-content border-zinc-700 text-zinc-100">
                   {boardLists.map((list) => (
                     <SelectItem key={list.id} value={list.id}>
                       {list.name}
@@ -129,7 +129,7 @@ export function CardBackActionsMenu({
                 <SelectTrigger className="h-9 w-full border-zinc-700 bg-(--card-back-move-popover-field-bg) text-zinc-100 shadow-none">
                   <SelectValue placeholder="#" />
                 </SelectTrigger>
-                <SelectContent className="border-zinc-700 bg-(--card-back-move-popover-bg)! text-zinc-100">
+                <SelectContent className="card-back-actions-menu__select-content border-zinc-700 text-zinc-100">
                   <SelectItem value="1">1</SelectItem>
                   <SelectItem value="5">5</SelectItem>
                   <SelectItem value="11">11</SelectItem>

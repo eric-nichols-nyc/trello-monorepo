@@ -1,5 +1,12 @@
 "use client";
 
+/**
+ * Workspace header “Create” entry: {@link Popover} with a root menu, then stacked screens
+ * (`create-board` | `template`) via {@link StackedPopoverProvider}. Opening the popover bumps
+ * `menuGeneration` so the stack resets to the menu each time. Surfaces use
+ * `--card-back-actions-menu-bg` from `app/styles.css`; drop shadow is on {@link PopoverContent}.
+ */
+
 import { Button } from "@repo/design-system/components/ui/button";
 import {
   Popover,
@@ -7,6 +14,7 @@ import {
   PopoverTrigger,
 } from "@repo/design-system/components/ui/popover";
 import { cn } from "@repo/design-system/lib/utils";
+import { Kanban, LayoutTemplate } from "lucide-react";
 import { type ComponentProps, useCallback, useState } from "react";
 import {
   StackedPopoverHeader,
@@ -19,20 +27,22 @@ import { CreateBoardForm } from "../create-board-popover/create-board-form";
 import { CreateBoardHeader } from "../create-board-popover/create-board-header";
 
 type HeaderCreateStackedPopoverProps = {
+  /** Merged onto the Create trigger {@link Button} (e.g. layout). */
   className?: string;
-  /** Disables the Create trigger; overrides `triggerProps.disabled` when set. */
+  /** Disables the Create trigger; wins over `triggerProps.disabled` when set. */
   disabled?: boolean;
-  /**
-   * “Start with a template” row. Defaults to disabled (greyed, not clickable) until you pass `false`.
-   */
+  /** When true, the “Start with a template” row is non-interactive. */
   templateDisabled?: boolean;
+  /** Extra props for the trigger; must not set `children`, `type`, or `variant`. */
   triggerProps?: Omit<
     ComponentProps<typeof Button>,
     "children" | "type" | "variant"
   >;
+  /** Passed to {@link CreateBoardForm}; null blocks submit until a workspace exists. */
   readonly workspaceId: string | null;
 };
 
+/** Stacked screen `create-board`: hero header + {@link CreateBoardForm}. */
 function HeaderCreateBoardScreen({
   onBoardCreated,
   workspaceId,
@@ -43,52 +53,83 @@ function HeaderCreateBoardScreen({
   const { pop } = useStackedPopover();
 
   return (
-    <>
+    <div className="bg-(--card-back-actions-menu-bg)">
       <CreateBoardHeader onClose={pop} />
       <div className="px-4 py-4">
         <CreateBoardForm onCreated={onBoardCreated} workspaceId={workspaceId} />
       </div>
-    </>
+    </div>
   );
 }
 
+/**
+ * Root menu: pushes `create-board` or `template` onto the stacked popover.
+ * @param templateDisabled - Disables the template row (see {@link HeaderCreateStackedPopoverProps.templateDisabled}).
+ */
 function ExampleCreateMenuItems({
-  templateDisabled = true,
+  templateDisabled = false,
 }: {
   templateDisabled?: boolean;
 }) {
   const { push } = useStackedPopover();
 
   return (
-    <div className="flex flex-col gap-0.5 p-1">
+    <div className="flex flex-col gap-0.5 bg-(--card-back-actions-menu-bg) p-1.5">
       <Button
-        className="w-full justify-start font-normal"
+        className="h-auto w-full items-start justify-start gap-3 whitespace-normal rounded-md p-3 text-left font-normal hover:bg-accent/60 focus-visible:ring-2 focus-visible:ring-sky-500/80"
         onClick={() => push("create-board")}
         type="button"
         variant="ghost"
       >
-        Create board
+        <Kanban
+          aria-hidden
+          className="mt-0.5 size-6 shrink-0 text-foreground"
+          strokeWidth={1.5}
+        />
+        <span className="min-w-0 flex-1 text-left">
+          <span className="block font-semibold text-foreground text-sm">
+            Create board
+          </span>
+          <span className="mt-1 block wrap-break-word text-muted-foreground text-xs leading-snug">
+            A board is made up of cards ordered on lists. Use it to manage
+            projects, track information, or organize anything.
+          </span>
+        </span>
       </Button>
       <Button
-        className="w-full justify-start font-normal disabled:text-muted-foreground disabled:hover:bg-transparent"
+        className="h-auto w-full items-start justify-start gap-3 whitespace-normal rounded-md p-3 text-left font-normal hover:bg-accent/60 focus-visible:ring-2 focus-visible:ring-sky-500/80 disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:bg-transparent"
         disabled={templateDisabled}
         onClick={() => push("template")}
         type="button"
         variant="ghost"
       >
-        Start with a template
+        <LayoutTemplate
+          aria-hidden
+          className="mt-0.5 size-6 shrink-0 text-foreground"
+          strokeWidth={1.5}
+        />
+        <span className="min-w-0 flex-1 text-left">
+          <span className="block font-semibold text-foreground text-sm">
+            Start with a template
+          </span>
+          <span className="mt-1 block wrap-break-word text-muted-foreground text-xs leading-snug">
+            Get started faster with a board template.
+          </span>
+        </span>
       </Button>
     </div>
   );
 }
 
 /**
- * Header “Create” control with stacked drill-down (create board uses {@link CreateBoardForm}).
+ * Header “Create” control: menu → create board flow or template placeholder.
+ *
+ * @param workspaceId - Required for board creation; form gates submit when missing.
  */
 export function HeaderCreateStackedPopover({
   className,
   disabled,
-  templateDisabled = true,
+  templateDisabled = false,
   triggerProps,
   workspaceId,
 }: HeaderCreateStackedPopoverProps) {
@@ -130,11 +171,14 @@ export function HeaderCreateStackedPopover({
       </PopoverTrigger>
       <PopoverContent
         align="end"
-        className="max-h-[min(90dvh,720px)] w-72 overflow-y-auto p-0"
+        className="max-h-[min(90dvh,720px)] w-[min(calc(100vw-2rem),22rem)] overflow-y-auto p-0 shadow-2xl ring-1 ring-black/25"
       >
         <StackedPopoverProvider key={menuGeneration}>
           <StackedPopoverRoot>
-            <StackedPopoverHeader title="New Board" />
+            <StackedPopoverHeader
+              className="bg-(--card-back-actions-menu-bg)"
+              title="New Board"
+            />
             <ExampleCreateMenuItems templateDisabled={templateDisabled} />
           </StackedPopoverRoot>
           <StackedPopoverScreen id="create-board">
