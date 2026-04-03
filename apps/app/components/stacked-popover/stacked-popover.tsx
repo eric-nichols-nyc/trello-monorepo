@@ -2,7 +2,7 @@
 
 import { Button } from "@repo/design-system/components/ui/button";
 import { cn } from "@repo/design-system/lib/utils";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, X } from "lucide-react";
 import {
   type ComponentProps,
   createContext,
@@ -116,6 +116,9 @@ export type StackedPopoverHeaderProps = {
     ComponentProps<typeof Button>,
     "children" | "onClick" | "size" | "type" | "variant"
   >;
+  /** When set on a stacked screen, shows a close control (e.g. dismiss the popover). */
+  onClose?: () => void;
+  closeButtonLabel?: string;
 };
 
 /**
@@ -127,6 +130,8 @@ export function StackedPopoverHeader({
   backButtonLabel = "Back",
   backDisabled,
   backButtonProps,
+  onClose,
+  closeButtonLabel = "Close",
 }: StackedPopoverHeaderProps) {
   const { depth, pop } = useStackedPopover();
   const {
@@ -147,6 +152,47 @@ export function StackedPopoverHeader({
         )}
       >
         {title}
+      </div>
+    );
+  }
+
+  if (onClose !== undefined) {
+    return (
+      <div
+        className={cn(
+          "grid min-h-8 grid-cols-[auto_1fr_auto] items-center gap-1 border-b px-1 py-2",
+          className
+        )}
+      >
+        <Button
+          aria-label={backButtonLabel}
+          className={cn("size-8 shrink-0 justify-self-start", backClassName)}
+          size="icon-sm"
+          type="button"
+          variant="ghost"
+          {...restBackButtonProps}
+          disabled={backDisabled ?? backButtonDisabledProp}
+          onClick={pop}
+        >
+          <ChevronLeft aria-hidden className="size-4" strokeWidth={2} />
+        </Button>
+        {title ? (
+          <span className="min-w-0 justify-self-center truncate px-1 text-center font-semibold text-sm">
+            {title}
+          </span>
+        ) : (
+          <span aria-hidden className="min-w-0" />
+        )}
+        <Button
+          aria-label={closeButtonLabel}
+          className="size-8 shrink-0 justify-self-end"
+          onClick={onClose}
+          size="icon-sm"
+          type="button"
+          variant="ghost"
+        >
+          <X aria-hidden className="size-4" />
+        </Button>
       </div>
     );
   }

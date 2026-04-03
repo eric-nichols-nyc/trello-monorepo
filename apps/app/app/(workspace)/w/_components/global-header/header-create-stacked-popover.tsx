@@ -45,19 +45,25 @@ type HeaderCreateStackedPopoverProps = {
 /** Stacked screen `create-board`: {@link CreateNewBoard}. */
 function HeaderCreateBoardScreen({
   onBoardCreated,
+  onClosePopover,
   workspaceId,
 }: {
   onBoardCreated: () => void;
+  onClosePopover: () => void;
   workspaceId: string | null;
 }) {
-  const { pop } = useStackedPopover();
-
   return (
-    <CreateNewBoard
-      onClose={pop}
-      onCreated={onBoardCreated}
-      workspaceId={workspaceId}
-    />
+    <>
+      <StackedPopoverHeader
+        className="bg-(--card-back-actions-menu-bg)"
+        onClose={onClosePopover}
+        title="Create Board"
+      />
+      <CreateNewBoard
+        onCreated={onBoardCreated}
+        workspaceId={workspaceId}
+      />
+    </>
   );
 }
 
@@ -183,12 +189,18 @@ export function HeaderCreateStackedPopover({
           <StackedPopoverScreen id="create-board">
             <HeaderCreateBoardScreen
               onBoardCreated={handleBoardCreated}
+              onClosePopover={() => {
+                setOpen(false);
+              }}
               workspaceId={workspaceId}
             />
           </StackedPopoverScreen>
           <StackedPopoverScreen id="template">
             <StackedPopoverHeader
               className="bg-(--card-back-actions-menu-bg)"
+              onClose={() => {
+                setOpen(false);
+              }}
               title="Templates"
             />
             <div className="bg-(--card-back-actions-menu-bg)">

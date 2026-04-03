@@ -6,7 +6,6 @@ import { CreateBoardForm } from "./create-board-form";
 import { CreateBoardHeader } from "./create-board-header";
 
 export type CreateNewBoardProps = {
-  readonly onClose: () => void;
   readonly workspaceId: string | null;
   readonly onCreated?: () => void;
   readonly className?: string;
@@ -17,7 +16,6 @@ export type CreateNewBoardProps = {
  * Uses `--card-back-actions-menu-bg` so it matches the header Create popover surface.
  */
 export function CreateNewBoard({
-  onClose,
   workspaceId,
   onCreated,
   className,
@@ -29,7 +27,7 @@ export function CreateNewBoard({
         className,
       )}
     >
-      <CreateBoardHeader onClose={onClose} />
+      <CreateBoardHeader hideToolbar />
       <div className="px-4 py-4">
         <CreateBoardForm onCreated={onCreated} workspaceId={workspaceId} />
       </div>
