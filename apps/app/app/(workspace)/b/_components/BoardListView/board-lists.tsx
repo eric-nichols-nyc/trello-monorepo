@@ -1,6 +1,9 @@
 "use client";
 
 import { DragDropProvider, DragOverlay } from "@dnd-kit/react";
+import { useRouter } from "next/navigation";
+import { useCallback, useMemo } from "react";
+
 import type { BoardDetail } from "@/types/board-detail";
 import { ListCardChrome } from "../ListCard/list-card-chrome";
 import { ListComposer } from "../ListComposer/list-composer";
@@ -18,6 +21,7 @@ type BoardListsProps = {
  * {@link useBoardListsDrag}.
  */
 export const BoardLists = ({ board, boardKey }: BoardListsProps) => {
+  const router = useRouter();
   const {
     listIds,
     cardsByList,
@@ -30,6 +34,30 @@ export const BoardLists = ({ board, boardKey }: BoardListsProps) => {
     handleDragOver,
     handleDragEnd,
   } = useBoardListsDrag(board, boardKey);
+
+  const cardPathSegments = useMemo(() => {
+    const map: Record<string, string> = {};
+    for (const list of board.lists) {
+      for (const card of list.cards) {
+        map[card.id] =
+          card.shortLink.length > 0 ? card.shortLink : card.id;
+      }
+    }
+    return map;
+  }, [board.lists]);
+
+  const handleOpenCard = useCallback(
+    (cardId: string) => {
+      const segment = cardPathSegments[cardId];
+      if (!segment) {
+        return;
+      }
+      router.push(
+        `/b/${encodeURIComponent(boardKey)}/c/${encodeURIComponent(segment)}`
+      );
+    },
+    [boardKey, cardPathSegments, router]
+  );
 
   return (
     <DragDropProvider
@@ -52,6 +80,7 @@ export const BoardLists = ({ board, boardKey }: BoardListsProps) => {
                 stored: listPosById[id] ?? 0,
                 suggested: suggestedListPosById[id] ?? listPosById[id] ?? 0,
               }}
+              onOpenCard={handleOpenCard}
               title={listTitles[id] ?? "List"}
             />
           ))}

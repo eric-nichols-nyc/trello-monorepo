@@ -17,6 +17,7 @@ export type BoardColumnProps = {
   cardTitles: Record<string, string>;
   /** Optional header debug: suggested vs server `pos` for this column. */
   listPosDebug?: { suggested: number; stored: number };
+  onOpenCard?: (cardId: string) => void;
 };
 
 export const BoardColumn = memo(function BoardColumnFrame({
@@ -27,6 +28,7 @@ export const BoardColumn = memo(function BoardColumnFrame({
   cardIds,
   cardTitles,
   listPosDebug,
+  onOpenCard,
 }: BoardColumnProps) {
   const { ref, targetRef, handleRef, isDragging } = useSortable({
     id: listId,
@@ -68,6 +70,9 @@ export const BoardColumn = memo(function BoardColumnFrame({
               columnId={listId}
               index={index}
               key={cardId}
+              onOpenCard={
+                onOpenCard ? () => onOpenCard(cardId) : undefined
+              }
               title={cardTitles[cardId] ?? "Card"}
             />
           ))}

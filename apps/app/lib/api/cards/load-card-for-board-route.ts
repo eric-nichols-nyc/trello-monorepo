@@ -1,0 +1,65 @@
+import { notFound } from "next/navigation";
+
+import type { BoardCard } from "@/types/board-detail";
+import { normalizeBoardCard } from "@/types/board-detail";
+
+import { BoardApiError } from "../boards/board-api-error";
+import { getCard } from "./get-card";
+
+export type CardRoutePayload = {
+  card: BoardCard;
+  listName: string;
+  boardName: string;
+};
+
+function boardKeyMatchesBoard(
+  boardKey: string,
+  board: Record<string, unknown>
+): boolean {
+  if (String(board.id) === boardKey) {
+    return true;
+  }
+  const sl = board.shortLink;
+  return typeof sl === "string" && sl === boardKey;
+}
+
+/**
+ * Server load for `/b/:boardKey/c/:shortlink`: fetches the card and ensures it
+ * belongs to the board implied by the URL (id or board `shortLink`).
+ */
+export async function loadCardForBoardRoute(
+  boardKey: string,
+  cardShortLink: string
+): Promise<CardRoutePayload> {
+  let raw: unknown;
+  try {
+    raw = await getCard(cardShortLink);
+  } catch (error) {
+    if (error instanceof BoardApiError && error.status === 404) {
+      notFound();
+    }
+    throw error;
+  }
+
+  const record = raw as Record<string, unknown>;
+  const board = record.board;
+  if (board === null || typeof board !== "object") {
+    notFound();
+  }
+  const boardRecord = board as Record<string, unknown>;
+  if (!boardKeyMatchesBoard(boardKey, boardRecord)) {
+    notFound();
+  }
+
+  const list = record.list;
+  const listName =
+    list !== null && typeof list === "object" && "name" in list
+      ? String((list as Record<string, unknown>).name ?? "List")
+      : "List";
+
+  return {
+    card: normalizeBoardCard(raw),
+    listName,
+    boardName: String(boardRecord.name ?? "Board"),
+  };
+}

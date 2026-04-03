@@ -127,7 +127,7 @@ function normalizeBoardChecklist(raw: unknown): BoardChecklist {
   };
 }
 
-function normalizeBoardCard(raw: unknown): BoardCard {
+export function normalizeBoardCard(raw: unknown): BoardCard {
   const c = raw as Record<string, unknown>;
   return {
     id: String(c.id),

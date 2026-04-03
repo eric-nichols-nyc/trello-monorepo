@@ -139,6 +139,27 @@ export const BoardCardItem = memo(function BoardCardItemFrame({
     }
   };
 
+  const handleSurfaceClick = useCallback(
+    (event: MouseEvent<HTMLDivElement>) => {
+      if (!onOpenCard) {
+        return;
+      }
+      const target = event.target;
+      if (!(target instanceof Element)) {
+        return;
+      }
+      if (
+        target.closest(
+          "button,a,[role='checkbox'],[data-slot='checkbox'],input,textarea,select"
+        )
+      ) {
+        return;
+      }
+      onOpenCard();
+    },
+    [onOpenCard]
+  );
+
   return (
     <li
       className={cn(
@@ -154,6 +175,7 @@ export const BoardCardItem = memo(function BoardCardItemFrame({
           LIST_CARD_SURFACE_CLASSNAME,
           "cursor-grab touch-none active:cursor-grabbing"
         )}
+        onClick={handleSurfaceClick}
         onMouseLeave={handleMouseLeave}
         ref={handleRef}
       >
