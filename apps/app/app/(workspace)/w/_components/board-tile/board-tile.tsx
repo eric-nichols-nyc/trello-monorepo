@@ -8,6 +8,7 @@ import {
   getBoardStringField,
   getPreviewBackgroundStyle,
 } from "@/lib/boards/board-list-utils";
+import { useUpdateBoardStarred } from "@/queries/use-update-board-starred";
 import { Star } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -23,6 +24,7 @@ export const BoardTile = ({ board }: BoardTileProperties) => {
   const workspaceLabel = getBoardStringField(board, "workspaceName");
   const starred = getBoardBooleanField(board, "starred");
   const [isStarred, setIsStarred] = useState(starred);
+  const { isPending, mutate } = useUpdateBoardStarred();
 
   useEffect(() => {
     setIsStarred(starred);
@@ -30,6 +32,7 @@ export const BoardTile = ({ board }: BoardTileProperties) => {
 
   const title = name ?? shortLink ?? id;
   const boardKey = shortLink ?? id;
+  const canStar = id !== undefined && boardKey !== undefined;
   const href = boardKey !== undefined ? `/b/${boardKey}` : null;
   const previewStyle = getPreviewBackgroundStyle(board);
 
@@ -58,14 +61,29 @@ export const BoardTile = ({ board }: BoardTileProperties) => {
             <button
               aria-label={isStarred ? "Unstar board" : "Star board"}
               className={cn(
-                "flex size-8 items-center justify-center rounded-md border border-white/20 bg-black/35 shadow-sm backdrop-blur-[2px] transition-[opacity,colors] duration-200",
-                "opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 hover:bg-black/45",
-                "focus-visible:opacity-100"
+                "flex size-8 items-center justify-center rounded-md border border-white/20 bg-black/35 shadow-sm backdrop-blur-[2px] transition-[opacity,colors] duration-200 hover:bg-black/45",
+                isStarred
+                  ? "opacity-100"
+                  : "opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 focus-visible:opacity-100",
+                "disabled:pointer-events-none disabled:opacity-40"
               )}
+              disabled={!canStar || isPending}
               onClick={(event) => {
                 event.preventDefault();
                 event.stopPropagation();
-                setIsStarred((previous) => !previous);
+                if (!canStar || isPending) {
+                  return;
+                }
+                const next = !isStarred;
+                setIsStarred(next);
+                mutate(
+                  { boardId: id, boardKey, starred: next },
+                  {
+                    onError: () => {
+                      setIsStarred(starred);
+                    },
+                  },
+                );
               }}
               type="button"
             >

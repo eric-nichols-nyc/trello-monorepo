@@ -1,7 +1,7 @@
 import { Separator } from "@repo/design-system/components/ui/separator";
-import { EmptyBoards } from "./empty-boards/empty-boards";
-import { WorkspaceBanner } from "./workspace-banner/workspace-banner";
-import { WorkspaceBoardsHome } from "./workspace-boards-home/workspace-boards-home";
+import { EmptyBoards } from "../empty-boards/empty-boards";
+import { WorkspaceBanner } from "../workspace-banner/workspace-banner";
+import { WorkspaceBoardsWorkspacePanel } from "./workspace-boards-workspace-panel";
 
 type WorkspaceBoardsDashboardProps = {
   readonly boards: readonly unknown[];
@@ -45,7 +45,10 @@ export const WorkspaceBoardsDashboard = ({
       {scopedBoards.length === 0 ? (
         <EmptyBoards workspaceId={workspaceId} />
       ) : (
-        <WorkspaceBoardsHome boards={scopedBoards} workspaceId={workspaceId} />
+        <WorkspaceBoardsWorkspacePanel
+          boards={scopedBoards}
+          workspaceId={workspaceId}
+        />
       )}
     </div>
   );

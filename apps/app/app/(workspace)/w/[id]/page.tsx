@@ -3,7 +3,7 @@ import { BoardApiError } from "@/lib/api/boards/board-api-error";
 import { getMyBoards } from "@/lib/api/boards/get-boards";
 import { getMyWorkspaces } from "@/lib/api/workspaces/get-my-workspaces";
 import { resolveWorkspaceFromSegment } from "@/lib/workspaces/workspace-routing";
-import { WorkspaceBoardsDashboard } from "../_components/workspace-boards-dashboard";
+import { WorkspaceBoardsDashboard } from "../_components/workspace-dashboard/workspace-boards-dashboard";
 
 type WorkspaceIdPageProps = {
   params: Promise<{ id: string }>;

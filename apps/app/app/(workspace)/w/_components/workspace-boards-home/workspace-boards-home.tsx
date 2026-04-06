@@ -1,4 +1,5 @@
 import { CircleUser } from "lucide-react";
+import { getStableBoardKey } from "@/lib/boards/board-list-utils";
 import { BoardTile } from "../board-tile/board-tile";
 import { CreateNewBoardButton } from "../CreateNewBoardButton/create-new-board-button";
 import { WorkspaceHeader } from "../workspace-header/workspace-header";
@@ -7,18 +8,6 @@ type WorkspaceBoardsHomeProperties = {
   readonly boards: readonly unknown[];
   readonly heading?: string;
   readonly workspaceId: string | null;
-};
-
-const getBoardKey = (board: unknown, index: number): string => {
-  if (
-    board !== null &&
-    typeof board === "object" &&
-    "id" in board &&
-    typeof (board as { id: unknown }).id === "string"
-  ) {
-    return (board as { id: string }).id;
-  }
-  return `board-${index}`;
 };
 
 export const WorkspaceBoardsHome = ({
@@ -48,7 +37,7 @@ export const WorkspaceBoardsHome = ({
       </div>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {list.map((board, index) => (
-          <BoardTile board={board} key={getBoardKey(board, index)} />
+          <BoardTile board={board} key={getStableBoardKey(board, index)} />
         ))}
         <CreateNewBoardButton workspaceId={workspaceId} />
       </div>

@@ -95,3 +95,26 @@ function getBoardSortTime(board: unknown): number {
 /** Newest first (uses `updatedAt`, then `createdAt` when present). */
 export const sortBoardsRecentFirst = (boards: readonly unknown[]): unknown[] =>
   [...boards].sort((a, b) => getBoardSortTime(b) - getBoardSortTime(a));
+
+/** Boards where `starred === true`, newest first. */
+export const filterStarredBoardsSorted = (
+  boards: readonly unknown[],
+): unknown[] =>
+  sortBoardsRecentFirst(boards.filter((b) => getBoardBooleanField(b, "starred")));
+
+/** Boards where `starred !== true`, newest first. */
+export const filterUnstarredBoardsSorted = (
+  boards: readonly unknown[],
+): unknown[] =>
+  sortBoardsRecentFirst(
+    boards.filter((b) => !getBoardBooleanField(b, "starred")),
+  );
+
+/** Stable React `key` for a board in a list. */
+export const getStableBoardKey = (board: unknown, index: number): string => {
+  const id = getBoardId(board);
+  if (id !== undefined) {
+    return id;
+  }
+  return `board-${index}`;
+};
