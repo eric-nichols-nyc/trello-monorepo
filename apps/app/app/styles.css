@@ -33,6 +33,9 @@
   --card-back-actions-menu-hover-bg: #35363c;
   /* Primary blue accent (e.g. search, links). */
   --app-blue-accent: #669df1;
+  /* Header workspace search popover — board list rows. */
+  --header-search-row-bg: var(--card-back-actions-menu-bg);
+  --header-search-row-hover-bg: var(--card-back-actions-menu-hover-bg);
 }
 
 html,
@@ -59,4 +62,19 @@ body {
 
 .card-back-actions-menu__select-content {
   background-color: var(--card-back-actions-menu-bg) !important;
+}
+
+/* HeaderSearchBoardsPopover — "Recent boards" title strip. */
+.header-search-boards-popover__header {
+  background-color: var(--header-search-row-bg);
+}
+
+/* HeaderSearchBoardsPopover — row surfaces (link + non-link rows). */
+.header-search-board-row {
+  background-color: var(--header-search-row-bg);
+  transition: background-color 150ms ease;
+}
+.header-search-board-row:hover,
+.header-search-board-row:focus-visible {
+  background-color: var(--header-search-row-hover-bg);
 }

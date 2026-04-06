@@ -65,7 +65,7 @@ export const HeaderSearchBoardsPopover = ({
   containerClassName,
   initialBoards,
   workspaceSummaries,
-  placeholder = "Search Trello",
+  placeholder = "Search Trellnode",
   "aria-label": ariaLabel,
   onChange,
   onKeyDown,
@@ -177,12 +177,12 @@ export const HeaderSearchBoardsPopover = ({
             : undefined
         }
       >
-        <div className="border-chrome-divider border-b px-3 py-2">
+        <div className="header-search-boards-popover__header border-chrome-divider border-b px-3 py-2">
           <p className="font-semibold text-[11px] text-muted-foreground uppercase tracking-wide">
             Recent boards
           </p>
         </div>
-        <div className="max-h-[min(360px,60dvh)] w-full overflow-y-auto py-1">
+        <div className="max-h-[min(360px,60dvh)] w-full overflow-y-auto">
           {filteredBoards.length === 0 ? (
             <p className="px-3 py-6 text-center text-muted-foreground text-sm">
               {orderedBoards.length === 0
@@ -190,7 +190,7 @@ export const HeaderSearchBoardsPopover = ({
                 : "No boards match your search"}
             </p>
           ) : (
-            <ul className="w-full space-y-0.5">
+            <ul className="m-0 w-full list-none p-0">
               {filteredBoards.map((board, index) => {
                 const shortLink = getBoardStringField(board, "shortLink");
                 const id = getBoardId(board);
