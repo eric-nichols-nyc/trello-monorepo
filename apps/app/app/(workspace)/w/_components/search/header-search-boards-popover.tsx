@@ -136,7 +136,7 @@ export const HeaderSearchBoardsPopover = ({
       <PopoverAnchor asChild>
         <div
           ref={anchorRef}
-          className={cn("relative min-w-0 w-full flex-1", containerClassName)}
+          className={cn("relative min-w-0 w-full", containerClassName)}
           data-testid="header-search-input"
         >
           <Search
