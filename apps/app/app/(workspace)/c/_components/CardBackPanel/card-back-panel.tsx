@@ -62,6 +62,8 @@ export function CardBackPanel({
           <CardBackDueDate dueDate={card.dueDate} />
 
           <CardBackDescription
+            boardRouteKey={boardRouteKey}
+            cardId={card.id}
             onChange={setDescription}
             value={description}
           />
