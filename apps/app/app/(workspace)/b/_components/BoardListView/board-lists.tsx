@@ -27,6 +27,8 @@ export const BoardLists = ({ board, boardKey }: BoardListsProps) => {
     cardsByList,
     listTitles,
     cardTitles,
+    cardCompleted,
+    setCardCompletedForId,
     listPosById,
     suggestedListPosById,
     sensors,
@@ -69,6 +71,7 @@ export const BoardLists = ({ board, boardKey }: BoardListsProps) => {
           {listIds.map((id, columnIndex) => (
             <BoardColumn
               boardKey={boardKey}
+              cardCompleted={cardCompleted}
               cardIds={cardsByList[id] ?? []}
               cardTitles={cardTitles}
               columnIndex={columnIndex}
@@ -78,6 +81,7 @@ export const BoardLists = ({ board, boardKey }: BoardListsProps) => {
                 stored: listPosById[id] ?? 0,
                 suggested: suggestedListPosById[id] ?? listPosById[id] ?? 0,
               }}
+              onCardCompletedChange={setCardCompletedForId}
               onOpenCard={handleOpenCard}
               title={listTitles[id] ?? "List"}
             />

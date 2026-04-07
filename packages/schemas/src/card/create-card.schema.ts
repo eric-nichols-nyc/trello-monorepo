@@ -21,6 +21,8 @@ export const createCardSchema = z
 
     closed: z.boolean().optional(),
 
+    completed: z.boolean().optional(),
+
     dueDate: z.coerce.date().optional(),
 
     assigneeId: z.string().uuid().optional(),

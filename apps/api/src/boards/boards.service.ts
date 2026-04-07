@@ -174,6 +174,7 @@ export class BoardsService {
               description: cardDef.description ?? null,
               pos: cardPos,
               closed: cardDef.closed ?? false,
+              completed: cardDef.completed ?? false,
               dueDate:
                 cardDef.dueDate !== undefined
                   ? new Date(cardDef.dueDate)

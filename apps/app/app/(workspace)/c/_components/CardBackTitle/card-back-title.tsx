@@ -16,8 +16,8 @@ export type CardBackTitleProps = {
   mode: "modal" | "page";
   cardId: string;
   boardRouteKey: string;
-  closed: boolean;
-  onClosedChange: (closed: boolean) => void;
+  completed: boolean;
+  onCompletedChange: (completed: boolean) => void;
 };
 
 const titleClass =
@@ -31,27 +31,27 @@ export function CardBackTitle({
   mode,
   cardId,
   boardRouteKey,
-  closed,
-  onClosedChange,
+  completed,
+  onCompletedChange,
 }: CardBackTitleProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { getToken } = useAuth();
 
   const saveMutation = useMutation({
-    mutationFn: async (nextClosed: boolean) => {
+    mutationFn: async (nextCompleted: boolean) => {
       const token = await getToken();
       if (!token) {
         throw new Error("Not authenticated");
       }
-      return updateCardClient(cardId, { closed: nextClosed }, token);
+      return updateCardClient(cardId, { completed: nextCompleted }, token);
     },
-    onSuccess: (data, nextClosed) => {
+    onSuccess: (data, nextCompleted) => {
       const record = data as Record<string, unknown>;
-      if (typeof record.closed === "boolean") {
-        onClosedChange(record.closed);
+      if (typeof record.completed === "boolean") {
+        onCompletedChange(record.completed);
       } else {
-        onClosedChange(nextClosed);
+        onCompletedChange(nextCompleted);
       }
       void queryClient.invalidateQueries({
         queryKey: boardDetailQueryKey(boardRouteKey),
@@ -65,11 +65,11 @@ export function CardBackTitle({
       return;
     }
     const next = value === true;
-    const previousClosed = closed;
-    onClosedChange(next);
+    const previousCompleted = completed;
+    onCompletedChange(next);
     saveMutation.mutate(next, {
       onError: () => {
-        onClosedChange(previousClosed);
+        onCompletedChange(previousCompleted);
         toast.error("Could not update card");
       },
     });
@@ -77,7 +77,7 @@ export function CardBackTitle({
 
   const titleVisualClass = cn(
     titleClass,
-    closed && "text-zinc-400 line-through decoration-zinc-500",
+    completed && "text-zinc-400 line-through decoration-zinc-500",
   );
 
   return (
@@ -87,8 +87,10 @@ export function CardBackTitle({
         onPointerDown={(event) => event.stopPropagation()}
       >
         <Checkbox
-          aria-label={closed ? "Mark card incomplete" : "Mark card complete"}
-          checked={closed}
+          aria-label={
+            completed ? "Mark card incomplete" : "Mark card complete"
+          }
+          checked={completed}
           className={checkboxClassName}
           disabled={saveMutation.isPending}
           onCheckedChange={handleCheckedChange}

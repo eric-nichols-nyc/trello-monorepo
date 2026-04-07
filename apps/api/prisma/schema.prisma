@@ -92,7 +92,10 @@ model Card {
   name        String
   description String?      @db.Text
   pos         Float
+  /// Archived / removed from active board (Trello-style); not the checklist “done” state.
   closed      Boolean      @default(false)
+  /// Marked complete via the card checkbox (distinct from `closed`).
+  completed   Boolean      @default(false)
   dueDate     DateTime?
   /// Optional public slug (unique among cards). Legacy rows may be null; resolvable by `id` in API.
   shortLink   String?      @unique

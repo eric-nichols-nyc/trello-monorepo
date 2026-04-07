@@ -4,6 +4,9 @@ import { nestPublicBaseUrl } from "@/lib/api/nest-public-base-url";
 /** Subset of Nest `UpdateCardDto` supported by the app client. */
 export type UpdateCardBody = {
   description?: string;
+  /** Checkbox “done” on the card. */
+  completed?: boolean;
+  /** Archive card (distinct from `completed`). */
   closed?: boolean;
 };
 

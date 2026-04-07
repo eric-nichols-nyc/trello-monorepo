@@ -1,9 +1,15 @@
 "use client";
 
 import { useSortable } from "@dnd-kit/react/sortable";
+import { useAuth } from "@repo/clerk/client";
 import { Checkbox } from "@repo/design-system/components/ui/checkbox";
 import { cn } from "@repo/design-system/lib/utils";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { type MouseEvent, memo, useCallback, useState } from "react";
+
+import { updateCardClient } from "@/lib/api/cards/update-card-client";
+import { toast } from "@/lib/toast";
+import { boardDetailQueryKey } from "@/queries/board-detail-query";
 
 import { CardActions } from "./card-actions";
 import { ListCardTitle } from "./list-card-title";
@@ -17,6 +23,7 @@ type ListCardTitleAreaProps = {
   className?: string;
   /** Right padding so title text clears {@link CardActions} trigger. @default true */
   contentGutterForEdit?: boolean;
+  completed?: boolean;
 };
 
 /** Title row inside the card surface (typography + layout). */
@@ -24,6 +31,7 @@ export function ListCardTitleArea({
   title,
   className,
   contentGutterForEdit = true,
+  completed = false,
 }: ListCardTitleAreaProps) {
   return (
     <div
@@ -34,7 +42,11 @@ export function ListCardTitleArea({
       )}
     >
       <div className="flex min-w-0 items-center gap-2">
-        <ListCardTitle className="min-w-0 flex-1" title={title} />
+        <ListCardTitle
+          className="min-w-0 flex-1"
+          completed={completed}
+          title={title}
+        />
       </div>
     </div>
   );
@@ -94,6 +106,8 @@ export type BoardCardItemProps = {
   columnId: string;
   index: number;
   title: string;
+  completed: boolean;
+  onCardCompletedChange: (completed: boolean) => void;
   onOpenCard?: () => void;
   onArchive?: () => void;
 };
@@ -108,10 +122,48 @@ export const BoardCardItem = memo(function BoardCardItemFrame({
   columnId,
   index,
   title,
+  completed,
+  onCardCompletedChange,
   onOpenCard,
   onArchive,
 }: BoardCardItemProps) {
-  const [checked, setChecked] = useState(false);
+  const queryClient = useQueryClient();
+  const { getToken } = useAuth();
+
+  const saveMutation = useMutation({
+    mutationFn: async (nextCompleted: boolean) => {
+      const token = await getToken();
+      if (!token) {
+        throw new Error("Not authenticated");
+      }
+      return updateCardClient(cardId, { completed: nextCompleted }, token);
+    },
+    onSuccess: (data) => {
+      const record = data as Record<string, unknown>;
+      if (typeof record.completed === "boolean") {
+        onCardCompletedChange(record.completed);
+      }
+      void queryClient.invalidateQueries({
+        queryKey: boardDetailQueryKey(boardKey),
+      });
+    },
+  });
+
+  const handleCheckedChange = (value: boolean | "indeterminate") => {
+    if (value === "indeterminate") {
+      return;
+    }
+    const next = value === true;
+    const previousCompleted = completed;
+    onCardCompletedChange(next);
+    saveMutation.mutate(next, {
+      onError: () => {
+        onCardCompletedChange(previousCompleted);
+        toast.error("Could not update card");
+      },
+    });
+  };
+
   const { ref, targetRef, handleRef, isDragging } = useSortable({
     id: cardId,
     index,
@@ -130,7 +182,7 @@ export const BoardCardItem = memo(function BoardCardItemFrame({
   );
 
   const handleMouseLeave = (event: MouseEvent<HTMLDivElement>) => {
-    if (checked) {
+    if (completed) {
       return;
     }
     const active = document.activeElement;
@@ -182,7 +234,7 @@ export const BoardCardItem = memo(function BoardCardItemFrame({
         <span
           className={cn(
             "-translate-y-1/2 absolute top-1/2 left-3 z-1 transition-opacity duration-150",
-            checked
+            completed
               ? "pointer-events-auto opacity-100"
               : "pointer-events-none opacity-0 group-focus-within:pointer-events-auto group-focus-within:opacity-100 group-hover:pointer-events-auto group-hover:opacity-100"
           )}
@@ -190,9 +242,10 @@ export const BoardCardItem = memo(function BoardCardItemFrame({
         >
           <Checkbox
             aria-label={`Mark card complete: ${title}`}
-            checked={checked}
+            checked={completed}
             className="size-5 rounded-full border-white/35 bg-transparent data-[state=checked]:border-emerald-500 data-[state=checked]:bg-emerald-600 [&_[data-slot=checkbox-indicator]_svg]:size-[18px]"
-            onCheckedChange={(value) => setChecked(value === true)}
+            disabled={saveMutation.isPending}
+            onCheckedChange={handleCheckedChange}
           />
         </span>
         <CardActions
@@ -204,10 +257,11 @@ export const BoardCardItem = memo(function BoardCardItemFrame({
         />
         <ListCardTitleArea
           className={
-            checked
+            completed
               ? "translate-x-7"
               : "translate-x-0 group-focus-within:translate-x-7 group-hover:translate-x-7"
           }
+          completed={completed}
           title={title}
         />
       </div>

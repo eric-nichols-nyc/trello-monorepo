@@ -95,15 +95,17 @@ function boardToListState(board: BoardDetail) {
   const cardsByList: Record<string, string[]> = {};
   const listTitles: Record<string, string> = {};
   const cardTitles: Record<string, string> = {};
+  const cardCompleted: Record<string, boolean> = {};
   for (const list of sortedLists) {
     const cards = [...list.cards].sort((a, b) => a.pos - b.pos);
     cardsByList[list.id] = cards.map((c) => c.id);
     listTitles[list.id] = list.name;
     for (const c of cards) {
       cardTitles[c.id] = c.name;
+      cardCompleted[c.id] = c.completed;
     }
   }
-  return { listIds, cardsByList, listTitles, cardTitles };
+  return { listIds, cardsByList, listTitles, cardTitles, cardCompleted };
 }
 
 function listPosMapFromBoard(board: BoardDetail): Record<string, number> {
@@ -156,7 +158,9 @@ function boardStructureFingerprint(board: BoardDetail): string {
   return lists
     .map((l) => {
       const cards = [...l.cards].sort((a, b) => a.pos - b.pos);
-      const cardPart = cards.map((c) => `${c.id}\t${c.name}`).join("\n");
+      const cardPart = cards
+        .map((c) => `${c.id}\t${c.name}\t${c.completed}`)
+        .join("\n");
       return `${l.id}\t${l.name}\n${cardPart}`;
     })
     .join("\n---\n");
@@ -174,6 +178,16 @@ export function useBoardListsDrag(board: BoardDetail, boardKey: string) {
   const [cardsByList, setCardsByList] = useState<Record<string, string[]>>({});
   const [listTitles, setListTitles] = useState<Record<string, string>>({});
   const [cardTitles, setCardTitles] = useState<Record<string, string>>({});
+  const [cardCompleted, setCardCompleted] = useState<Record<string, boolean>>(
+    {},
+  );
+
+  const setCardCompletedForId = useCallback(
+    (cardId: string, completed: boolean) => {
+      setCardCompleted((prev) => ({ ...prev, [cardId]: completed }));
+    },
+    [],
+  );
 
   const listIdsRef = useRef(listIds);
   const cardsByListRef = useRef(cardsByList);
@@ -201,6 +215,7 @@ export function useBoardListsDrag(board: BoardDetail, boardKey: string) {
     setCardsByList(next.cardsByList);
     setListTitles(next.listTitles);
     setCardTitles(next.cardTitles);
+    setCardCompleted(next.cardCompleted);
   }, [structureFingerprint]);
 
   const sensors = useMemo(
@@ -289,6 +304,8 @@ export function useBoardListsDrag(board: BoardDetail, boardKey: string) {
     cardsByList,
     listTitles,
     cardTitles,
+    cardCompleted,
+    setCardCompletedForId,
     listPosById,
     suggestedListPosById,
     sensors,

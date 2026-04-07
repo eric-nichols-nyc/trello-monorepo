@@ -38,7 +38,10 @@ export type BoardChecklist = {
 export type BoardCard = CardOrderingRow & {
   name: string;
   description: string | null;
+  /** Archived card (off-board); not the checkbox “done” state. */
   closed: boolean;
+  /** Checkbox complete on the card face / card back. */
+  completed: boolean;
   dueDate: string | null;
   shortLink: string;
   coverColor: string | null;
@@ -138,6 +141,7 @@ export function normalizeBoardCard(raw: unknown): BoardCard {
         : String(c.description),
     pos: Number(c.pos),
     closed: Boolean(c.closed),
+    completed: Boolean(c.completed),
     dueDate:
       c.dueDate === null || c.dueDate === undefined ? null : String(c.dueDate),
     shortLink: typeof c.shortLink === "string" ? c.shortLink : "",

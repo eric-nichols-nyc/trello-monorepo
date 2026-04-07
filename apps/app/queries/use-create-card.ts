@@ -47,6 +47,7 @@ export function buildOptimisticCard(
     description: input.description ?? null,
     pos: input.pos ?? Date.now(),
     closed: input.closed ?? false,
+    completed: input.completed ?? false,
     dueDate: dueDateToIso(input.dueDate),
     shortLink: "",
     coverColor: cover.coverColor,

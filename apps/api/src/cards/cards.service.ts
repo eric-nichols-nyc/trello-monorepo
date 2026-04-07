@@ -108,6 +108,7 @@ export class CardsService {
         description: data.description ?? null,
         pos,
         closed: data.closed ?? false,
+        completed: data.completed ?? false,
         dueDate: data.dueDate ?? null,
         listId,
         boardId: list.boardId,

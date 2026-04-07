@@ -37,6 +37,7 @@ type JCard = {
   description: string | null;
   pos: number;
   closed: boolean;
+  completed?: boolean;
   dueDate: string | null;
   assigneeId: string | null;
   comments: JComment[];
@@ -148,6 +149,7 @@ async function seedCardGraph(
       description: card.description ?? undefined,
       pos: card.pos,
       closed: card.closed ?? false,
+      completed: card.completed ?? false,
       dueDate: card.dueDate ? new Date(card.dueDate) : undefined,
       shortLink: cardShortLink,
       listId: ctx.listId,

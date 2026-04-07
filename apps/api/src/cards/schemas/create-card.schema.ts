@@ -6,6 +6,7 @@ export const createCardSchema = z
     description: z.string().optional(),
     pos: z.number().finite().optional(),
     closed: z.boolean().optional(),
+    completed: z.boolean().optional(),
     dueDate: z.coerce.date().optional(),
     assigneeId: z.string().uuid().optional(),
     coverColor: z.string().min(1).optional(),

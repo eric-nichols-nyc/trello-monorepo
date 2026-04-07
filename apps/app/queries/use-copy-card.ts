@@ -39,6 +39,7 @@ function buildCopyInput(source: BoardCard): CreateCardInput {
     name: `${baseName} (copy)`,
     pos: source.pos + 1000,
     closed: source.closed,
+    completed: source.completed,
   };
   if (source.description) {
     input.description = source.description;

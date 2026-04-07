@@ -6789,6 +6789,7 @@ export namespace Prisma {
     description: string | null
     pos: number | null
     closed: boolean | null
+    completed: boolean | null
     dueDate: Date | null
     shortLink: string | null
     coverColor: string | null
@@ -6806,6 +6807,7 @@ export namespace Prisma {
     description: string | null
     pos: number | null
     closed: boolean | null
+    completed: boolean | null
     dueDate: Date | null
     shortLink: string | null
     coverColor: string | null
@@ -6823,6 +6825,7 @@ export namespace Prisma {
     description: number
     pos: number
     closed: number
+    completed: number
     dueDate: number
     shortLink: number
     coverColor: number
@@ -6850,6 +6853,7 @@ export namespace Prisma {
     description?: true
     pos?: true
     closed?: true
+    completed?: true
     dueDate?: true
     shortLink?: true
     coverColor?: true
@@ -6867,6 +6871,7 @@ export namespace Prisma {
     description?: true
     pos?: true
     closed?: true
+    completed?: true
     dueDate?: true
     shortLink?: true
     coverColor?: true
@@ -6884,6 +6889,7 @@ export namespace Prisma {
     description?: true
     pos?: true
     closed?: true
+    completed?: true
     dueDate?: true
     shortLink?: true
     coverColor?: true
@@ -6988,6 +6994,7 @@ export namespace Prisma {
     description: string | null
     pos: number
     closed: boolean
+    completed: boolean
     dueDate: Date | null
     shortLink: string | null
     coverColor: string | null
@@ -7024,6 +7031,7 @@ export namespace Prisma {
     description?: boolean
     pos?: boolean
     closed?: boolean
+    completed?: boolean
     dueDate?: boolean
     shortLink?: boolean
     coverColor?: boolean
@@ -7049,6 +7057,7 @@ export namespace Prisma {
     description?: boolean
     pos?: boolean
     closed?: boolean
+    completed?: boolean
     dueDate?: boolean
     shortLink?: boolean
     coverColor?: boolean
@@ -7069,6 +7078,7 @@ export namespace Prisma {
     description?: boolean
     pos?: boolean
     closed?: boolean
+    completed?: boolean
     dueDate?: boolean
     shortLink?: boolean
     coverColor?: boolean
@@ -7089,6 +7099,7 @@ export namespace Prisma {
     description?: boolean
     pos?: boolean
     closed?: boolean
+    completed?: boolean
     dueDate?: boolean
     shortLink?: boolean
     coverColor?: boolean
@@ -7100,7 +7111,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type CardOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "pos" | "closed" | "dueDate" | "shortLink" | "coverColor" | "coverImage" | "listId" | "boardId" | "assigneeId" | "createdAt" | "updatedAt", ExtArgs["result"]["card"]>
+  export type CardOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "pos" | "closed" | "completed" | "dueDate" | "shortLink" | "coverColor" | "coverImage" | "listId" | "boardId" | "assigneeId" | "createdAt" | "updatedAt", ExtArgs["result"]["card"]>
   export type CardInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     list?: boolean | ListDefaultArgs<ExtArgs>
     board?: boolean | BoardDefaultArgs<ExtArgs>
@@ -7138,7 +7149,14 @@ export namespace Prisma {
       name: string
       description: string | null
       pos: number
+      /**
+       * Archived / removed from active board (Trello-style); not the checklist “done” state.
+       */
       closed: boolean
+      /**
+       * Marked complete via the card checkbox (distinct from `closed`).
+       */
+      completed: boolean
       dueDate: Date | null
       /**
        * Optional public slug (unique among cards). Legacy rows may be null; resolvable by `id` in API.
@@ -7592,6 +7610,7 @@ export namespace Prisma {
     readonly description: FieldRef<"Card", 'String'>
     readonly pos: FieldRef<"Card", 'Float'>
     readonly closed: FieldRef<"Card", 'Boolean'>
+    readonly completed: FieldRef<"Card", 'Boolean'>
     readonly dueDate: FieldRef<"Card", 'DateTime'>
     readonly shortLink: FieldRef<"Card", 'String'>
     readonly coverColor: FieldRef<"Card", 'String'>
@@ -13677,6 +13696,7 @@ export namespace Prisma {
     description: 'description',
     pos: 'pos',
     closed: 'closed',
+    completed: 'completed',
     dueDate: 'dueDate',
     shortLink: 'shortLink',
     coverColor: 'coverColor',
@@ -14202,6 +14222,7 @@ export namespace Prisma {
     description?: StringNullableFilter<"Card"> | string | null
     pos?: FloatFilter<"Card"> | number
     closed?: BoolFilter<"Card"> | boolean
+    completed?: BoolFilter<"Card"> | boolean
     dueDate?: DateTimeNullableFilter<"Card"> | Date | string | null
     shortLink?: StringNullableFilter<"Card"> | string | null
     coverColor?: StringNullableFilter<"Card"> | string | null
@@ -14226,6 +14247,7 @@ export namespace Prisma {
     description?: SortOrderInput | SortOrder
     pos?: SortOrder
     closed?: SortOrder
+    completed?: SortOrder
     dueDate?: SortOrderInput | SortOrder
     shortLink?: SortOrderInput | SortOrder
     coverColor?: SortOrderInput | SortOrder
@@ -14254,6 +14276,7 @@ export namespace Prisma {
     description?: StringNullableFilter<"Card"> | string | null
     pos?: FloatFilter<"Card"> | number
     closed?: BoolFilter<"Card"> | boolean
+    completed?: BoolFilter<"Card"> | boolean
     dueDate?: DateTimeNullableFilter<"Card"> | Date | string | null
     coverColor?: StringNullableFilter<"Card"> | string | null
     coverImage?: StringNullableFilter<"Card"> | string | null
@@ -14277,6 +14300,7 @@ export namespace Prisma {
     description?: SortOrderInput | SortOrder
     pos?: SortOrder
     closed?: SortOrder
+    completed?: SortOrder
     dueDate?: SortOrderInput | SortOrder
     shortLink?: SortOrderInput | SortOrder
     coverColor?: SortOrderInput | SortOrder
@@ -14302,6 +14326,7 @@ export namespace Prisma {
     description?: StringNullableWithAggregatesFilter<"Card"> | string | null
     pos?: FloatWithAggregatesFilter<"Card"> | number
     closed?: BoolWithAggregatesFilter<"Card"> | boolean
+    completed?: BoolWithAggregatesFilter<"Card"> | boolean
     dueDate?: DateTimeNullableWithAggregatesFilter<"Card"> | Date | string | null
     shortLink?: StringNullableWithAggregatesFilter<"Card"> | string | null
     coverColor?: StringNullableWithAggregatesFilter<"Card"> | string | null
@@ -14994,6 +15019,7 @@ export namespace Prisma {
     description?: string | null
     pos: number
     closed?: boolean
+    completed?: boolean
     dueDate?: Date | string | null
     shortLink?: string | null
     coverColor?: string | null
@@ -15015,6 +15041,7 @@ export namespace Prisma {
     description?: string | null
     pos: number
     closed?: boolean
+    completed?: boolean
     dueDate?: Date | string | null
     shortLink?: string | null
     coverColor?: string | null
@@ -15036,6 +15063,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     pos?: FloatFieldUpdateOperationsInput | number
     closed?: BoolFieldUpdateOperationsInput | boolean
+    completed?: BoolFieldUpdateOperationsInput | boolean
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     shortLink?: NullableStringFieldUpdateOperationsInput | string | null
     coverColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -15057,6 +15085,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     pos?: FloatFieldUpdateOperationsInput | number
     closed?: BoolFieldUpdateOperationsInput | boolean
+    completed?: BoolFieldUpdateOperationsInput | boolean
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     shortLink?: NullableStringFieldUpdateOperationsInput | string | null
     coverColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -15078,6 +15107,7 @@ export namespace Prisma {
     description?: string | null
     pos: number
     closed?: boolean
+    completed?: boolean
     dueDate?: Date | string | null
     shortLink?: string | null
     coverColor?: string | null
@@ -15095,6 +15125,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     pos?: FloatFieldUpdateOperationsInput | number
     closed?: BoolFieldUpdateOperationsInput | boolean
+    completed?: BoolFieldUpdateOperationsInput | boolean
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     shortLink?: NullableStringFieldUpdateOperationsInput | string | null
     coverColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -15109,6 +15140,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     pos?: FloatFieldUpdateOperationsInput | number
     closed?: BoolFieldUpdateOperationsInput | boolean
+    completed?: BoolFieldUpdateOperationsInput | boolean
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     shortLink?: NullableStringFieldUpdateOperationsInput | string | null
     coverColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -15838,6 +15870,7 @@ export namespace Prisma {
     description?: SortOrder
     pos?: SortOrder
     closed?: SortOrder
+    completed?: SortOrder
     dueDate?: SortOrder
     shortLink?: SortOrder
     coverColor?: SortOrder
@@ -15859,6 +15892,7 @@ export namespace Prisma {
     description?: SortOrder
     pos?: SortOrder
     closed?: SortOrder
+    completed?: SortOrder
     dueDate?: SortOrder
     shortLink?: SortOrder
     coverColor?: SortOrder
@@ -15876,6 +15910,7 @@ export namespace Prisma {
     description?: SortOrder
     pos?: SortOrder
     closed?: SortOrder
+    completed?: SortOrder
     dueDate?: SortOrder
     shortLink?: SortOrder
     coverColor?: SortOrder
@@ -17291,6 +17326,7 @@ export namespace Prisma {
     description?: string | null
     pos: number
     closed?: boolean
+    completed?: boolean
     dueDate?: Date | string | null
     shortLink?: string | null
     coverColor?: string | null
@@ -17311,6 +17347,7 @@ export namespace Prisma {
     description?: string | null
     pos: number
     closed?: boolean
+    completed?: boolean
     dueDate?: Date | string | null
     shortLink?: string | null
     coverColor?: string | null
@@ -17483,6 +17520,7 @@ export namespace Prisma {
     description?: StringNullableFilter<"Card"> | string | null
     pos?: FloatFilter<"Card"> | number
     closed?: BoolFilter<"Card"> | boolean
+    completed?: BoolFilter<"Card"> | boolean
     dueDate?: DateTimeNullableFilter<"Card"> | Date | string | null
     shortLink?: StringNullableFilter<"Card"> | string | null
     coverColor?: StringNullableFilter<"Card"> | string | null
@@ -17732,6 +17770,7 @@ export namespace Prisma {
     description?: string | null
     pos: number
     closed?: boolean
+    completed?: boolean
     dueDate?: Date | string | null
     shortLink?: string | null
     coverColor?: string | null
@@ -17752,6 +17791,7 @@ export namespace Prisma {
     description?: string | null
     pos: number
     closed?: boolean
+    completed?: boolean
     dueDate?: Date | string | null
     shortLink?: string | null
     coverColor?: string | null
@@ -17994,6 +18034,7 @@ export namespace Prisma {
     description?: string | null
     pos: number
     closed?: boolean
+    completed?: boolean
     dueDate?: Date | string | null
     shortLink?: string | null
     coverColor?: string | null
@@ -18014,6 +18055,7 @@ export namespace Prisma {
     description?: string | null
     pos: number
     closed?: boolean
+    completed?: boolean
     dueDate?: Date | string | null
     shortLink?: string | null
     coverColor?: string | null
@@ -18555,6 +18597,7 @@ export namespace Prisma {
     description?: string | null
     pos: number
     closed?: boolean
+    completed?: boolean
     dueDate?: Date | string | null
     shortLink?: string | null
     coverColor?: string | null
@@ -18575,6 +18618,7 @@ export namespace Prisma {
     description?: string | null
     pos: number
     closed?: boolean
+    completed?: boolean
     dueDate?: Date | string | null
     shortLink?: string | null
     coverColor?: string | null
@@ -18667,6 +18711,7 @@ export namespace Prisma {
     description?: string | null
     pos: number
     closed?: boolean
+    completed?: boolean
     dueDate?: Date | string | null
     shortLink?: string | null
     coverColor?: string | null
@@ -18687,6 +18732,7 @@ export namespace Prisma {
     description?: string | null
     pos: number
     closed?: boolean
+    completed?: boolean
     dueDate?: Date | string | null
     shortLink?: string | null
     coverColor?: string | null
@@ -18747,6 +18793,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     pos?: FloatFieldUpdateOperationsInput | number
     closed?: BoolFieldUpdateOperationsInput | boolean
+    completed?: BoolFieldUpdateOperationsInput | boolean
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     shortLink?: NullableStringFieldUpdateOperationsInput | string | null
     coverColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -18767,6 +18814,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     pos?: FloatFieldUpdateOperationsInput | number
     closed?: BoolFieldUpdateOperationsInput | boolean
+    completed?: BoolFieldUpdateOperationsInput | boolean
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     shortLink?: NullableStringFieldUpdateOperationsInput | string | null
     coverColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -18858,6 +18906,7 @@ export namespace Prisma {
     description?: string | null
     pos: number
     closed?: boolean
+    completed?: boolean
     dueDate?: Date | string | null
     shortLink?: string | null
     coverColor?: string | null
@@ -18878,6 +18927,7 @@ export namespace Prisma {
     description?: string | null
     pos: number
     closed?: boolean
+    completed?: boolean
     dueDate?: Date | string | null
     shortLink?: string | null
     coverColor?: string | null
@@ -18949,6 +18999,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     pos?: FloatFieldUpdateOperationsInput | number
     closed?: BoolFieldUpdateOperationsInput | boolean
+    completed?: BoolFieldUpdateOperationsInput | boolean
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     shortLink?: NullableStringFieldUpdateOperationsInput | string | null
     coverColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -18969,6 +19020,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     pos?: FloatFieldUpdateOperationsInput | number
     closed?: BoolFieldUpdateOperationsInput | boolean
+    completed?: BoolFieldUpdateOperationsInput | boolean
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     shortLink?: NullableStringFieldUpdateOperationsInput | string | null
     coverColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -19030,6 +19082,7 @@ export namespace Prisma {
     description?: string | null
     pos: number
     closed?: boolean
+    completed?: boolean
     dueDate?: Date | string | null
     shortLink?: string | null
     coverColor?: string | null
@@ -19050,6 +19103,7 @@ export namespace Prisma {
     description?: string | null
     pos: number
     closed?: boolean
+    completed?: boolean
     dueDate?: Date | string | null
     shortLink?: string | null
     coverColor?: string | null
@@ -19121,6 +19175,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     pos?: FloatFieldUpdateOperationsInput | number
     closed?: BoolFieldUpdateOperationsInput | boolean
+    completed?: BoolFieldUpdateOperationsInput | boolean
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     shortLink?: NullableStringFieldUpdateOperationsInput | string | null
     coverColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -19141,6 +19196,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     pos?: FloatFieldUpdateOperationsInput | number
     closed?: BoolFieldUpdateOperationsInput | boolean
+    completed?: BoolFieldUpdateOperationsInput | boolean
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     shortLink?: NullableStringFieldUpdateOperationsInput | string | null
     coverColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -19245,6 +19301,7 @@ export namespace Prisma {
     description?: string | null
     pos: number
     closed?: boolean
+    completed?: boolean
     dueDate?: Date | string | null
     shortLink?: string | null
     coverColor?: string | null
@@ -19398,6 +19455,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     pos?: FloatFieldUpdateOperationsInput | number
     closed?: BoolFieldUpdateOperationsInput | boolean
+    completed?: BoolFieldUpdateOperationsInput | boolean
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     shortLink?: NullableStringFieldUpdateOperationsInput | string | null
     coverColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -19418,6 +19476,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     pos?: FloatFieldUpdateOperationsInput | number
     closed?: BoolFieldUpdateOperationsInput | boolean
+    completed?: BoolFieldUpdateOperationsInput | boolean
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     shortLink?: NullableStringFieldUpdateOperationsInput | string | null
     coverColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -19438,6 +19497,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     pos?: FloatFieldUpdateOperationsInput | number
     closed?: BoolFieldUpdateOperationsInput | boolean
+    completed?: BoolFieldUpdateOperationsInput | boolean
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     shortLink?: NullableStringFieldUpdateOperationsInput | string | null
     coverColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -19537,6 +19597,7 @@ export namespace Prisma {
     description?: string | null
     pos: number
     closed?: boolean
+    completed?: boolean
     dueDate?: Date | string | null
     shortLink?: string | null
     coverColor?: string | null
@@ -19588,6 +19649,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     pos?: FloatFieldUpdateOperationsInput | number
     closed?: BoolFieldUpdateOperationsInput | boolean
+    completed?: BoolFieldUpdateOperationsInput | boolean
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     shortLink?: NullableStringFieldUpdateOperationsInput | string | null
     coverColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -19608,6 +19670,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     pos?: FloatFieldUpdateOperationsInput | number
     closed?: BoolFieldUpdateOperationsInput | boolean
+    completed?: BoolFieldUpdateOperationsInput | boolean
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     shortLink?: NullableStringFieldUpdateOperationsInput | string | null
     coverColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -19628,6 +19691,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     pos?: FloatFieldUpdateOperationsInput | number
     closed?: BoolFieldUpdateOperationsInput | boolean
+    completed?: BoolFieldUpdateOperationsInput | boolean
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     shortLink?: NullableStringFieldUpdateOperationsInput | string | null
     coverColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -19664,6 +19728,7 @@ export namespace Prisma {
     description?: string | null
     pos: number
     closed?: boolean
+    completed?: boolean
     dueDate?: Date | string | null
     shortLink?: string | null
     coverColor?: string | null
@@ -19680,6 +19745,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     pos?: FloatFieldUpdateOperationsInput | number
     closed?: BoolFieldUpdateOperationsInput | boolean
+    completed?: BoolFieldUpdateOperationsInput | boolean
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     shortLink?: NullableStringFieldUpdateOperationsInput | string | null
     coverColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -19700,6 +19766,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     pos?: FloatFieldUpdateOperationsInput | number
     closed?: BoolFieldUpdateOperationsInput | boolean
+    completed?: BoolFieldUpdateOperationsInput | boolean
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     shortLink?: NullableStringFieldUpdateOperationsInput | string | null
     coverColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -19720,6 +19787,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     pos?: FloatFieldUpdateOperationsInput | number
     closed?: BoolFieldUpdateOperationsInput | boolean
+    completed?: BoolFieldUpdateOperationsInput | boolean
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     shortLink?: NullableStringFieldUpdateOperationsInput | string | null
     coverColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -19851,6 +19919,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     pos?: FloatFieldUpdateOperationsInput | number
     closed?: BoolFieldUpdateOperationsInput | boolean
+    completed?: BoolFieldUpdateOperationsInput | boolean
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     shortLink?: NullableStringFieldUpdateOperationsInput | string | null
     coverColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -19871,6 +19940,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     pos?: FloatFieldUpdateOperationsInput | number
     closed?: BoolFieldUpdateOperationsInput | boolean
+    completed?: BoolFieldUpdateOperationsInput | boolean
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     shortLink?: NullableStringFieldUpdateOperationsInput | string | null
     coverColor?: NullableStringFieldUpdateOperationsInput | string | null
@@ -19891,6 +19961,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     pos?: FloatFieldUpdateOperationsInput | number
     closed?: BoolFieldUpdateOperationsInput | boolean
+    completed?: BoolFieldUpdateOperationsInput | boolean
     dueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     shortLink?: NullableStringFieldUpdateOperationsInput | string | null
     coverColor?: NullableStringFieldUpdateOperationsInput | string | null

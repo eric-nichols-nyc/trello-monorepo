@@ -36,15 +36,15 @@ export function CardBackPanel({
   const backHref = `/b/${encodeURIComponent(boardRouteKey)}`;
 
   const [description, setDescription] = useState(card.description ?? "");
-  const [closed, setClosed] = useState(card.closed);
+  const [completed, setCompleted] = useState(card.completed);
 
   useEffect(() => {
     setDescription(card.description ?? "");
   }, [card.id, card.updatedAt]);
 
   useEffect(() => {
-    setClosed(card.closed);
-  }, [card.id, card.updatedAt, card.closed]);
+    setCompleted(card.completed);
+  }, [card.id, card.updatedAt, card.completed]);
 
   return (
     <div className="w-full max-w-2xl overflow-hidden rounded-xl bg-zinc-900 text-zinc-100 shadow-2xl lg:max-w-5xl">
@@ -63,9 +63,9 @@ export function CardBackPanel({
           <CardBackTitle
             boardRouteKey={boardRouteKey}
             cardId={card.id}
-            closed={closed}
+            completed={completed}
             mode={mode}
-            onClosedChange={setClosed}
+            onCompletedChange={setCompleted}
             title={card.name}
           />
 

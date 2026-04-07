@@ -7,6 +7,7 @@ const templateCardSchema = z
     coverColor: z.string().min(1).optional(),
     coverImage: z.string().min(1).optional(),
     closed: z.boolean().optional(),
+    completed: z.boolean().optional(),
     /** ISO-8601 datetime string */
     dueDate: z.string().min(1).optional(),
   })

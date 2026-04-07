@@ -28,6 +28,10 @@ export class UpdateCardDto {
   closed?: boolean;
 
   @IsOptional()
+  @IsBoolean()
+  completed?: boolean;
+
+  @IsOptional()
   @Type(() => Date)
   @IsDate()
   dueDate?: Date | null;

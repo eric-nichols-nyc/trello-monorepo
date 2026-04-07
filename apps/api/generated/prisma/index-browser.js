@@ -175,6 +175,7 @@ exports.Prisma.CardScalarFieldEnum = {
   description: 'description',
   pos: 'pos',
   closed: 'closed',
+  completed: 'completed',
   dueDate: 'dueDate',
   shortLink: 'shortLink',
   coverColor: 'coverColor',
