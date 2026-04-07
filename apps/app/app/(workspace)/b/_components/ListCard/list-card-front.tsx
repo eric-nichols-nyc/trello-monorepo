@@ -5,16 +5,17 @@ import { useAuth } from "@repo/clerk/client";
 import { Checkbox } from "@repo/design-system/components/ui/checkbox";
 import { cn } from "@repo/design-system/lib/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { type MouseEvent, memo, useCallback, useState } from "react";
+import { type MouseEvent, memo, useCallback } from "react";
 
 import { updateCardClient } from "@/lib/api/cards/update-card-client";
 import { toast } from "@/lib/toast";
 import { boardDetailQueryKey } from "@/queries/board-detail-query";
 
+import { CardBadges } from "../CardBadges/card-badges";
 import { CardActions } from "./card-actions";
 import { ListCardTitle } from "./list-card-title";
 
-/** Outer shell shared by {@link ListCard} and {@link ListCardChrome}. */
+/** Outer shell shared by {@link ListCardFront} and {@link ListCardChrome}. */
 export const LIST_CARD_SURFACE_CLASSNAME =
   "relative flex min-h-[45px] w-full min-w-0 flex-1 items-center overflow-hidden rounded-[8px] bg-[rgb(36,37,40)] px-3 py-2";
 
@@ -63,8 +64,8 @@ type ListCardChromeProps = {
 };
 
 /**
- * Static card surface for {@link DragOverlay} — composes the same shell and
- * title row as {@link ListCard} without sortable or checkbox.
+ * Static card surface for {@link DragOverlay} — same shell and title row as
+ * {@link ListCardFront} without sortable or checkbox.
  */
 export function ListCardChrome({
   title,
@@ -100,7 +101,7 @@ export function ListCardChrome({
   );
 }
 
-export type BoardCardItemProps = {
+export type ListCardFrontProps = {
   boardKey: string;
   cardId: string;
   columnId: string;
@@ -113,10 +114,10 @@ export type BoardCardItemProps = {
 };
 
 /**
- * Sortable card row for the nested `@dnd-kit/react` board: same chrome as
- * {@link ListCard}, wired to column `group` + drag handle ref.
+ * Sortable list card for the nested `@dnd-kit/react` board (title, badges,
+ * actions, persisted completion).
  */
-export const BoardCardItem = memo(function BoardCardItemFrame({
+export const ListCardFront = memo(function ListCardFrontFrame({
   boardKey,
   cardId,
   columnId,
@@ -126,7 +127,7 @@ export const BoardCardItem = memo(function BoardCardItemFrame({
   onCardCompletedChange,
   onOpenCard,
   onArchive,
-}: BoardCardItemProps) {
+}: ListCardFrontProps) {
   const queryClient = useQueryClient();
   const { getToken } = useAuth();
 
@@ -212,8 +213,14 @@ export const BoardCardItem = memo(function BoardCardItemFrame({
     [onOpenCard]
   );
 
+  const titleSlideClass =
+    completed
+      ? "translate-x-7"
+      : "translate-x-0 group-focus-within:translate-x-7 group-hover:translate-x-7";
+
   return (
     <li
+      data-testid="list-card"
       className={cn(
         "group relative flex list-none",
         isDragging ? "opacity-0" : ""
@@ -255,15 +262,15 @@ export const BoardCardItem = memo(function BoardCardItemFrame({
           onArchive={onArchive}
           onOpenCard={onOpenCard}
         />
-        <ListCardTitleArea
-          className={
-            completed
-              ? "translate-x-7"
-              : "translate-x-0 group-focus-within:translate-x-7 group-hover:translate-x-7"
-          }
-          completed={completed}
-          title={title}
-        />
+        <div
+          className={cn(
+            "relative z-2 flex min-w-0 flex-1 flex-col transition-transform duration-200 ease-out",
+            titleSlideClass
+          )}
+        >
+          <ListCardTitleArea completed={completed} title={title} />
+          <CardBadges />
+        </div>
       </div>
     </li>
   );

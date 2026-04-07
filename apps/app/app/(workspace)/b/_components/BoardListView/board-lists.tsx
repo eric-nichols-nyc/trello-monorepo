@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useMemo } from "react";
 
 import type { BoardDetail } from "@/types/board-detail";
-import { ListCardChrome } from "../ListCard/list-card-chrome";
+import { ListCardChrome } from "../ListCard/list-card-front";
 import { ListComposer } from "../ListComposer/list-composer";
 import { BoardColumn } from "./board-column";
 import { ListColumnDragPreview } from "./list-column-drag-preview";

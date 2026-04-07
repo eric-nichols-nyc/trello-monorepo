@@ -4,7 +4,7 @@ import { CollisionPriority } from "@dnd-kit/abstract";
 import { useSortable } from "@dnd-kit/react/sortable";
 import { cn } from "@repo/design-system/lib/utils";
 import { memo, useCallback, useState } from "react";
-import { BoardCardItem } from "../ListCard/list-card-chrome";
+import { ListCardFront } from "../ListCard/list-card-front";
 import { ListHeader } from "../ListHeader/list-header";
 import { ListFooter } from "../ListWrapper/list-footer";
 
@@ -68,7 +68,7 @@ export const BoardColumn = memo(function BoardColumnFrame({
         />
         <ol className="mx-[4px] my-0 flex min-h-0 list-none flex-col gap-2 p-0">
           {cardIds.map((cardId, index) => (
-            <BoardCardItem
+            <ListCardFront
               boardKey={boardKey}
               cardId={cardId}
               columnId={listId}
