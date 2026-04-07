@@ -2,7 +2,6 @@
 
 import { useSortable } from "@dnd-kit/react/sortable";
 import { useAuth } from "@repo/clerk/client";
-import { Checkbox } from "@repo/design-system/components/ui/checkbox";
 import { cn } from "@repo/design-system/lib/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { type MouseEvent, memo, useCallback } from "react";
@@ -15,45 +14,11 @@ import { CardBadges } from "../CardBadges/card-badges";
 import { CardActions } from "./card-actions";
 import { ListCardTitle } from "./list-card-title";
 
-/** Outer shell shared by {@link ListCardFront} and {@link ListCardChrome}. */
+/** Outer shell shared by {@link ListCardFront} and {@link ListCardDragPreview}. */
 export const LIST_CARD_SURFACE_CLASSNAME =
   "relative flex min-h-[45px] w-full min-w-0 flex-1 items-center overflow-hidden rounded-[8px] bg-[rgb(36,37,40)] px-3 py-2";
 
-type ListCardTitleAreaProps = {
-  title: string;
-  className?: string;
-  /** Right padding so title text clears {@link CardActions} trigger. @default true */
-  contentGutterForEdit?: boolean;
-  completed?: boolean;
-};
-
-/** Title row inside the card surface (typography + layout). */
-export function ListCardTitleArea({
-  title,
-  className,
-  contentGutterForEdit = true,
-  completed = false,
-}: ListCardTitleAreaProps) {
-  return (
-    <div
-      className={cn(
-        "relative z-2 min-w-0 flex-1 transition-transform duration-200 ease-out",
-        contentGutterForEdit === true ? "pr-7" : null,
-        className
-      )}
-    >
-      <div className="flex min-w-0 items-center gap-2">
-        <ListCardTitle
-          className="min-w-0 flex-1"
-          completed={completed}
-          title={title}
-        />
-      </div>
-    </div>
-  );
-}
-
-type ListCardChromeProps = {
+export type ListCardDragPreviewProps = {
   title: string;
   showEditIcon?: boolean;
   /** Required when `showEditIcon` is true so {@link CardActions} can target this card. */
@@ -64,17 +29,17 @@ type ListCardChromeProps = {
 };
 
 /**
- * Static card surface for {@link DragOverlay} — same shell and title row as
- * {@link ListCardFront} without sortable or checkbox.
+ * Non-interactive card shell for drag overlays — matches {@link ListCardFront}
+ * visuals (surface + title) without sortable wiring, checkbox, or mutations.
  */
-export function ListCardChrome({
+export function ListCardDragPreview({
   title,
   showEditIcon = false,
   boardKey,
   cardId,
   onOpenCard,
   onArchive,
-}: ListCardChromeProps) {
+}: ListCardDragPreviewProps) {
   const showActions =
     showEditIcon === true &&
     cardId !== undefined &&
@@ -92,7 +57,7 @@ export function ListCardChrome({
           onOpenCard={onOpenCard}
         />
       ) : null}
-      <ListCardTitleArea
+      <ListCardTitle
         className="translate-x-0"
         contentGutterForEdit={showActions}
         title={title}
@@ -213,11 +178,6 @@ export const ListCardFront = memo(function ListCardFrontFrame({
     [onOpenCard]
   );
 
-  const titleSlideClass =
-    completed
-      ? "translate-x-7"
-      : "translate-x-0 group-focus-within:translate-x-7 group-hover:translate-x-7";
-
   return (
     <li
       data-testid="list-card"
@@ -238,23 +198,6 @@ export const ListCardFront = memo(function ListCardFrontFrame({
         onMouseLeave={handleMouseLeave}
         ref={handleRef}
       >
-        <span
-          className={cn(
-            "-translate-y-1/2 absolute top-1/2 left-3 z-1 transition-opacity duration-150",
-            completed
-              ? "pointer-events-auto opacity-100"
-              : "pointer-events-none opacity-0 group-focus-within:pointer-events-auto group-focus-within:opacity-100 group-hover:pointer-events-auto group-hover:opacity-100"
-          )}
-          onPointerDown={(event) => event.stopPropagation()}
-        >
-          <Checkbox
-            aria-label={`Mark card complete: ${title}`}
-            checked={completed}
-            className="size-5 rounded-full border-white/35 bg-transparent data-[state=checked]:border-emerald-500 data-[state=checked]:bg-emerald-600 [&_[data-slot=checkbox-indicator]_svg]:size-[18px]"
-            disabled={saveMutation.isPending}
-            onCheckedChange={handleCheckedChange}
-          />
-        </span>
         <CardActions
           boardKey={boardKey}
           cardId={cardId}
@@ -262,14 +205,20 @@ export const ListCardFront = memo(function ListCardFrontFrame({
           onArchive={onArchive}
           onOpenCard={onOpenCard}
         />
-        <div
-          className={cn(
-            "relative z-2 flex min-w-0 flex-1 flex-col transition-transform duration-200 ease-out",
-            titleSlideClass
-          )}
-        >
-          <ListCardTitleArea completed={completed} title={title} />
-          <CardBadges />
+        <div className="relative z-2 flex min-w-0 flex-1 flex-col">
+          <ListCardTitle
+            completed={completed}
+            completion={{
+              checked: completed,
+              disabled: saveMutation.isPending,
+              onCheckedChange: handleCheckedChange,
+            }}
+            title={title}
+          />
+          {/* Same inset as `size-5` + `gap-2` title row so metadata lines up under the text */}
+          <div className="pl-2">
+            <CardBadges />
+          </div>
         </div>
       </div>
     </li>

@@ -1,5 +1,5 @@
 import { CardQuickAddChrome } from "../CardQuickAdd/card-quick-add-trigger";
-import { ListCardChrome } from "../ListCard/list-card-front";
+import { ListCardDragPreview } from "../ListCard/list-card-front";
 import { ListHeader } from "../ListHeader/list-header";
 
 type ListColumnDragPreviewProps = {
@@ -25,7 +25,7 @@ export function ListColumnDragPreview({
         <ol className="mx-[4px] my-0 flex min-h-0 list-none flex-col gap-2 p-0">
           {cardIds.map((cardId) => (
             <li className="relative flex list-none" key={cardId}>
-              <ListCardChrome title={cardTitles[cardId] ?? "Card"} />
+              <ListCardDragPreview title={cardTitles[cardId] ?? "Card"} />
             </li>
           ))}
         </ol>

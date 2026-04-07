@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useMemo } from "react";
 
 import type { BoardDetail } from "@/types/board-detail";
-import { ListCardChrome } from "../ListCard/list-card-front";
+import { ListCardDragPreview } from "../ListCard/list-card-front";
 import { ListComposer } from "../ListComposer/list-composer";
 import { BoardColumn } from "./board-column";
 import { ListColumnDragPreview } from "./list-column-drag-preview";
@@ -107,7 +107,7 @@ export const BoardLists = ({ board, boardKey }: BoardListsProps) => {
           return (
             <div className="pointer-events-none w-[262px] max-w-[calc(270px-8px)] cursor-grabbing">
               <div className="overflow-hidden rounded-[8px] shadow-lg ring-2 ring-white/20">
-                <ListCardChrome title={cardTitles[id] ?? "Card"} />
+                <ListCardDragPreview title={cardTitles[id] ?? "Card"} />
               </div>
             </div>
           );
