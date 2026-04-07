@@ -86,7 +86,7 @@ export function ListCardTitle({
       >
         <span
           className={cn(
-            "block truncate font-medium text-white/85 text-xs",
+            "block truncate font-medium text-white/85 text-sm",
             completed ? "text-white/45 line-through" : null
           )}
         >
