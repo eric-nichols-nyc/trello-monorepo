@@ -31,6 +31,18 @@ describe("GlobalHeader", () => {
     expect(screen.getByTestId("user-menu")).toBeInTheDocument();
   });
 
+  it("renders header utility actions before the user menu", () => {
+    render(<GlobalHeader />);
+    expect(screen.getByTestId("header-utility-buttons")).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Announcements" })
+    ).toBeVisible();
+    expect(
+      screen.getByRole("button", { name: "Notifications" })
+    ).toBeVisible();
+    expect(screen.getByRole("button", { name: "Help" })).toBeVisible();
+  });
+
   it("renders search and create actions", () => {
     render(<GlobalHeader />);
 

@@ -35,7 +35,7 @@ export const WorkspaceBoardsDashboard = ({
   const workspaceName = workspace?.name ?? "Trello workspace";
 
   return (
-    <div className="mx-auto max-w-[914px] space-y-6 px-12">
+    <div className="mx-auto max-w-[914px] space-y-6 px-6">
       <WorkspaceBanner
         editable
         visibilityLabel="Private"
