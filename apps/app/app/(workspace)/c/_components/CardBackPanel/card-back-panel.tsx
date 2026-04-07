@@ -36,10 +36,15 @@ export function CardBackPanel({
   const backHref = `/b/${encodeURIComponent(boardRouteKey)}`;
 
   const [description, setDescription] = useState(card.description ?? "");
+  const [closed, setClosed] = useState(card.closed);
 
   useEffect(() => {
     setDescription(card.description ?? "");
   }, [card.id, card.updatedAt]);
+
+  useEffect(() => {
+    setClosed(card.closed);
+  }, [card.id, card.updatedAt, card.closed]);
 
   return (
     <div className="w-full max-w-2xl overflow-hidden rounded-xl bg-zinc-900 text-zinc-100 shadow-2xl lg:max-w-5xl">
@@ -55,7 +60,14 @@ export function CardBackPanel({
 
       <div className="flex max-h-[min(70vh,720px)] min-h-0 flex-col lg:flex-row">
         <div className="min-h-0 flex-1 overflow-y-auto p-6 lg:min-w-0">
-          <CardBackTitle mode={mode} title={card.name} />
+          <CardBackTitle
+            boardRouteKey={boardRouteKey}
+            cardId={card.id}
+            closed={closed}
+            mode={mode}
+            onClosedChange={setClosed}
+            title={card.name}
+          />
 
           <CardBackQuickAdd />
 
@@ -68,7 +80,9 @@ export function CardBackPanel({
             value={description}
           />
 
-          <CardBackChecklist card={card} />
+          {card.checklists && card.checklists.length > 0 && (
+            <CardBackChecklist card={card} />
+          )}
         </div>
 
         <CardBackComments className="max-h-[min(40vh,360px)] shrink-0 border-zinc-800 border-t lg:max-h-none lg:w-[min(100%,380px)] lg:border-t-0 lg:border-l" />

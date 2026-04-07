@@ -4,6 +4,7 @@ import { nestPublicBaseUrl } from "@/lib/api/nest-public-base-url";
 /** Subset of Nest `UpdateCardDto` supported by the app client. */
 export type UpdateCardBody = {
   description?: string;
+  closed?: boolean;
 };
 
 /** PATCH `/api/cards/:id` for metadata updates (not move-only `patchCardClient`). */
