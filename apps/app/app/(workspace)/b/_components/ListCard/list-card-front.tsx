@@ -11,6 +11,7 @@ import { toast } from "@/lib/toast";
 import { boardDetailQueryKey } from "@/queries/board-detail-query";
 
 import { type CardBadgesProps, CardBadges } from "../CardBadges/card-badges";
+import { CardFrontCover } from "./card-front-cover";
 import { CardActions } from "./card-actions";
 import {
   ListCardTitle,
@@ -19,7 +20,11 @@ import {
 
 /** Outer shell shared by {@link ListCardFront} and {@link ListCardDragPreview}. */
 export const LIST_CARD_SURFACE_CLASSNAME =
-  "relative flex min-h-[45px] w-full min-w-0 flex-1 items-center overflow-hidden rounded-[8px] bg-[rgb(36,37,40)] px-3 py-2";
+  "relative flex w-full min-w-0 flex-1 flex-col overflow-hidden rounded-[8px] bg-[rgb(36,37,40)]";
+
+/** Padded row for title + actions (below optional {@link CardFrontCover}). */
+export const LIST_CARD_CONTENT_ROW_CLASSNAME =
+  "relative flex min-h-[45px] flex-1 items-center px-3 py-2";
 
 export type ListCardDragPreviewProps = {
   title: string;
@@ -51,20 +56,22 @@ export function ListCardDragPreview({
 
   return (
     <div className={cn(LIST_CARD_SURFACE_CLASSNAME, "cursor-grabbing")}>
-      {showActions ? (
-        <CardActions
-          boardKey={boardKey}
-          cardId={cardId}
-          cardTitle={title}
-          onArchive={onArchive}
-          onOpenCard={onOpenCard}
+      <div className={LIST_CARD_CONTENT_ROW_CLASSNAME}>
+        {showActions ? (
+          <CardActions
+            boardKey={boardKey}
+            cardId={cardId}
+            cardTitle={title}
+            onArchive={onArchive}
+            onOpenCard={onOpenCard}
+          />
+        ) : null}
+        <ListCardTitle
+          className="translate-x-0"
+          contentGutterForEdit={showActions}
+          title={title}
         />
-      ) : null}
-      <ListCardTitle
-        className="translate-x-0"
-        contentGutterForEdit={showActions}
-        title={title}
-      />
+      </div>
     </div>
   );
 }
@@ -79,7 +86,19 @@ export type ListCardFrontProps = {
   onCardCompletedChange: (completed: boolean) => void;
   onOpenCard?: () => void;
   onArchive?: () => void;
-} & Pick<CardBadgesProps, "attachmentCount" | "description">;
+  coverColor?: string | null;
+  coverImage?: string | null;
+} & Pick<
+  CardBadgesProps,
+  | "attachmentCount"
+  | "checklistCompleted"
+  | "checklistDue"
+  | "checklistTotal"
+  | "commentCount"
+  | "description"
+  | "dueDate"
+  | "startDate"
+>;
 
 /**
  * Sortable list card for the nested `@dnd-kit/react` board (title, badges,
@@ -93,10 +112,18 @@ export const ListCardFront = memo(function ListCardFrontFrame({
   title,
   completed,
   attachmentCount,
+  checklistCompleted,
+  checklistDue,
+  checklistTotal,
+  commentCount,
   description,
+  dueDate,
+  startDate,
   onCardCompletedChange,
   onOpenCard,
   onArchive,
+  coverColor,
+  coverImage,
 }: ListCardFrontProps) {
   const queryClient = useQueryClient();
   const { getToken } = useAuth();
@@ -203,28 +230,38 @@ export const ListCardFront = memo(function ListCardFrontFrame({
         onMouseLeave={handleMouseLeave}
         ref={handleRef}
       >
-        <CardActions
-          boardKey={boardKey}
-          cardId={cardId}
-          cardTitle={title}
-          onArchive={onArchive}
-          onOpenCard={onOpenCard}
-        />
-        <div className="relative z-2 flex min-w-0 flex-1 flex-col">
-          <ListCardTitle
-            completed={completed}
-            completion={{
-              checked: completed,
-              disabled: saveMutation.isPending,
-              onCheckedChange: handleCheckedChange,
-            }}
-            title={title}
+        <CardFrontCover coverColor={coverColor} coverImage={coverImage} />
+        <div className={LIST_CARD_CONTENT_ROW_CLASSNAME}>
+          <CardActions
+            boardKey={boardKey}
+            cardId={cardId}
+            cardTitle={title}
+            onArchive={onArchive}
+            onOpenCard={onOpenCard}
           />
-          <div>
-            <CardBadges
-              attachmentCount={attachmentCount}
-              description={description}
+          <div className="relative z-2 flex min-w-0 flex-1 flex-col">
+            <ListCardTitle
+              completed={completed}
+              completion={{
+                checked: completed,
+                disabled: saveMutation.isPending,
+                onCheckedChange: handleCheckedChange,
+              }}
+              title={title}
             />
+            <div>
+              <CardBadges
+                attachmentCount={attachmentCount}
+                checklistCompleted={checklistCompleted}
+                checklistDue={checklistDue}
+                checklistTotal={checklistTotal}
+                commentCount={commentCount}
+                description={description}
+                dueComplete={completed}
+                dueDate={dueDate}
+                startDate={startDate}
+              />
+            </div>
           </div>
         </div>
       </div>

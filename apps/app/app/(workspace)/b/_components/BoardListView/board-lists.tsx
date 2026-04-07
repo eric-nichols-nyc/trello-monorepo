@@ -76,6 +76,87 @@ export const BoardLists = ({ board, boardKey }: BoardListsProps) => {
     return map;
   }, [board.lists]);
 
+  const cardDueDates = useMemo(() => {
+    const map: Record<string, Date> = {};
+    for (const list of board.lists) {
+      for (const card of list.cards) {
+        if (card.dueDate == null || card.dueDate === "") {
+          continue;
+        }
+        const d = new Date(card.dueDate);
+        if (!Number.isNaN(d.getTime())) {
+          map[card.id] = d;
+        }
+      }
+    }
+    return map;
+  }, [board.lists]);
+
+  const cardCommentCounts = useMemo(() => {
+    const map: Record<string, number> = {};
+    for (const list of board.lists) {
+      for (const card of list.cards) {
+        const n = card.comments.length;
+        if (n > 0) {
+          map[card.id] = n;
+        }
+      }
+    }
+    return map;
+  }, [board.lists]);
+
+  const cardChecklists = useMemo(() => {
+    const map: Record<
+      string,
+      { completed: number; due: string | null; total: number }
+    > = {};
+    for (const list of board.lists) {
+      for (const card of list.cards) {
+        let total = 0;
+        let completed = 0;
+        for (const checklist of card.checklists) {
+          for (const item of checklist.items) {
+            total += 1;
+            if (item.completed) {
+              completed += 1;
+            }
+          }
+        }
+        if (total > 0) {
+          map[card.id] = {
+            completed,
+            due: card.dueDate,
+            total,
+          };
+        }
+      }
+    }
+    return map;
+  }, [board.lists]);
+
+  const cardCovers = useMemo(() => {
+    const map: Record<
+      string,
+      { coverColor: string | null; coverImage: string | null }
+    > = {};
+    for (const list of board.lists) {
+      for (const card of list.cards) {
+        const img =
+          card.coverImage != null && String(card.coverImage).trim() !== ""
+            ? card.coverImage
+            : null;
+        const col =
+          card.coverColor != null && String(card.coverColor).trim() !== ""
+            ? card.coverColor
+            : null;
+        if (img !== null || col !== null) {
+          map[card.id] = { coverColor: col, coverImage: img };
+        }
+      }
+    }
+    return map;
+  }, [board.lists]);
+
   const handleOpenCard = useCallback(
     (cardId: string) => {
       const segment = cardPathSegments[cardId];
@@ -101,6 +182,10 @@ export const BoardLists = ({ board, boardKey }: BoardListsProps) => {
               boardKey={boardKey}
               cardCompleted={cardCompleted}
               cardAttachmentCounts={cardAttachmentCounts}
+              cardCovers={cardCovers}
+              cardChecklists={cardChecklists}
+              cardDueDates={cardDueDates}
+              cardCommentCounts={cardCommentCounts}
               cardDescriptions={cardDescriptions}
               cardIds={cardsByList[id] ?? []}
               cardTitles={cardTitles}

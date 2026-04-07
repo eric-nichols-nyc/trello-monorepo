@@ -7,10 +7,10 @@ type CardQuickAddTriggerProps = {
 
 export const CardQuickAddTrigger = ({ onClick }: CardQuickAddTriggerProps) => (
   <Button
-    className="w-full justify-start bg-white/10 text-white/90 hover:bg-white/15"
+    className="w-full justify-start text-white/90 hover:bg-white/15 hover:text-white/90"
     onClick={onClick}
     type="button"
-    variant="secondary"
+    variant="ghost"
   >
     <Plus aria-hidden className="size-4 shrink-0" />
     Add a card

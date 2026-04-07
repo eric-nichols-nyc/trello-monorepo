@@ -17,6 +17,16 @@ export type BoardColumnProps = {
   cardTitles: Record<string, string>;
   cardDescriptions: Record<string, string>;
   cardAttachmentCounts: Record<string, number>;
+  cardDueDates: Record<string, Date>;
+  cardCommentCounts: Record<string, number>;
+  cardChecklists: Record<
+    string,
+    { completed: number; due: string | null; total: number }
+  >;
+  cardCovers: Record<
+    string,
+    { coverColor: string | null; coverImage: string | null }
+  >;
   cardCompleted: Record<string, boolean>;
   onCardCompletedChange: (cardId: string, completed: boolean) => void;
   /** Optional header debug: suggested vs server `pos` for this column. */
@@ -33,6 +43,10 @@ export const BoardColumn = memo(function BoardColumnFrame({
   cardTitles,
   cardDescriptions,
   cardAttachmentCounts,
+  cardDueDates,
+  cardCommentCounts,
+  cardChecklists,
+  cardCovers,
   cardCompleted,
   onCardCompletedChange,
   listPosDebug,
@@ -86,7 +100,14 @@ export const BoardColumn = memo(function BoardColumnFrame({
                 onOpenCard ? () => onOpenCard(cardId) : undefined
               }
               attachmentCount={cardAttachmentCounts[cardId] ?? 0}
+              coverColor={cardCovers[cardId]?.coverColor ?? null}
+              coverImage={cardCovers[cardId]?.coverImage ?? null}
+              checklistCompleted={cardChecklists[cardId]?.completed}
+              checklistDue={cardChecklists[cardId]?.due}
+              checklistTotal={cardChecklists[cardId]?.total}
+              commentCount={cardCommentCounts[cardId] ?? 0}
               description={cardDescriptions[cardId]}
+              dueDate={cardDueDates[cardId]}
               title={cardTitles[cardId] ?? "Card"}
             />
           ))}
