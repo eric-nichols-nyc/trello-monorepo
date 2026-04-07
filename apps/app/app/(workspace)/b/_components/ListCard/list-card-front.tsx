@@ -12,7 +12,10 @@ import { boardDetailQueryKey } from "@/queries/board-detail-query";
 
 import { CardBadges } from "../CardBadges/card-badges";
 import { CardActions } from "./card-actions";
-import { ListCardTitle } from "./list-card-title";
+import {
+  ListCardTitle,
+  listCardContentRevealTranslateClass,
+} from "./list-card-title";
 
 /** Outer shell shared by {@link ListCardFront} and {@link ListCardDragPreview}. */
 export const LIST_CARD_SURFACE_CLASSNAME =
@@ -215,8 +218,7 @@ export const ListCardFront = memo(function ListCardFrontFrame({
             }}
             title={title}
           />
-          {/* Same inset as `size-5` + `gap-2` title row so metadata lines up under the text */}
-          <div className="pl-2">
+          <div>
             <CardBadges />
           </div>
         </div>
