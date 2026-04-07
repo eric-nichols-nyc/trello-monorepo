@@ -37,6 +37,7 @@ export function CardBackPanel({
 
   const [description, setDescription] = useState(card.description ?? "");
   const [completed, setCompleted] = useState(card.completed);
+  const [commentsPanelOpen, setCommentsPanelOpen] = useState(true);
 
   useEffect(() => {
     setDescription(card.description ?? "");
@@ -45,6 +46,10 @@ export function CardBackPanel({
   useEffect(() => {
     setCompleted(card.completed);
   }, [card.id, card.updatedAt, card.completed]);
+
+  useEffect(() => {
+    setCommentsPanelOpen(true);
+  }, [card.id]);
 
   return (
     <div className="w-full max-w-2xl overflow-hidden rounded-xl bg-zinc-900 text-zinc-100 shadow-2xl lg:max-w-5xl">
@@ -85,10 +90,22 @@ export function CardBackPanel({
           )}
         </div>
 
-        <CardBackComments className="max-h-[min(40vh,360px)] shrink-0 border-zinc-800 border-t lg:max-h-none lg:w-[min(100%,380px)] lg:border-t-0 lg:border-l" />
+        <CardBackComments
+          boardRouteKey={boardRouteKey}
+          cardId={card.id}
+          className="max-h-[min(40vh,360px)] shrink-0 border-zinc-800 border-t lg:max-h-none lg:w-[min(100%,380px)] lg:border-t-0 lg:border-l"
+          initialComments={card.comments}
+          onPanelOpenChange={setCommentsPanelOpen}
+          panelOpen={commentsPanelOpen}
+        />
       </div>
 
-      <CardBackFooter />
+      <CardBackFooter
+        commentsPanelOpen={commentsPanelOpen}
+        onToggleCommentsPanel={() =>
+          setCommentsPanelOpen((open) => !open)
+        }
+      />
     </div>
   );
 }

@@ -96,7 +96,8 @@ function normalizeBoardCommentAuthor(raw: unknown): BoardCommentAuthor {
   };
 }
 
-function normalizeBoardComment(raw: unknown): BoardComment {
+/** Normalize a comment row from the Nest API (e.g. POST response). */
+export function normalizeBoardComment(raw: unknown): BoardComment {
   const c = raw as Record<string, unknown>;
   return {
     id: String(c.id),
