@@ -48,6 +48,34 @@ export const BoardLists = ({ board, boardKey }: BoardListsProps) => {
     return map;
   }, [board.lists]);
 
+  const cardDescriptions = useMemo(() => {
+    const map: Record<string, string> = {};
+    for (const list of board.lists) {
+      for (const card of list.cards) {
+        if (card.description == null) {
+          continue;
+        }
+        const text = String(card.description).trim();
+        if (text.length > 0) {
+          map[card.id] = text;
+        }
+      }
+    }
+    return map;
+  }, [board.lists]);
+
+  const cardAttachmentCounts = useMemo(() => {
+    const map: Record<string, number> = {};
+    for (const list of board.lists) {
+      for (const card of list.cards) {
+        if (card.attachmentCount > 0) {
+          map[card.id] = card.attachmentCount;
+        }
+      }
+    }
+    return map;
+  }, [board.lists]);
+
   const handleOpenCard = useCallback(
     (cardId: string) => {
       const segment = cardPathSegments[cardId];
@@ -72,6 +100,8 @@ export const BoardLists = ({ board, boardKey }: BoardListsProps) => {
             <BoardColumn
               boardKey={boardKey}
               cardCompleted={cardCompleted}
+              cardAttachmentCounts={cardAttachmentCounts}
+              cardDescriptions={cardDescriptions}
               cardIds={cardsByList[id] ?? []}
               cardTitles={cardTitles}
               columnIndex={columnIndex}

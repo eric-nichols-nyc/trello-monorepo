@@ -36,6 +36,9 @@
   /* Header workspace search popover — board list rows. */
   --header-search-row-bg: var(--card-back-actions-menu-bg);
   --header-search-row-hover-bg: var(--card-back-actions-menu-hover-bg);
+  /* List card face — mark-complete control checked state (see `.list-card-completion-checkbox`). */
+  --list-card-complete-fill: #82b535;
+  --list-card-complete-check: #18181b;
 }
 
 html,
@@ -77,4 +80,20 @@ body {
 .header-search-board-row:hover,
 .header-search-board-row:focus-visible {
   background-color: var(--header-search-row-hover-bg);
+}
+
+/*
+ * List card completion checkbox: design-system + Tailwind v4 layering can block
+ * per-instance utilities; these rules win for the checked face only.
+ */
+.list-card-completion-checkbox:is([data-state="checked"], [aria-checked="true"]) {
+  background-color: var(--list-card-complete-fill) !important;
+  border-color: var(--list-card-complete-fill) !important;
+  color: var(--list-card-complete-check) !important;
+}
+
+.list-card-completion-checkbox:is([data-state="checked"], [aria-checked="true"])
+  [data-slot="checkbox-indicator"]
+  svg {
+  color: var(--list-card-complete-check) !important;
 }

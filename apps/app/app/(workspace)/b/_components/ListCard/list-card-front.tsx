@@ -10,7 +10,7 @@ import { updateCardClient } from "@/lib/api/cards/update-card-client";
 import { toast } from "@/lib/toast";
 import { boardDetailQueryKey } from "@/queries/board-detail-query";
 
-import { CardBadges } from "../CardBadges/card-badges";
+import { type CardBadgesProps, CardBadges } from "../CardBadges/card-badges";
 import { CardActions } from "./card-actions";
 import {
   ListCardTitle,
@@ -79,7 +79,7 @@ export type ListCardFrontProps = {
   onCardCompletedChange: (completed: boolean) => void;
   onOpenCard?: () => void;
   onArchive?: () => void;
-};
+} & Pick<CardBadgesProps, "attachmentCount" | "description">;
 
 /**
  * Sortable list card for the nested `@dnd-kit/react` board (title, badges,
@@ -92,6 +92,8 @@ export const ListCardFront = memo(function ListCardFrontFrame({
   index,
   title,
   completed,
+  attachmentCount,
+  description,
   onCardCompletedChange,
   onOpenCard,
   onArchive,
@@ -219,7 +221,10 @@ export const ListCardFront = memo(function ListCardFrontFrame({
             title={title}
           />
           <div>
-            <CardBadges />
+            <CardBadges
+              attachmentCount={attachmentCount}
+              description={description}
+            />
           </div>
         </div>
       </div>

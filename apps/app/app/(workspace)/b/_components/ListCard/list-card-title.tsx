@@ -28,8 +28,8 @@ export type ListCardTitleProps = {
 
 export function listCardContentRevealTranslateClass(completed: boolean): string {
   return completed === true
-    ? "translate-x-7"
-    : "translate-x-0 group-hover:translate-x-7 group-focus-within:translate-x-7";
+    ? "translate-x-6"
+    : "translate-x-0 group-hover:translate-x-6 group-focus-within:translate-x-6";
 }
 
 export function ListCardTitle({
@@ -64,7 +64,10 @@ export function ListCardTitle({
           <Checkbox
             aria-label={`Mark card complete: ${title}`}
             checked={completion.checked}
-            className="size-5 rounded-full border-white/35 bg-transparent data-[state=checked]:border-emerald-500 data-[state=checked]:bg-emerald-600 [&_[data-slot=checkbox-indicator]_svg]:size-[18px]"
+            className={cn(
+              "list-card-completion-checkbox size-4 rounded-full border border-white/35 bg-transparent shadow-none",
+              "[&_[data-slot=checkbox-indicator]_svg]:size-3.5"
+            )}
             disabled={completion.disabled}
             onCheckedChange={completion.onCheckedChange}
           />
@@ -72,7 +75,7 @@ export function ListCardTitle({
       ) : null}
       <div
         className={cn(
-          "relative z-[2] min-h-5 min-w-0 transition-transform duration-200 ease-out",
+          "relative z-[2] min-h-4 min-w-0 transition-transform duration-200 ease-out",
           showCheckbox ? TITLE_MASK_BG : null,
           revealClass
         )}

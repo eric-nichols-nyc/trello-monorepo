@@ -42,6 +42,8 @@ export type BoardCard = CardOrderingRow & {
   closed: boolean;
   /** Checkbox complete on the card face / card back. */
   completed: boolean;
+  /** Count of file attachments on the card (from board payload `_count`). */
+  attachmentCount: number;
   dueDate: string | null;
   shortLink: string;
   coverColor: string | null;
@@ -143,6 +145,18 @@ export function normalizeBoardCard(raw: unknown): BoardCard {
     pos: Number(c.pos),
     closed: Boolean(c.closed),
     completed: Boolean(c.completed),
+    attachmentCount: (() => {
+      const rawCount = c._count;
+      if (
+        rawCount !== null &&
+        typeof rawCount === "object" &&
+        typeof (rawCount as { attachments?: unknown }).attachments ===
+          "number"
+      ) {
+        return (rawCount as { attachments: number }).attachments;
+      }
+      return 0;
+    })(),
     dueDate:
       c.dueDate === null || c.dueDate === undefined ? null : String(c.dueDate),
     shortLink: typeof c.shortLink === "string" ? c.shortLink : "",

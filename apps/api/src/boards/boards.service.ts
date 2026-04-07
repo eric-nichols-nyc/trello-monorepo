@@ -237,6 +237,9 @@ export class BoardsService {
             cards: {
               orderBy: { pos: "asc" },
               include: {
+                _count: {
+                  select: { attachments: true },
+                },
                 comments: {
                   orderBy: { createdAt: "asc" },
                   include: {

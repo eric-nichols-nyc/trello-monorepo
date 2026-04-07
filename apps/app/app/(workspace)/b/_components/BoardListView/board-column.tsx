@@ -15,6 +15,8 @@ export type BoardColumnProps = {
   title: string;
   cardIds: string[];
   cardTitles: Record<string, string>;
+  cardDescriptions: Record<string, string>;
+  cardAttachmentCounts: Record<string, number>;
   cardCompleted: Record<string, boolean>;
   onCardCompletedChange: (cardId: string, completed: boolean) => void;
   /** Optional header debug: suggested vs server `pos` for this column. */
@@ -29,6 +31,8 @@ export const BoardColumn = memo(function BoardColumnFrame({
   title,
   cardIds,
   cardTitles,
+  cardDescriptions,
+  cardAttachmentCounts,
   cardCompleted,
   onCardCompletedChange,
   listPosDebug,
@@ -81,6 +85,8 @@ export const BoardColumn = memo(function BoardColumnFrame({
               onOpenCard={
                 onOpenCard ? () => onOpenCard(cardId) : undefined
               }
+              attachmentCount={cardAttachmentCounts[cardId] ?? 0}
+              description={cardDescriptions[cardId]}
               title={cardTitles[cardId] ?? "Card"}
             />
           ))}
