@@ -5,6 +5,7 @@ import { DropdownMenuItem } from "@repo/design-system/components/ui/dropdown-men
 import { cn } from "@repo/design-system/lib/utils";
 import { Trash2 } from "lucide-react";
 import type { ComponentProps } from "react";
+import { toast } from "@/lib/toast";
 import { useDeleteCard } from "@/queries/use-delete-card";
 
 type DeleteCardButtonIconProps = Omit<
@@ -48,9 +49,11 @@ function DeleteCardMenuItem(props: DeleteCardButtonMenuProps) {
         deleteCard.mutate(
           { boardKey, cardId },
           {
+            onSuccess: () => {
+              toast.success("Card deleted");
+            },
             onError: (error) => {
-              // biome-ignore lint/suspicious/noAlert: temporary until toast UX
-              globalThis.alert(
+              toast.error(
                 error instanceof Error
                   ? error.message
                   : "Could not delete the card."

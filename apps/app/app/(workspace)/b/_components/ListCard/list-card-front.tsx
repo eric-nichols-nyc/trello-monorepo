@@ -13,10 +13,7 @@ import { boardDetailQueryKey } from "@/queries/board-detail-query";
 import { type CardBadgesProps, CardBadges } from "../CardBadges/card-badges";
 import { CardFrontCover } from "./card-front-cover";
 import { CardActions } from "./card-actions";
-import {
-  ListCardTitle,
-  listCardContentRevealTranslateClass,
-} from "./list-card-title";
+import { ListCardTitle } from "./list-card-title";
 
 /** Outer shell shared by {@link ListCardFront} and {@link ListCardDragPreview}. */
 export const LIST_CARD_SURFACE_CLASSNAME =
@@ -141,9 +138,13 @@ export const ListCardFront = memo(function ListCardFrontFrame({
       if (typeof record.completed === "boolean") {
         onCardCompletedChange(record.completed);
       }
-      void queryClient.invalidateQueries({
-        queryKey: boardDetailQueryKey(boardKey),
-      });
+      queryClient
+        .invalidateQueries({
+          queryKey: boardDetailQueryKey(boardKey),
+        })
+        .catch(() => {
+          /* best-effort refresh */
+        });
     },
   });
 
@@ -221,6 +222,7 @@ export const ListCardFront = memo(function ListCardFrontFrame({
     >
       {/* biome-ignore lint/a11y/noNoninteractiveElementInteractions: card chrome */}
       {/* biome-ignore lint/a11y/noStaticElementInteractions: same */}
+      {/* biome-ignore lint/a11y/useKeyWithClickEvents: pointer-driven list card; inner controls are keyboard-accessible */}
       <div
         className={cn(
           LIST_CARD_SURFACE_CLASSNAME,

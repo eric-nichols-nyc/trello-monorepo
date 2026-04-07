@@ -5,7 +5,7 @@ import { Input } from "@repo/design-system/components/ui/input";
 import { cn } from "@repo/design-system/lib/utils";
 import { createCardSchema } from "@repo/schemas";
 import { X } from "lucide-react";
-import { type FormEvent, useState } from "react";
+import { type FormEvent, useRef, useState } from "react";
 import { useCreateCard } from "@/queries/use-create-card";
 
 type CardQuickAddFormProperties = {
@@ -24,6 +24,14 @@ export const CardQuickAddForm = ({
   const [title, setTitle] = useState("");
   const [nameError, setNameError] = useState<string | null>(null);
   const createCard = useCreateCard();
+  const formRootRef = useRef<HTMLFormElement>(null);
+
+  const focusTitleInput = () => {
+    const input = formRootRef.current?.querySelector<HTMLInputElement>(
+      'input[aria-label="Card title"]'
+    );
+    input?.focus();
+  };
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -47,17 +55,28 @@ export const CardQuickAddForm = ({
               : "Could not create the card."
           );
         },
-        onSuccess: (data) => {
-          console.log("Card created:", data);
+        onSuccess: () => {
           setTitle("");
-          onClose();
+        },
+        // After React Query flips `isPending` off — `focus()` fails on a disabled input.
+        onSettled: (_data, error) => {
+          if (error) {
+            return;
+          }
+          requestAnimationFrame(() => {
+            requestAnimationFrame(focusTitleInput);
+          });
         },
       }
     );
   };
 
   return (
-    <form className="flex flex-col gap-2" onSubmit={handleSubmit}>
+    <form
+      className="flex flex-col gap-2"
+      onSubmit={handleSubmit}
+      ref={formRootRef}
+    >
       <div className="flex flex-col gap-1">
         <div className="flex gap-1">
           <Input

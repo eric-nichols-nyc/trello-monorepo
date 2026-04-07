@@ -26,7 +26,9 @@ export type ListCardTitleProps = {
   completion?: ListCardCompletionControl;
 };
 
-export function listCardContentRevealTranslateClass(completed: boolean): string {
+export function listCardContentRevealTranslateClass(
+  completed: boolean
+): string {
   return completed === true
     ? "translate-x-6"
     : "translate-x-0 group-hover:translate-x-6 group-focus-within:translate-x-6";
@@ -41,7 +43,9 @@ export function ListCardTitle({
 }: ListCardTitleProps) {
   const showCheckbox = completion !== undefined;
   const revealClass =
-    showCheckbox === false ? null : listCardContentRevealTranslateClass(completed);
+    showCheckbox === false
+      ? null
+      : listCardContentRevealTranslateClass(completed);
 
   return (
     <div
@@ -83,7 +87,7 @@ export function ListCardTitle({
         <span
           className={cn(
             "block truncate font-medium text-white/85 text-xs",
-            completed && "text-white/45 line-through"
+            completed ? "text-white/45 line-through" : null
           )}
         >
           {title}
