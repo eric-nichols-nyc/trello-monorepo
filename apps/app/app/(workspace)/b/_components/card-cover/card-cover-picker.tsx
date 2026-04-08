@@ -12,6 +12,7 @@ import { type RefObject, useRef } from "react";
 import { useClickOutside } from "@/hooks/use-click-outside";
 
 import { ColorCover } from "./color-cover";
+import { CoverSize } from "./cover-size";
 import { RemoveCoverButton } from "./remove-cover-button";
 import { UnsplashCover } from "./unsplash-cover";
 import { Upload } from "./upload";
@@ -42,6 +43,8 @@ export type CardCoverPickerProps = {
   readonly ignorePointerOutsideRef?: RefObject<HTMLElement | null>;
   /** When true, show “Remove cover” (image and/or solid color). @default false */
   readonly hasCover?: boolean;
+  readonly coverColor?: string | null;
+  readonly coverImage?: string | null;
 };
 
 /**
@@ -55,6 +58,8 @@ export function CardCoverPicker({
   onClose,
   ignorePointerOutsideRef,
   hasCover = false,
+  coverColor = null,
+  coverImage = null,
 }: CardCoverPickerProps) {
   const rootReference = useRef<HTMLDivElement>(null);
 
@@ -105,15 +110,15 @@ export function CardCoverPicker({
           </Button>
         </div>
         <CardContent className="space-y-5 px-4 pt-3 pb-4">
-          {/* Cover height UX — not wired to persistence yet */}
-          <div className="space-y-2">
-            <p className="font-semibold text-xs text-zinc-400">Size</p>
-            <p className="text-sm text-zinc-500 leading-snug">
-              Choose how tall the cover appears on the card.
-            </p>
-          </div>
+          <CoverSize />
+          <ColorCover
+            boardKey={boardKey}
+            cardId={cardId}
+            coverColor={coverColor}
+            coverImage={coverImage}
+            onApplied={onClose}
+          />
           {hasCover ? <RemoveCoverButton /> : null}
-          <ColorCover />
           <UnsplashCover />
           {/* Upload applies cover then calls onClose (same as this picker’s onClose). */}
           <Upload

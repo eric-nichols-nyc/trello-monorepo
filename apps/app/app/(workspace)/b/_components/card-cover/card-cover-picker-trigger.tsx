@@ -29,6 +29,8 @@ export type CardCoverPickerTriggerProps = Omit<
   onPickerOpenChange?: (open: boolean) => void;
   /** Passed to {@link CardCoverPicker} to toggle “Remove cover”. @default false */
   hasCover?: boolean;
+  readonly coverColor?: string | null;
+  readonly coverImage?: string | null;
 };
 
 /**
@@ -44,6 +46,8 @@ export function CardCoverPickerTrigger({
   onPickerOpenChange,
   onPointerDown,
   hasCover = false,
+  coverColor = null,
+  coverImage = null,
   ...props
 }: CardCoverPickerTriggerProps) {
   const [pickerOpen, setPickerOpen] = useState(false);
@@ -98,6 +102,8 @@ export function CardCoverPickerTrigger({
           <CardCoverPicker
             boardKey={boardKey}
             cardId={cardId}
+            coverColor={coverColor}
+            coverImage={coverImage}
             hasCover={hasCover}
             ignorePointerOutsideRef={anchorReference}
             onClose={closePicker}

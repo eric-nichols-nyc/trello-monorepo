@@ -233,17 +233,19 @@ export const ListCardFront = memo(function ListCardFrontFrame({
         ref={handleRef}
       >
         <CardFrontCover coverColor={coverColor} coverImage={coverImage} />
-        <CardOverflowMenu
-          boardKey={boardKey}
-          cardId={cardId}
-          cardTitle={title}
-          hasCover={
-            (coverImage != null && String(coverImage).trim() !== "") ||
-            (coverColor != null && String(coverColor).trim() !== "")
-          }
-          onArchive={onArchive}
-          onOpenCard={onOpenCard}
-        />
+          <CardOverflowMenu
+            boardKey={boardKey}
+            cardId={cardId}
+            cardTitle={title}
+            coverColor={coverColor ?? null}
+            coverImage={coverImage ?? null}
+            hasCover={
+              (coverImage != null && String(coverImage).trim() !== "") ||
+              (coverColor != null && String(coverColor).trim() !== "")
+            }
+            onArchive={onArchive}
+            onOpenCard={onOpenCard}
+          />
         <div className={LIST_CARD_CONTENT_ROW_CLASSNAME}>
           <div className="relative z-2 flex min-w-0 flex-1 flex-col">
             <ListCardTitle

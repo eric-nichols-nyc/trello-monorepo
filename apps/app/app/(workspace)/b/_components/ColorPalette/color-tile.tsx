@@ -23,8 +23,9 @@ export function ColorTile({
       aria-label={label}
       aria-pressed={selected}
       className={cn(
-        "size-8 shrink-0 rounded-md border-2 shadow-sm transition-transform hover:scale-105",
+        "aspect-3/2 w-full min-h-0 shrink-0 rounded-xl border-2 shadow-sm",
         "focus-visible:border-sky-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/80",
+        "disabled:pointer-events-none disabled:opacity-50",
         selected === true
           ? "border-white ring-2 ring-white"
           : "border-transparent",

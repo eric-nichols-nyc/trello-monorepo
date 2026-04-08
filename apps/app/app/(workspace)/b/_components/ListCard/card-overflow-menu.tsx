@@ -23,6 +23,8 @@ export type CardOverflowMenuProps = {
   readonly cardTitle: string;
   /** Card has an image or solid cover — shows “Remove cover” in the picker. @default false */
   readonly hasCover?: boolean;
+  readonly coverColor?: string | null;
+  readonly coverImage?: string | null;
   readonly onOpenCard?: () => void;
   readonly onChangeCover?: () => void;
   readonly onEditDates?: () => void;
@@ -39,6 +41,8 @@ export function CardOverflowMenu({
   cardId,
   cardTitle,
   hasCover = false,
+  coverColor = null,
+  coverImage = null,
   onOpenCard,
   onChangeCover,
   onEditDates,
@@ -96,6 +100,8 @@ export function CardOverflowMenu({
           <CardCoverPickerTrigger
             boardKey={boardKey}
             cardId={cardId}
+            coverColor={coverColor}
+            coverImage={coverImage}
             hasCover={hasCover}
             onPickerOpenChange={(open) => {
               if (open) {

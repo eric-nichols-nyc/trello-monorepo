@@ -6,17 +6,18 @@ import { ColorTile } from "./color-tile";
 
 export type CoverColorSwatch = { readonly hex: string; readonly label: string };
 
+/** Muted, rectangular swatch grid (2×5) aligned with card-cover picker reference. */
 export const DEFAULT_COVER_COLORS: readonly CoverColorSwatch[] = [
-  { hex: "#61bd4f", label: "Green" },
-  { hex: "#f2d600", label: "Yellow" },
-  { hex: "#ff9f1a", label: "Orange" },
-  { hex: "#eb5a46", label: "Red" },
-  { hex: "#c377e0", label: "Purple" },
-  { hex: "#0079bf", label: "Blue" },
-  { hex: "#00c2e0", label: "Sky" },
-  { hex: "#51e898", label: "Lime" },
-  { hex: "#ff78cb", label: "Pink" },
-  { hex: "#344563", label: "Dark blue" },
+  { hex: "#4a6352", label: "Forest green" },
+  { hex: "#b5a03a", label: "Mustard gold" },
+  { hex: "#c26a3c", label: "Burnt orange" },
+  { hex: "#a64a42", label: "Brick red" },
+  { hex: "#7a5f96", label: "Purple" },
+  { hex: "#4568c9", label: "Royal blue" },
+  { hex: "#4a6f7a", label: "Teal" },
+  { hex: "#6e6b3f", label: "Olive" },
+  { hex: "#8a4f6f", label: "Plum" },
+  { hex: "#5c6369", label: "Charcoal" },
 ];
 
 export type ColorPaletteProps = {
@@ -24,23 +25,31 @@ export type ColorPaletteProps = {
   readonly colors?: readonly CoverColorSwatch[];
   readonly selectedHex?: string | null;
   readonly onSelect?: (hex: string) => void;
+  readonly disabled?: boolean;
 };
+
+function normalizeHex(value: string): string {
+  return value.trim().toLowerCase();
+}
 
 export function ColorPalette({
   className,
   colors = DEFAULT_COVER_COLORS,
   selectedHex = null,
   onSelect,
+  disabled = false,
 }: ColorPaletteProps) {
+  const selected = selectedHex != null ? normalizeHex(selectedHex) : null;
   return (
     <div className={cn("grid grid-cols-5 gap-2", className)}>
       {colors.map(({ hex, label }) => (
         <ColorTile
           color={hex}
+          disabled={disabled}
           key={hex}
           label={label}
           onClick={() => onSelect?.(hex)}
-          selected={selectedHex === hex}
+          selected={selected !== null && selected === normalizeHex(hex)}
         />
       ))}
     </div>
