@@ -10,7 +10,7 @@ export type CardFrontCoverProps = {
 };
 
 /**
- * List-card cover strip: image as `background-size: cover`, else solid `coverColor`.
+ * List-card cover strip: image as `background-size: cover` (132px tall), else solid `coverColor` (64px).
  * Returns `null` when neither is set.
  */
 export function CardFrontCover({
@@ -41,7 +41,8 @@ export function CardFrontCover({
     <div
       aria-hidden
       className={cn(
-        "h-16 w-full shrink-0 rounded-t-[8px] bg-zinc-600",
+        "w-full shrink-0 rounded-t-[8px] bg-zinc-600",
+        hasImage ? "h-[132px]" : "h-16",
         className
       )}
       style={style}
