@@ -204,7 +204,10 @@ export function HeaderCreateStackedPopover({
               title="Templates"
             />
             <div className="bg-(--card-back-actions-menu-bg)">
-              <TemplateGallery />
+              <TemplateGallery
+                onBoardCreated={handleBoardCreated}
+                workspaceId={workspaceId}
+              />
             </div>
           </StackedPopoverScreen>
         </StackedPopoverProvider>

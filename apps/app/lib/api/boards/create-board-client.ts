@@ -3,7 +3,14 @@ import { z } from "zod";
 import { BoardApiError } from "@/lib/api/boards/board-api-error";
 import { nestPublicBaseUrl } from "@/lib/api/nest-public-base-url";
 
-const requestSchema = z
+/** POST body when `templateId` is set — Nest expands the bundled template (lists/cards/background). */
+const createBoardFromTemplateBodySchema = z.object({
+  name: z.string().min(1, "name is required").trim(),
+  workspaceId: z.string().uuid("workspaceId must be a valid UUID"),
+  templateId: z.string().min(1, "templateId is required"),
+});
+
+const createBoardWithBackgroundBodySchema = z
   .object({
     name: z.string().min(1, "name is required").trim(),
     workspaceId: z.string().uuid("workspaceId must be a valid UUID"),
@@ -14,6 +21,11 @@ const requestSchema = z
     (v) => v.backgroundColor !== undefined || v.backgroundImage !== undefined,
     { message: "Choose a solid color or a photo background" }
   );
+
+const requestSchema = z.union([
+  createBoardFromTemplateBodySchema,
+  createBoardWithBackgroundBodySchema,
+]);
 
 export type CreateBoardClientInput = z.infer<typeof requestSchema>;
 
