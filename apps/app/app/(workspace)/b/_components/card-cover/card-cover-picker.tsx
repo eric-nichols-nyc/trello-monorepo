@@ -112,6 +112,7 @@ export function CardCoverPicker({
               Choose how tall the cover appears on the card.
             </p>
           </div>
+          {hasCover ? <RemoveCoverButton /> : null}
           <ColorCover />
           <UnsplashCover />
           {/* Upload applies cover then calls onClose (same as this picker’s onClose). */}
@@ -120,7 +121,6 @@ export function CardCoverPicker({
             cardId={cardId}
             onApplied={onClose}
           />
-          {!hasCover ? <RemoveCoverButton /> : null}
         </CardContent>
       </Card>
     </div>
