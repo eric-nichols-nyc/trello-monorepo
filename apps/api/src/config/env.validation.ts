@@ -34,6 +34,36 @@ const envSchema = z
         path: ["CLOUDINARY_URL"],
       });
     }
+
+    const placeholderHint =
+      "Replace template text with values from Cloudinary Console → Dashboard (or Settings → API Keys).";
+    if (
+      url &&
+      (/<your_|your_api_key|your_api_secret/i.test(url) ||
+        (url.includes("<") && url.includes(">")))
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `CLOUDINARY_URL still looks like a doc example (${placeholderHint})`,
+        path: ["CLOUDINARY_URL"],
+      });
+    }
+    const apiKey = data.CLOUDINARY_API_KEY?.trim();
+    const apiSecret = data.CLOUDINARY_API_SECRET?.trim();
+    if (apiKey && /<your_|your_api_key/i.test(apiKey)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `CLOUDINARY_API_KEY is a placeholder (${placeholderHint})`,
+        path: ["CLOUDINARY_API_KEY"],
+      });
+    }
+    if (apiSecret && /<your_|your_api_secret/i.test(apiSecret)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `CLOUDINARY_API_SECRET is a placeholder (${placeholderHint})`,
+        path: ["CLOUDINARY_API_SECRET"],
+      });
+    }
   });
 
 export type ValidatedEnv = z.infer<typeof envSchema>;

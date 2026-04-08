@@ -11,6 +11,7 @@ export type CardFrontCoverProps = {
 
 /**
  * List-card cover strip: image as `background-size: cover` (132px tall), else solid `coverColor` (64px).
+ * Image covers get a dark top gradient so the card overflow trigger stays visible.
  * Returns `null` when neither is set.
  */
 export function CardFrontCover({
@@ -41,11 +42,20 @@ export function CardFrontCover({
     <div
       aria-hidden
       className={cn(
-        "w-full shrink-0 rounded-t-[8px] bg-zinc-600",
+        "relative w-full shrink-0 overflow-hidden rounded-t-[8px] bg-zinc-600",
         hasImage ? "h-[132px]" : "h-16",
         className
       )}
-      style={style}
-    />
+    >
+      <div className="absolute inset-0" style={style} />
+      {hasImage ? (
+        <div
+          className={cn(
+            "pointer-events-none absolute inset-x-0 top-0 z-1 h-16",
+            "bg-linear-to-b from-black/60 via-black/25 to-transparent"
+          )}
+        />
+      ) : null}
+    </div>
   );
 }

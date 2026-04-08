@@ -8,6 +8,10 @@ export type UpdateCardBody = {
   completed?: boolean;
   /** Archive card (distinct from `completed`). */
   closed?: boolean;
+  /** Image URL cover; server clears `coverColor` when set. */
+  coverImage?: string | null;
+  /** Solid color cover; server clears `coverImage` when set. */
+  coverColor?: string | null;
 };
 
 /** PATCH `/api/cards/:id` for metadata updates (not move-only `patchCardClient`). */

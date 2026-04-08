@@ -13,82 +13,95 @@ import {
 } from "react";
 import { createPortal } from "react-dom";
 
-import { CardCoverPanel } from "./card-cover-panel";
+import { CardCoverPicker } from "./card-cover-picker";
 
-export type CardCoverChooserProps = Omit<
+export type CardCoverPickerTriggerProps = Omit<
   ComponentProps<typeof Button>,
   "children" | "size" | "variant"
 > & {
+  readonly boardKey: string;
+  readonly cardId: string;
   /** @default "Change cover" */
   label?: string;
-  /** Icon + label row (e.g. card actions menu). @default false */
+  /** Icon + label row (e.g. card overflow menu). @default false */
   showLabel?: boolean;
-  /** Called after the panel open state changes. */
-  onPanelOpenChange?: (open: boolean) => void;
+  /** Fires when the floating {@link CardCoverPicker} opens or closes. */
+  onPickerOpenChange?: (open: boolean) => void;
+  /** Passed to {@link CardCoverPicker} to toggle “Remove cover”. @default false */
+  hasCover?: boolean;
 };
 
-export function CardCoverChooser({
+/**
+ * Button that toggles the portaled {@link CardCoverPicker} anchored below this control.
+ */
+export function CardCoverPickerTrigger({
+  boardKey,
+  cardId,
   className,
   label = "Change cover",
   showLabel = false,
   onClick,
-  onPanelOpenChange,
+  onPickerOpenChange,
   onPointerDown,
+  hasCover = false,
   ...props
-}: CardCoverChooserProps) {
-  const [panelOpen, setPanelOpen] = useState(false);
+}: CardCoverPickerTriggerProps) {
+  const [pickerOpen, setPickerOpen] = useState(false);
   const anchorReference = useRef<HTMLDivElement>(null);
-  const [panelPosition, setPanelPosition] = useState({ top: 0, left: 0 });
+  const [pickerPosition, setPickerPosition] = useState({ top: 0, left: 0 });
 
-  const updatePanelPosition = useCallback(() => {
+  const updatePickerPosition = useCallback(() => {
     const node = anchorReference.current;
     if (!node) {
       return;
     }
     const rect = node.getBoundingClientRect();
-    setPanelPosition({ top: rect.bottom + 4, left: rect.left });
+    setPickerPosition({ top: rect.bottom + 4, left: rect.left });
   }, []);
 
   useLayoutEffect(() => {
-    if (!panelOpen) {
+    if (!pickerOpen) {
       return;
     }
-    updatePanelPosition();
-  }, [panelOpen, updatePanelPosition]);
+    updatePickerPosition();
+  }, [pickerOpen, updatePickerPosition]);
 
   useEffect(() => {
-    if (!panelOpen) {
+    if (!pickerOpen) {
       return;
     }
-    const handle = () => updatePanelPosition();
+    const handle = () => updatePickerPosition();
     window.addEventListener("scroll", handle, true);
     window.addEventListener("resize", handle);
     return () => {
       window.removeEventListener("scroll", handle, true);
       window.removeEventListener("resize", handle);
     };
-  }, [panelOpen, updatePanelPosition]);
+  }, [pickerOpen, updatePickerPosition]);
 
-  const togglePanel = useCallback(() => {
-    setPanelOpen((prev) => {
+  const togglePicker = useCallback(() => {
+    setPickerOpen((prev) => {
       const next = !prev;
-      onPanelOpenChange?.(next);
+      onPickerOpenChange?.(next);
       return next;
     });
-  }, [onPanelOpenChange]);
+  }, [onPickerOpenChange]);
 
-  const closePanel = useCallback(() => {
-    setPanelOpen(false);
-    onPanelOpenChange?.(false);
-  }, [onPanelOpenChange]);
+  const closePicker = useCallback(() => {
+    setPickerOpen(false);
+    onPickerOpenChange?.(false);
+  }, [onPickerOpenChange]);
 
-  const panel =
-    panelOpen && typeof document !== "undefined"
+  const pickerPortal =
+    pickerOpen && typeof document !== "undefined"
       ? createPortal(
-          <CardCoverPanel
+          <CardCoverPicker
+            boardKey={boardKey}
+            cardId={cardId}
+            hasCover={hasCover}
             ignorePointerOutsideRef={anchorReference}
-            onClose={closePanel}
-            position={panelPosition}
+            onClose={closePicker}
+            position={pickerPosition}
           />,
           document.body
         )
@@ -100,7 +113,7 @@ export function CardCoverChooser({
       ref={anchorReference}
     >
       <Button
-        aria-expanded={panelOpen}
+        aria-expanded={pickerOpen}
         aria-label={label}
         className={cn(
           showLabel === true
@@ -115,7 +128,7 @@ export function CardCoverChooser({
         {...props}
         onClick={(event) => {
           onClick?.(event);
-          togglePanel();
+          togglePicker();
         }}
         onPointerDown={(event) => {
           onPointerDown?.(event);
@@ -134,7 +147,7 @@ export function CardCoverChooser({
           <span className="min-w-0 truncate">{label}</span>
         ) : null}
       </Button>
-      {panel}
+      {pickerPortal}
     </div>
   );
 }

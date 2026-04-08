@@ -12,7 +12,7 @@ import { boardDetailQueryKey } from "@/queries/board-detail-query";
 
 import { type CardBadgesProps, CardBadges } from "../CardBadges/card-badges";
 import { CardFrontCover } from "./card-front-cover";
-import { CardActions } from "./card-actions";
+import { CardOverflowMenu } from "./card-overflow-menu";
 import { ListCardTitle } from "./list-card-title";
 
 /** Outer shell shared by {@link ListCardFront} and {@link ListCardDragPreview}. */
@@ -26,7 +26,7 @@ export const LIST_CARD_CONTENT_ROW_CLASSNAME =
 export type ListCardDragPreviewProps = {
   title: string;
   showEditIcon?: boolean;
-  /** Required when `showEditIcon` is true so {@link CardActions} can target this card. */
+  /** Required when `showEditIcon` is true so {@link CardOverflowMenu} can target this card. */
   cardId?: string;
   boardKey?: string;
   onOpenCard?: () => void;
@@ -53,16 +53,16 @@ export function ListCardDragPreview({
 
   return (
     <div className={cn(LIST_CARD_SURFACE_CLASSNAME, "cursor-grabbing")}>
+      {showActions ? (
+        <CardOverflowMenu
+          boardKey={boardKey}
+          cardId={cardId}
+          cardTitle={title}
+          onArchive={onArchive}
+          onOpenCard={onOpenCard}
+        />
+      ) : null}
       <div className={LIST_CARD_CONTENT_ROW_CLASSNAME}>
-        {showActions ? (
-          <CardActions
-            boardKey={boardKey}
-            cardId={cardId}
-            cardTitle={title}
-            onArchive={onArchive}
-            onOpenCard={onOpenCard}
-          />
-        ) : null}
         <ListCardTitle
           className="translate-x-0"
           contentGutterForEdit={showActions}
@@ -233,14 +233,18 @@ export const ListCardFront = memo(function ListCardFrontFrame({
         ref={handleRef}
       >
         <CardFrontCover coverColor={coverColor} coverImage={coverImage} />
+        <CardOverflowMenu
+          boardKey={boardKey}
+          cardId={cardId}
+          cardTitle={title}
+          hasCover={
+            (coverImage != null && String(coverImage).trim() !== "") ||
+            (coverColor != null && String(coverColor).trim() !== "")
+          }
+          onArchive={onArchive}
+          onOpenCard={onOpenCard}
+        />
         <div className={LIST_CARD_CONTENT_ROW_CLASSNAME}>
-          <CardActions
-            boardKey={boardKey}
-            cardId={cardId}
-            cardTitle={title}
-            onArchive={onArchive}
-            onOpenCard={onOpenCard}
-          />
           <div className="relative z-2 flex min-w-0 flex-1 flex-col">
             <ListCardTitle
               completed={completed}

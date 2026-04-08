@@ -10,17 +10,19 @@ import {
 import { cn } from "@repo/design-system/lib/utils";
 import { ArrowRightLeft, SquareArrowOutUpRight, SquarePen } from "lucide-react";
 
-import { CardCoverChooser } from "../CardCoverChooser/card-cover-chooser";
-import { isWithinCardCoverPanel } from "../CardCoverChooser/card-cover-panel";
+import { CardCoverPickerTrigger } from "../card-cover/card-cover-picker-trigger";
+import { isWithinCardCoverPicker } from "../card-cover/card-cover-picker";
 import { CopyCardButton } from "./copy-card-button";
 import { DeleteCardButton } from "./delete-card-button";
 import { EditDatesButton } from "./edit-dates-button";
 import { isWithinEditDatesPanel } from "./edit-dates-panel";
 
-export type CardActionsProps = {
+export type CardOverflowMenuProps = {
   readonly boardKey: string;
   readonly cardId: string;
   readonly cardTitle: string;
+  /** Card has an image or solid cover — shows “Remove cover” in the picker. @default false */
+  readonly hasCover?: boolean;
   readonly onOpenCard?: () => void;
   readonly onChangeCover?: () => void;
   readonly onEditDates?: () => void;
@@ -29,28 +31,27 @@ export type CardActionsProps = {
 };
 
 /**
- * Card overflow menu: {@link SquarePen} trigger + actions. Lives fixed on the card
- * surface (sibling to the sliding title) so it does not move with hover animation.
+ * Pencil trigger opening a dropdown of card commands (open, cover, dates, move, copy, delete).
+ * Pinned to the card chrome so it does not move with list-card hover motion.
  */
-export function CardActions({
+export function CardOverflowMenu({
   boardKey,
   cardId,
   cardTitle,
+  hasCover = false,
   onOpenCard,
   onChangeCover,
   onEditDates,
   onMove,
-}: CardActionsProps) {
+}: CardOverflowMenuProps) {
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
         <button
-          aria-label={`Card actions: ${cardTitle}`}
+          aria-label={`More options for card: ${cardTitle}`}
           className={cn(
-            "absolute top-1.5 right-2 z-10 rounded p-0.5 text-white/40 transition-colors",
-            "hover:bg-white/10 hover:text-white/80",
-            "focus-visible:outline focus-visible:ring-2 focus-visible:ring-white/25",
-            "data-[state=open]:bg-white/10 data-[state=open]:text-white/80"
+            "absolute top-1.5 right-2 z-10 rounded p-0.5 text-white",
+            "focus-visible:outline focus-visible:ring-2 focus-visible:ring-white/40"
           )}
           onClick={(event) => event.stopPropagation()}
           onPointerDown={(event) => event.stopPropagation()}
@@ -67,7 +68,7 @@ export function CardActions({
         onInteractOutside={(event) => {
           if (
             isWithinEditDatesPanel(event.target) ||
-            isWithinCardCoverPanel(event.target)
+            isWithinCardCoverPicker(event.target)
           ) {
             event.preventDefault();
           }
@@ -92,8 +93,11 @@ export function CardActions({
           className="p-0"
           onSelect={(event) => event.preventDefault()}
         >
-          <CardCoverChooser
-            onPanelOpenChange={(open) => {
+          <CardCoverPickerTrigger
+            boardKey={boardKey}
+            cardId={cardId}
+            hasCover={hasCover}
+            onPickerOpenChange={(open) => {
               if (open) {
                 onChangeCover?.();
               }
