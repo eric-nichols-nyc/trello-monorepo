@@ -1,6 +1,11 @@
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
   "extends": ["ultracite/core", "ultracite/react", "ultracite/next"],
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
   "javascript": {
     "globals": ["Liveblocks"],
     "parser": {
@@ -8,19 +13,27 @@
     }
   },
   "files": {
+    "ignoreUnknown": true,
+    "maxSize": 1048576,
     "includes": [
       "**/*",
       "!packages/design-system/components/ui",
       "!packages/design-system/lib",
       "!packages/design-system/hooks",
       "!packages/collaboration/config.ts",
-      "!docs/components/ui",
-      "!docs/lib",
-      "!docs/hooks",
       "!apps/docs/**/*.json",
       "!apps/email/.react-email",
       "!apps/api/generated/**",
-      "!packages/cms/basehub-types.d.ts"
+      "!packages/cms/basehub-types.d.ts",
+      "!!**/.next",
+      "!!**/.turbo",
+      "!!**/dist",
+      "!!**/out",
+      "!!**/build",
+      "!!**/coverage",
+      "!!**/playwright-report",
+      "!!**/test-results",
+      "!!**/.vercel"
     ]
   },
   "overrides": [

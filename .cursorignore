@@ -1,0 +1,52 @@
+# Dependencies — huge trees; rarely need AI context from here
+node_modules/
+**/node_modules/
+
+# Monorepo / framework caches and outputs
+.turbo/
+**/.turbo/
+.next/
+**/.next/
+out/
+**/out/
+dist/
+**/dist/
+build/
+**/build/
+.vercel/
+**/.vercel/
+
+# TypeScript incremental
+*.tsbuildinfo
+**/*.tsbuildinfo
+
+# Tests / coverage artifacts
+coverage/
+**/coverage/
+playwright-report/
+**/playwright-report/
+test-results/
+**/test-results/
+
+# Env and local secrets (safety + noise)
+.env
+.env.*
+**/.env
+**/.env.*
+
+# Package manager local store
+.pnpm-store/
+**/.pnpm-store/
+
+# Logs
+*.log
+**/*.log
+
+# OS / IDE (optional noise in search/context)
+.DS_Store
+.idea/
+.vscode/
+
+# Prisma: generated client is large; uncomment if you want schema + app code only
+# apps/api/generated/
+# **/generated/prisma/
