@@ -15,6 +15,30 @@ import { createPortal } from "react-dom";
 
 import { CardCoverPicker } from "./card-cover-picker";
 
+/** Space from viewport left/right when clamping the docked panel. */
+const VIEWPORT_MARGIN_PX = 16;
+/** Matches {@link CardCoverPicker} `w-[min(...,320px)]`. */
+const PANEL_MAX_WIDTH_PX = 320;
+
+/**
+ * Horizontal position for `position: fixed; left: …` on the portaled picker.
+ *
+ * 1. **`getBoundingClientRect().left`** — same coordinate system as `fixed`, so the
+ *    panel’s left edge lines up with the trigger wrapper (the “Change cover” row).
+ * 2. **Clamp** — if `rect.left` is too far right, the panel would overflow the viewport.
+ *    We keep `left` between `[margin, viewportWidth - panelWidth - margin]` so the
+ *    whole sheet stays visible (panel width ≈ `min(320, viewport - 2×margin)`).
+ */
+function clampedAnchorLeftPx(anchor: HTMLElement): number {
+  const rect = anchor.getBoundingClientRect();
+  const viewportW =
+    typeof window !== "undefined" ? window.innerWidth : PANEL_MAX_WIDTH_PX;
+  const panelW = Math.min(PANEL_MAX_WIDTH_PX, viewportW - VIEWPORT_MARGIN_PX * 2);
+  const minLeft = VIEWPORT_MARGIN_PX;
+  const maxLeft = viewportW - panelW - VIEWPORT_MARGIN_PX;
+  return Math.min(Math.max(rect.left, minLeft), maxLeft);
+}
+
 export type CardCoverPickerTriggerProps = Omit<
   ComponentProps<typeof Button>,
   "children" | "size" | "variant"
@@ -34,7 +58,7 @@ export type CardCoverPickerTriggerProps = Omit<
 };
 
 /**
- * Button that toggles the portaled {@link CardCoverPicker} anchored below this control.
+ * Button that toggles the bottom-docked {@link CardCoverPicker} in a portal.
  */
 export function CardCoverPickerTrigger({
   boardKey,
@@ -51,37 +75,40 @@ export function CardCoverPickerTrigger({
   ...props
 }: CardCoverPickerTriggerProps) {
   const [pickerOpen, setPickerOpen] = useState(false);
+  /** Measured from this wrapper so alignment follows the menu row, not just the icon button. */
   const anchorReference = useRef<HTMLDivElement>(null);
-  const [pickerPosition, setPickerPosition] = useState({ top: 0, left: 0 });
+  /** Viewport X passed to {@link CardCoverPicker} as `style.left` (see `clampedAnchorLeftPx`). */
+  const [anchorLeft, setAnchorLeft] = useState(0);
 
-  const updatePickerPosition = useCallback(() => {
+  const updateAnchorLeft = useCallback(() => {
     const node = anchorReference.current;
     if (!node) {
       return;
     }
-    const rect = node.getBoundingClientRect();
-    setPickerPosition({ top: rect.bottom + 4, left: rect.left });
+    setAnchorLeft(clampedAnchorLeftPx(node));
   }, []);
 
+  // Sync before paint when opening so the first frame already matches the anchor (no flicker).
   useLayoutEffect(() => {
     if (!pickerOpen) {
       return;
     }
-    updatePickerPosition();
-  }, [pickerOpen, updatePickerPosition]);
+    updateAnchorLeft();
+  }, [pickerOpen, updateAnchorLeft]);
 
+  // Board columns and the dropdown menu scroll; `capture: true` catches nested scrollers too.
   useEffect(() => {
     if (!pickerOpen) {
       return;
     }
-    const handle = () => updatePickerPosition();
+    const handle = () => updateAnchorLeft();
     window.addEventListener("scroll", handle, true);
     window.addEventListener("resize", handle);
     return () => {
       window.removeEventListener("scroll", handle, true);
       window.removeEventListener("resize", handle);
     };
-  }, [pickerOpen, updatePickerPosition]);
+  }, [pickerOpen, updateAnchorLeft]);
 
   const togglePicker = useCallback(() => {
     setPickerOpen((prev) => {
@@ -100,6 +127,7 @@ export function CardCoverPickerTrigger({
     pickerOpen && typeof document !== "undefined"
       ? createPortal(
           <CardCoverPicker
+            anchorLeft={anchorLeft}
             boardKey={boardKey}
             cardId={cardId}
             coverColor={coverColor}
@@ -107,7 +135,6 @@ export function CardCoverPickerTrigger({
             hasCover={hasCover}
             ignorePointerOutsideRef={anchorReference}
             onClose={closePicker}
-            position={pickerPosition}
           />,
           document.body
         )

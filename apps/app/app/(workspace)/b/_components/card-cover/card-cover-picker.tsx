@@ -36,8 +36,8 @@ export function isWithinCardCoverPicker(target: EventTarget | null): boolean {
 export type CardCoverPickerProps = {
   readonly boardKey: string;
   readonly cardId: string;
-  /** Viewport coordinates; parent measures its anchor (e.g. “Change cover” control). */
-  readonly position: { left: number; top: number };
+  /** Viewport X for the panel’s left edge (aligned with the trigger; clamped in the trigger). */
+  readonly anchorLeft: number;
   readonly onClose: () => void;
   /** Clicks on this node (e.g. the menu row trigger) must not count as “outside” the picker. */
   readonly ignorePointerOutsideRef?: RefObject<HTMLElement | null>;
@@ -48,13 +48,12 @@ export type CardCoverPickerProps = {
 };
 
 /**
- * Fixed-position dialog rendered in a portal by {@link CardCoverPickerTrigger}.
- * Choose color, Unsplash, upload, or remove — most sections are still placeholders.
+ * Bottom-docked panel in a portal; left edge follows the trigger; short viewports shrink height.
  */
 export function CardCoverPicker({
   boardKey,
   cardId,
-  position,
+  anchorLeft,
   onClose,
   ignorePointerOutsideRef,
   hasCover = false,
@@ -79,11 +78,12 @@ export function CardCoverPicker({
       aria-label="Choose card cover"
       aria-modal="true"
       className={cn(
-        "fixed z-200 flex max-h-[min(100dvh-1rem,100vh-1rem)] w-[min(100vw-1rem,320px)] select-text flex-col overflow-hidden rounded-xl border border-zinc-600/80 bg-zinc-800 text-zinc-100 shadow-lg"
+        "fixed bottom-4 z-200 flex w-[min(100vw-2rem,320px)] max-h-[min(100dvh-2rem,100vh-2rem)] select-text flex-col overflow-hidden rounded-xl border border-zinc-600/80 bg-zinc-800 text-zinc-100 shadow-lg"
       )}
       onPointerDown={(event) => event.stopPropagation()}
       role="dialog"
-      style={{ left: position.left, top: position.top }}
+      // Horizontal: viewport px from trigger (see clampedAnchorLeftPx in card-cover-picker-trigger).
+      style={{ left: anchorLeft }}
     >
       <Card
         className={cn(
