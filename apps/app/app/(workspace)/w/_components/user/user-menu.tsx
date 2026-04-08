@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useClerk, useUser } from "@repo/clerk/client";
 import {
   DropdownMenu,
@@ -16,8 +15,10 @@ import {
 } from "@repo/design-system/components/ui/dropdown-menu";
 import { cn } from "@repo/design-system/lib/utils";
 import { CircleHelp, Keyboard, Users } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 import { initialsFromPersonNameFields } from "@/lib/user/user-initials";
 
 const menuItemClass =
@@ -78,32 +79,38 @@ const UserMenuAvatar = ({
 
   useEffect(() => {
     setImageFailed(false);
-  }, [imageUrl]);
+  }, []);
 
-  const showPhoto = Boolean(imageUrl) && !imageFailed;
-  const surface = showPhoto
-    ? "bg-muted"
-    : (initialsSurfaceClassName ?? "bg-muted");
+  const avatarImageSrc =
+    !imageFailed && typeof imageUrl === "string" && imageUrl.length > 0
+      ? imageUrl
+      : null;
+  const surface =
+    avatarImageSrc !== null
+      ? "bg-muted"
+      : (initialsSurfaceClassName ?? "bg-muted");
   const initialsText =
     initialsTextClassName ?? "font-medium text-muted-foreground text-sm";
 
   return (
     <div
       className={cn(
-        "relative flex size-9 shrink-0 overflow-hidden rounded-full",
+        "relative flex size-6 shrink-0 overflow-hidden rounded-full",
         surface,
         className
       )}
     >
-      {showPhoto ? (
-        <img
+      {avatarImageSrc !== null ? (
+        <Image
           alt=""
-          className="aspect-square size-full object-cover"
+          className="object-cover"
+          fill
           onError={() => {
             setImageFailed(true);
           }}
           referrerPolicy="no-referrer"
-          src={imageUrl}
+          sizes="40px"
+          src={avatarImageSrc}
         />
       ) : (
         <span

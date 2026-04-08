@@ -27,6 +27,8 @@ type UpdateBoardStarredContext = {
 /**
  * Persists `Board.starred` via Nest, merges into the board-detail cache when present,
  * and refreshes the Next.js router so server-rendered workspace board grids stay in sync.
+ *
+ * UI: `BoardHeaderStarButton` — `app/(workspace)/b/_components/BoardHeaderOptions/board-header-star-button.tsx`.
  */
 export function useUpdateBoardStarred() {
   const queryClient = useQueryClient();

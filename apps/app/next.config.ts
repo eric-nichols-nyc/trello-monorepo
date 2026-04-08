@@ -11,6 +11,11 @@ const nextConfig: NextConfig = {
         hostname: "images.unsplash.com",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "img.clerk.com",
+        pathname: "/**",
+      },
     ],
   },
   transpilePackages: ["@repo/card-positioning", "@repo/clerk", "@repo/schemas"],

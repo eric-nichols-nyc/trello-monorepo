@@ -19,6 +19,8 @@ export const BoardView = ({ board, boardKey }: BoardViewProps) => (
       boardId={board.id}
       boardKey={boardKey}
       boardName={board.name}
+      starred={board.starred}
+      workspaceId={board.workspaceId}
     />
     <BoardListView board={board} boardKey={boardKey} />
   </div>

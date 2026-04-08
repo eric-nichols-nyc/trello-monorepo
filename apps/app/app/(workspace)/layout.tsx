@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { BoardApiError } from "@/lib/api/boards/board-api-error";
 import { getMyBoards } from "@/lib/api/boards/get-boards";
+import { getCurrentUserInitialsFromApi } from "@/lib/api/users/get-current-user-initials";
 import {
   getMyWorkspaces,
   type MyWorkspaceSummary,
@@ -89,6 +90,9 @@ export default async function WorkspaceLayout({
     initialBoards = [];
   }
 
+  // Same Nest session as workspaces; avoids a client-side `me` query for header facepile initials.
+  const currentUserInitials = await getCurrentUserInitialsFromApi();
+
   return (
     <div className="flex h-dvh min-h-0 flex-col overflow-hidden bg-background">
       <GlobalHeader
@@ -96,7 +100,11 @@ export default async function WorkspaceLayout({
         workspaceId={defaultWorkspaceId}
         workspaceSummaries={state.workspaces}
       />
-      <WorkspaceShellProvider workspaces={state.workspaces}>
+      <WorkspaceShellProvider
+        boards={initialBoards}
+        currentUserInitials={currentUserInitials}
+        workspaces={state.workspaces}
+      >
         <div className="relative flex min-h-0 min-w-0 flex-1 overflow-hidden">
           {children}
           {modal}
