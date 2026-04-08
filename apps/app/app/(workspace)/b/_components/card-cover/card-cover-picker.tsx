@@ -111,6 +111,13 @@ export function CardCoverPicker({
         </div>
         <CardContent className="space-y-5 px-4 pt-3 pb-4">
           <CoverSize />
+          {hasCover ? (
+            <RemoveCoverButton
+              boardKey={boardKey}
+              cardId={cardId}
+              onApplied={onClose}
+            />
+          ) : null}
           <ColorCover
             boardKey={boardKey}
             cardId={cardId}
@@ -118,7 +125,6 @@ export function CardCoverPicker({
             coverImage={coverImage}
             onApplied={onClose}
           />
-          {hasCover ? <RemoveCoverButton /> : null}
           <UnsplashCover />
           {/* Upload applies cover then calls onClose (same as this picker’s onClose). */}
           <Upload

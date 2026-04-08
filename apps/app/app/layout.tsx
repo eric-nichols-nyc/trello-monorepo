@@ -4,7 +4,7 @@ import { cn } from "@repo/design-system/lib/utils";
 import { GeistMono } from "geist/font/mono";
 import type { ReactNode } from "react";
 import { BackendServerAlert } from "@/components/backend-server-alert";
-import Providers from "@/tanstack/provider";
+import ReactQueryProvider from "@/queries/hooks/react-query-provider";
 
 export const dynamic = "force-dynamic";
 
@@ -22,10 +22,10 @@ const RootLayout = ({ children }: RootLayoutProperties) => (
   <html className={rootFontClasses} lang="en" suppressHydrationWarning>
     <body>
       <DesignSystemProvider>
-        <Providers>
+        <ReactQueryProvider>
           <BackendServerAlert />
           {children}
-        </Providers>
+        </ReactQueryProvider>
       </DesignSystemProvider>
     </body>
   </html>
