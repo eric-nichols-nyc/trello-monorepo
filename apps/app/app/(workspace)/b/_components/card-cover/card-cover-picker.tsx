@@ -14,7 +14,7 @@ import { useClickOutside } from "@/hooks/use-click-outside";
 import { ColorCover } from "./color-cover";
 import { CoverSize } from "./cover-size";
 import { RemoveCoverButton } from "./remove-cover-button";
-import { UnsplashCover } from "./unsplash-cover";
+import { UnsplashCovers } from "./unsplash-covers";
 import { Upload } from "./upload";
 
 /**
@@ -79,7 +79,7 @@ export function CardCoverPicker({
       aria-label="Choose card cover"
       aria-modal="true"
       className={cn(
-        "fixed z-200 flex w-[min(100vw-1rem,320px)] select-text flex-col rounded-xl border border-zinc-600/80 bg-zinc-800 text-zinc-100 shadow-lg"
+        "fixed z-200 flex max-h-[min(100dvh-1rem,100vh-1rem)] w-[min(100vw-1rem,320px)] select-text flex-col overflow-hidden rounded-xl border border-zinc-600/80 bg-zinc-800 text-zinc-100 shadow-lg"
       )}
       onPointerDown={(event) => event.stopPropagation()}
       role="dialog"
@@ -87,10 +87,10 @@ export function CardCoverPicker({
     >
       <Card
         className={cn(
-          "gap-0 overflow-hidden rounded-none border-0 bg-transparent py-0 text-inherit shadow-none"
+          "flex min-h-0 max-h-full flex-1 flex-col gap-0 overflow-hidden rounded-none border-0 bg-transparent py-0 text-inherit shadow-none"
         )}
       >
-        <div className="relative flex items-center justify-center border-zinc-600/80 border-b px-10 py-3">
+        <div className="relative flex shrink-0 items-center justify-center border-zinc-600/80 border-b px-10 py-3">
           <CardTitle className="text-center font-semibold text-base text-zinc-100">
             Cover
           </CardTitle>
@@ -109,7 +109,7 @@ export function CardCoverPicker({
             <X aria-hidden className="size-4" />
           </Button>
         </div>
-        <CardContent className="space-y-5 px-4 pt-3 pb-4">
+        <CardContent className="min-h-0 flex-1 space-y-5 overflow-y-auto overscroll-y-contain px-4 pt-3 pb-4">
           <CoverSize />
           {hasCover ? (
             <RemoveCoverButton
@@ -125,7 +125,7 @@ export function CardCoverPicker({
             coverImage={coverImage}
             onApplied={onClose}
           />
-          <UnsplashCover />
+          <UnsplashCovers />
           {/* Upload applies cover then calls onClose (same as this picker’s onClose). */}
           <Upload
             boardKey={boardKey}
