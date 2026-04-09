@@ -5,13 +5,12 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
 } from "@repo/design-system/components/ui/dropdown-menu";
 import { cn } from "@repo/design-system/lib/utils";
+import { TitleTooltipDropdownTrigger } from "@/components/ui/title-tooltip";
 import { ArrowRightLeft, SquareArrowOutUpRight, SquarePen } from "lucide-react";
-
-import { CardCoverPickerTrigger } from "../card-cover/card-cover-picker-trigger";
 import { isWithinCardCoverPicker } from "../card-cover/card-cover-picker-dom";
+import { CardCoverPickerTrigger } from "../card-cover/card-cover-picker-trigger";
 import { CopyCardButton } from "./copy-card-button";
 import { DeleteCardButton } from "./delete-card-button";
 import { EditDatesButton } from "./edit-dates-button";
@@ -50,7 +49,7 @@ export function CardOverflowMenu({
 }: CardOverflowMenuProps) {
   return (
     <DropdownMenu modal={false}>
-      <DropdownMenuTrigger asChild>
+      <TitleTooltipDropdownTrigger side="bottom" title="More options">
         <button
           aria-label={`More options for card: ${cardTitle}`}
           className={cn(
@@ -63,7 +62,7 @@ export function CardOverflowMenu({
         >
           <SquarePen aria-hidden className="size-3.5" strokeWidth={2} />
         </button>
-      </DropdownMenuTrigger>
+      </TitleTooltipDropdownTrigger>
       <DropdownMenuContent
         align="start"
         className="min-w-52"
