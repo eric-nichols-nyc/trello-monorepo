@@ -16,22 +16,12 @@ import { CoverSize } from "./cover-size";
 import { RemoveCoverButton } from "./remove-cover-button";
 import { UnsplashCovers } from "./unsplash-covers";
 import { Upload } from "./upload";
+import {
+  CARD_COVER_PICKER_ATTR,
+  isWithinCardCoverPicker,
+} from "./card-cover-picker-dom";
 
-/**
- * Marker on the floating cover UI root. Parent menus (e.g. card overflow) use
- * {@link isWithinCardCoverPicker} in `onInteractOutside` so clicks inside this
- * picker do not close the menu while it is open.
- */
-export const CARD_COVER_PICKER_ATTR = "data-card-cover-picker";
-
-/** True if `target` is inside the card-cover picker (including portaled subtree). */
-export function isWithinCardCoverPicker(target: EventTarget | null): boolean {
-  return (
-    typeof Element !== "undefined" &&
-    target instanceof Element &&
-    target.closest(`[${CARD_COVER_PICKER_ATTR}]`) !== null
-  );
-}
+export { CARD_COVER_PICKER_ATTR, isWithinCardCoverPicker };
 
 export type CardCoverPickerProps = {
   readonly boardKey: string;

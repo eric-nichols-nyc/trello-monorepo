@@ -11,7 +11,7 @@ import { cn } from "@repo/design-system/lib/utils";
 import { ArrowRightLeft, SquareArrowOutUpRight, SquarePen } from "lucide-react";
 
 import { CardCoverPickerTrigger } from "../card-cover/card-cover-picker-trigger";
-import { isWithinCardCoverPicker } from "../card-cover/card-cover-picker";
+import { isWithinCardCoverPicker } from "../card-cover/card-cover-picker-dom";
 import { CopyCardButton } from "./copy-card-button";
 import { DeleteCardButton } from "./delete-card-button";
 import { EditDatesButton } from "./edit-dates-button";

@@ -5,6 +5,8 @@ import { cn } from "@repo/design-system/lib/utils";
 import { ImagePlus } from "lucide-react";
 import {
   type ComponentProps,
+  lazy,
+  Suspense,
   useCallback,
   useEffect,
   useLayoutEffect,
@@ -13,7 +15,12 @@ import {
 } from "react";
 import { createPortal } from "react-dom";
 
-import { CardCoverPicker } from "./card-cover-picker";
+import { CARD_COVER_PICKER_ATTR } from "./card-cover-picker-dom";
+
+const LazyCardCoverPicker = lazy(async () => {
+  const { CardCoverPicker } = await import("./card-cover-picker");
+  return { default: CardCoverPicker };
+});
 
 /** Space from viewport left/right when clamping the docked panel. */
 const VIEWPORT_MARGIN_PX = 16;
@@ -126,16 +133,33 @@ export function CardCoverPickerTrigger({
   const pickerPortal =
     pickerOpen && typeof document !== "undefined"
       ? createPortal(
-          <CardCoverPicker
-            anchorLeft={anchorLeft}
-            boardKey={boardKey}
-            cardId={cardId}
-            coverColor={coverColor}
-            coverImage={coverImage}
-            hasCover={hasCover}
-            ignorePointerOutsideRef={anchorReference}
-            onClose={closePicker}
-          />,
+          <Suspense
+            fallback={
+              <div
+                aria-busy
+                aria-label="Loading cover options"
+                className={cn(
+                  "fixed bottom-4 z-200 flex h-48 w-[min(100vw-2rem,320px)] max-h-[min(100dvh-2rem,100vh-2rem)] items-center justify-center rounded-xl border border-zinc-600/80 bg-zinc-800 text-sm text-zinc-400 shadow-lg"
+                )}
+                // Same marker as {@link CardCoverPicker} so overflow `onInteractOutside` ignores this shell.
+                {...{ [CARD_COVER_PICKER_ATTR]: "" }}
+                style={{ left: anchorLeft }}
+              >
+                Loading…
+              </div>
+            }
+          >
+            <LazyCardCoverPicker
+              anchorLeft={anchorLeft}
+              boardKey={boardKey}
+              cardId={cardId}
+              coverColor={coverColor}
+              coverImage={coverImage}
+              hasCover={hasCover}
+              ignorePointerOutsideRef={anchorReference}
+              onClose={closePicker}
+            />
+          </Suspense>,
           document.body
         )
       : null;
