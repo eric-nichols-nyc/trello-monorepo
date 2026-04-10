@@ -237,6 +237,7 @@ export const ListCard = memo(function ListCardFrame({
           boardKey={boardKey}
           cardId={cardId}
           cardTitle={title}
+          dueDate={dueDate}
           coverColor={coverColor ?? null}
           coverImage={coverImage ?? null}
           hasCover={

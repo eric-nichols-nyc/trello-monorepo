@@ -1,5 +1,6 @@
 "use client";
 
+import { useAuth } from "@repo/clerk/client";
 import { Button } from "@repo/design-system/components/ui/button";
 import { Calendar } from "@repo/design-system/components/ui/calendar";
 import {
@@ -10,9 +11,13 @@ import {
 } from "@repo/design-system/components/ui/card";
 import { Input } from "@repo/design-system/components/ui/input";
 import { cn } from "@repo/design-system/lib/utils";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { X } from "lucide-react";
 import { type RefObject, useId, useRef, useState } from "react";
 import { useClickOutside } from "@/hooks/use-click-outside";
+import { updateCardClient } from "@/lib/api/cards/update-card-client";
+import { toast } from "@/lib/toast";
+import { boardDetailQueryKey } from "@/queries/board-detail-query";
 
 /** Marks the portaled panel so parent menus can ignore “outside” clicks on it. */
 export const EDIT_DATES_PANEL_ATTR = "data-card-edit-dates-panel";
@@ -26,11 +31,24 @@ export function isWithinEditDatesPanel(target: EventTarget | null): boolean {
 }
 
 export type EditDatesPanelProps = {
+  readonly boardKey: string;
+  readonly cardId: string;
   readonly position: { left: number; top: number };
   readonly onClose: () => void;
+  readonly dueDate?: Date;
   /** Clicks on this subtree (e.g. the anchor trigger) do not count as outside. */
   readonly ignorePointerOutsideRef?: RefObject<HTMLElement | null>;
 };
+
+function normalizeDueDate(value: Date | undefined): Date | undefined {
+  if (value === undefined) {
+    return;
+  }
+  if (Number.isNaN(value.getTime())) {
+    return;
+  }
+  return value;
+}
 
 function formatDueDateDisplay(date: Date | undefined): string {
   if (date === undefined) {
@@ -45,13 +63,69 @@ function formatDueDateDisplay(date: Date | undefined): string {
 }
 
 export function EditDatesPanel({
+  boardKey,
+  cardId,
   position,
   onClose,
+  dueDate: initialDueDate,
   ignorePointerOutsideRef,
 }: EditDatesPanelProps) {
   const dueDateInputId = useId();
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
+  const committedDue = normalizeDueDate(initialDueDate);
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(
+    committedDue
+  );
   const panelReference = useRef<HTMLDivElement>(null);
+  const queryClient = useQueryClient();
+  const { getToken } = useAuth();
+
+  const saveMutation = useMutation({
+    mutationFn: async (next: Date) => {
+      const token = await getToken();
+      if (!token) {
+        throw new Error("Not authenticated");
+      }
+      return updateCardClient(
+        cardId,
+        { dueDate: next.toISOString() },
+        token
+      );
+    },
+    onSuccess: () => {
+      queryClient
+        .invalidateQueries({ queryKey: boardDetailQueryKey(boardKey) })
+        .catch(() => {
+          /* best-effort */
+        });
+      onClose();
+    },
+    onError: () => {
+      toast.error("Could not save due date");
+    },
+  });
+
+  const removeMutation = useMutation({
+    mutationFn: async () => {
+      const token = await getToken();
+      if (!token) {
+        throw new Error("Not authenticated");
+      }
+      return updateCardClient(cardId, { dueDate: null }, token);
+    },
+    onSuccess: () => {
+      queryClient
+        .invalidateQueries({ queryKey: boardDetailQueryKey(boardKey) })
+        .catch(() => {
+          /* best-effort */
+        });
+      onClose();
+    },
+    onError: () => {
+      toast.error("Could not remove due date");
+    },
+  });
+
+  const busy = saveMutation.isPending || removeMutation.isPending;
 
   useClickOutside(
     panelReference,
@@ -127,11 +201,37 @@ export function EditDatesPanel({
           />
         </CardContent>
         <CardFooter className="flex flex-col gap-2 border-zinc-600/80 border-t px-4 pt-3 pb-4">
-          <Button className="w-full" type="button" variant="secondary">
-            Save
+          <Button
+            className="w-full"
+            disabled={busy || selectedDate === undefined}
+            onClick={() => {
+              if (selectedDate === undefined) {
+                return;
+              }
+              saveMutation.mutate(selectedDate);
+            }}
+            type="button"
+            variant="secondary"
+          >
+            {saveMutation.isPending ? "Saving…" : "Save"}
           </Button>
-          <Button className="w-full" type="button" variant="destructive">
-            Remove
+          <Button
+            className="w-full"
+            disabled={
+              busy ||
+              (committedDue === undefined && selectedDate === undefined)
+            }
+            onClick={() => {
+              if (committedDue !== undefined) {
+                removeMutation.mutate();
+                return;
+              }
+              setSelectedDate(undefined);
+            }}
+            type="button"
+            variant="destructive"
+          >
+            {removeMutation.isPending ? "Removing…" : "Remove"}
           </Button>
         </CardFooter>
       </Card>

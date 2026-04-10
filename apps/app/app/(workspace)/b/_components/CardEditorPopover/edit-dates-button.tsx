@@ -19,6 +19,10 @@ export type EditDatesButtonProps = Omit<
   ComponentProps<typeof Button>,
   "children" | "size" | "variant"
 > & {
+  readonly boardKey: string;
+  readonly cardId: string;
+  /** Current due date from board data (drives panel initial selection). */
+  readonly dueDate?: Date;
   /** @default "Edit dates" */
   label?: string;
   /** Icon + label row (e.g. card actions menu). @default false */
@@ -28,6 +32,9 @@ export type EditDatesButtonProps = Omit<
 };
 
 export function EditDatesButton({
+  boardKey,
+  cardId,
+  dueDate,
   className,
   label = "Edit dates",
   showLabel = false,
@@ -86,6 +93,9 @@ export function EditDatesButton({
     panelOpen && typeof document !== "undefined"
       ? createPortal(
           <EditDatesPanel
+            boardKey={boardKey}
+            cardId={cardId}
+            dueDate={dueDate}
             ignorePointerOutsideRef={anchorReference}
             onClose={closePanel}
             position={panelPosition}

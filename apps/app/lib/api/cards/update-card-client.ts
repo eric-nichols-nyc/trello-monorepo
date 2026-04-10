@@ -6,6 +6,8 @@ export type UpdateCardBody = {
   description?: string;
   /** Checkbox “done” on the card. */
   completed?: boolean;
+  /** Due date as ISO string; `null` clears. */
+  dueDate?: string | null;
   /** Archive card (distinct from `completed`). */
   closed?: boolean;
   /** Image URL cover; server clears `coverColor` when set. */

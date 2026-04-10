@@ -6,10 +6,18 @@ import { cn } from "@repo/design-system/lib/utils";
 
 import { Badge } from "./badge";
 
-export interface DueDateBadgeProps {
+export type DueDateBadgeProps = {
   startDate?: Date;
   dueDate?: Date;
   dueComplete?: boolean;
+};
+
+/** e.g. `Apr 11` in the user locale. */
+function formatDueDayMonth(date: Date): string {
+  return date.toLocaleDateString(undefined, {
+    month: "short",
+    day: "numeric",
+  });
 }
 
 function dueTooltip({
@@ -18,10 +26,10 @@ function dueTooltip({
   dueComplete,
 }: DueDateBadgeProps): string {
   const parts: string[] = [];
-  if (startDate != null) {
+  if (startDate !== undefined) {
     parts.push(`Starts ${startDate.toLocaleString()}`);
   }
-  if (dueDate != null) {
+  if (dueDate !== undefined) {
     parts.push(`Due ${dueDate.toLocaleString()}`);
   }
   if (dueComplete === true) {
@@ -35,7 +43,7 @@ export function DueDateBadge({
   dueDate,
   dueComplete,
 }: DueDateBadgeProps) {
-  if (dueDate == null) {
+  if (dueDate === undefined) {
     return null;
   }
 
@@ -45,6 +53,8 @@ export function DueDateBadge({
       aria-label={dueTooltip({ startDate, dueDate, dueComplete })}
       className={cn(dueComplete === true && "text-emerald-400")}
       title={dueTooltip({ startDate, dueDate, dueComplete })}
-    />
+    >
+      {formatDueDayMonth(dueDate)}
+    </Badge>
   );
 }

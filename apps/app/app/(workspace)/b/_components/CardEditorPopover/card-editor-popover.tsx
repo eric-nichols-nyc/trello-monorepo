@@ -20,6 +20,8 @@ export type CardEditorPopoverProps = {
   readonly boardKey: string;
   readonly cardId: string;
   readonly cardTitle: string;
+  /** Current due date for the dates editor. */
+  readonly dueDate?: Date;
   /** Card has an image or solid cover — shows “Remove cover” in the picker. @default false */
   readonly hasCover?: boolean;
   readonly coverColor?: string | null;
@@ -39,6 +41,7 @@ export function CardEditorPopover({
   boardKey,
   cardId,
   cardTitle,
+  dueDate,
   hasCover = false,
   coverColor = null,
   coverImage = null,
@@ -115,6 +118,9 @@ export function CardEditorPopover({
           onSelect={(event) => event.preventDefault()}
         >
           <EditDatesButton
+            boardKey={boardKey}
+            cardId={cardId}
+            dueDate={dueDate}
             onPanelOpenChange={(open) => {
               if (open) {
                 onEditDates?.();
