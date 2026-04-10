@@ -1,6 +1,7 @@
 "use client";
 
 import { Card } from "@repo/design-system/components/ui/card";
+import { Button } from "@repo/design-system/components/ui/button";
 import { cn } from "@repo/design-system/lib/utils";
 import {
   getBoardBooleanField,
@@ -8,10 +9,11 @@ import {
   getBoardStringField,
   getPreviewBackgroundStyle,
 } from "@/lib/boards/board-list-utils";
+import { StarProjectTitleTooltip } from "@/components/ui/title-tooltip";
 import { useUpdateBoardStarred } from "@/queries/use-update-board-starred";
 import { Star } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { type MouseEvent, useEffect, useState } from "react";
 
 type BoardTileProperties = {
   readonly board: unknown;
@@ -35,6 +37,23 @@ export const BoardTile = ({ board }: BoardTileProperties) => {
   const canStar = id !== undefined && boardKey !== undefined;
   const href = boardKey !== undefined ? `/b/${boardKey}` : null;
   const previewStyle = getPreviewBackgroundStyle(board);
+  const handleStarClick = (event: MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    if (!canStar || isPending) {
+      return;
+    }
+    const next = !isStarred;
+    setIsStarred(next);
+    mutate(
+      { boardId: id, boardKey, starred: next },
+      {
+        onError: () => {
+          setIsStarred(starred);
+        },
+      },
+    );
+  };
 
   const tile = (
     <div className="group relative">
@@ -58,43 +77,34 @@ export const BoardTile = ({ board }: BoardTileProperties) => {
           style={previewStyle}
         >
           <div className="pointer-events-auto absolute top-2 right-2 z-2">
-            <button
-              aria-label={isStarred ? "Unstar board" : "Star board"}
-              className={cn(
-                "flex size-8 items-center justify-center rounded-md border border-white/20 bg-black/35 shadow-sm backdrop-blur-[2px] transition-[opacity,colors] duration-200 hover:bg-black/45",
-                isStarred
-                  ? "opacity-100"
-                  : "opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 focus-visible:opacity-100",
-                "disabled:pointer-events-none disabled:opacity-40"
-              )}
-              disabled={!canStar || isPending}
-              onClick={(event) => {
-                event.preventDefault();
-                event.stopPropagation();
-                if (!canStar || isPending) {
-                  return;
-                }
-                const next = !isStarred;
-                setIsStarred(next);
-                mutate(
-                  { boardId: id, boardKey, starred: next },
-                  {
-                    onError: () => {
-                      setIsStarred(starred);
-                    },
-                  },
-                );
-              }}
-              type="button"
+            <StarProjectTitleTooltip
+              isStarred={isStarred}
+              projectName={title ?? "this board"}
             >
-              <Star
+              <Button
+                aria-label={isStarred ? "Unstar board" : "Star board"}
                 className={cn(
-                  "size-4 text-white",
-                  isStarred ? "fill-white" : "fill-transparent"
+                  "size-8 rounded-md border border-white/20 bg-black/35 p-0 shadow-sm backdrop-blur-[2px] transition-[opacity,colors] duration-200 hover:bg-black/45",
+                  isStarred
+                    ? "opacity-100"
+                    : "opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 focus-visible:opacity-100",
+                  "disabled:pointer-events-none disabled:opacity-40"
                 )}
-                strokeWidth={2}
-              />
-            </button>
+                disabled={!canStar || isPending}
+                onClick={handleStarClick}
+                size="icon"
+                type="button"
+                variant="ghost"
+              >
+                <Star
+                  className={cn(
+                    "size-4 text-white",
+                    isStarred ? "fill-white" : "fill-transparent"
+                  )}
+                  strokeWidth={2}
+                />
+              </Button>
+            </StarProjectTitleTooltip>
           </div>
           {workspaceLabel !== undefined ? (
             <div className="absolute bottom-2 left-2 rounded border border-white/20 bg-black/40 px-2 py-0.5 font-medium text-[11px] text-white leading-tight shadow-md backdrop-blur-sm">
