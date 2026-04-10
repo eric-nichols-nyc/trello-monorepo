@@ -27,6 +27,10 @@ import {
 } from "react";
 
 import { useClickOutside } from "@/hooks/use-click-outside";
+import {
+  fitFixedPanelInViewport,
+  type AnchorViewportRect,
+} from "@/lib/ui/portal-panel-viewport";
 import { BoardApiError } from "@/lib/api/boards/board-api-error";
 import { nestPublicBaseUrl } from "@/lib/api/nest-public-base-url";
 import { postCardClient } from "@/lib/api/cards/post-card-client";
@@ -226,6 +230,7 @@ export type CopyCardPopoverProps = {
   readonly cardId: string;
   readonly board: BoardDetail;
   readonly position: { left: number; top: number };
+  readonly anchorViewport: AnchorViewportRect;
   readonly onClose: () => void;
   /** Clicks on this subtree (e.g. the menu trigger) do not count as outside. */
   readonly ignorePointerOutsideRef?: RefObject<HTMLElement | null>;
@@ -241,6 +246,7 @@ export function CopyCardPopover({
   cardId,
   board,
   position,
+  anchorViewport,
   onClose,
   ignorePointerOutsideRef,
   labelCount = 0,
@@ -249,6 +255,7 @@ export function CopyCardPopover({
   const keepChecklistsFieldId = useId();
   const keepLabelsFieldId = useId();
   const panelReference = useRef<HTMLDivElement>(null);
+  const [placedAt, setPlacedAt] = useState(() => position);
   const queryClient = useQueryClient();
   const { getToken } = useAuth();
 
@@ -292,6 +299,22 @@ export function CopyCardPopover({
   useEffect(() => {
     setPositionSlot(String(positionCount));
   }, [positionCount]);
+
+  useLayoutEffect(() => {
+    const el = panelReference.current;
+    if (!el) {
+      return;
+    }
+    const apply = () => {
+      setPlacedAt(
+        fitFixedPanelInViewport({ el, position, anchorViewport })
+      );
+    };
+    apply();
+    const observer = new ResizeObserver(() => apply());
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [position, anchorViewport]);
 
   useClickOutside(
     panelReference,
@@ -340,30 +363,6 @@ export function CopyCardPopover({
 
   const checklistCount = found?.card.checklists.length ?? 0;
 
-  if (!found) {
-    return (
-      <div
-        ref={panelReference}
-        {...{ [COPY_CARD_POPOVER_ATTR]: "" }}
-        className={cn(
-          "fixed z-200 w-[min(100vw-1rem,360px)] rounded-xl border border-zinc-600/80 bg-zinc-800 p-4 text-zinc-100 shadow-lg"
-        )}
-        role="dialog"
-        style={{ left: position.left, top: position.top }}
-      >
-        <p className="text-sm">This card is not on the board anymore.</p>
-        <Button
-          className="mt-3"
-          onClick={onClose}
-          type="button"
-          variant="secondary"
-        >
-          Close
-        </Button>
-      </div>
-    );
-  }
-
   const openLists = board.lists.filter((l) => l.closed !== true);
 
   return (
@@ -373,13 +372,30 @@ export function CopyCardPopover({
       aria-label="Copy card"
       aria-modal="true"
       className={cn(
-        "fixed z-200 flex w-[min(100vw-1rem,360px)] select-text flex-col rounded-xl border border-zinc-600/80 bg-zinc-800 text-zinc-100 shadow-lg"
+        "fixed z-200 w-[min(100vw-1rem,360px)] select-text rounded-xl border border-zinc-600/80 bg-zinc-800 text-zinc-100 shadow-lg",
+        found
+          ? "flex max-h-[min(100dvh-2rem,100vh-2rem)] flex-col overflow-hidden"
+          : "p-4"
       )}
       onPointerDown={(event) => event.stopPropagation()}
       role="dialog"
-      style={{ left: position.left, top: position.top }}
+      style={{ left: placedAt.left, top: placedAt.top }}
     >
-      <div className="relative border-zinc-600/80 border-b px-10 py-3">
+      {found === null ? (
+        <>
+          <p className="text-sm">This card is not on the board anymore.</p>
+          <Button
+            className="mt-3"
+            onClick={onClose}
+            type="button"
+            variant="secondary"
+          >
+            Close
+          </Button>
+        </>
+      ) : (
+        <>
+      <div className="relative shrink-0 border-zinc-600/80 border-b px-10 py-3">
         <h2 className="text-center font-semibold text-base text-zinc-100">
           Copy card
         </h2>
@@ -399,7 +415,7 @@ export function CopyCardPopover({
         </Button>
       </div>
 
-      <div className="flex flex-col gap-4 px-4 py-3">
+      <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto overscroll-y-contain px-4 py-3">
         <Tabs className="gap-0" defaultValue="board">
           <TabsList
             className={cn(
@@ -564,7 +580,7 @@ export function CopyCardPopover({
         </Tabs>
       </div>
 
-      <div className="border-zinc-600/80 border-t px-4 py-3">
+      <div className="shrink-0 border-zinc-600/80 border-t px-4 py-3">
         <Button
           className={cn(
             "bg-sky-500 font-medium text-zinc-950 hover:bg-sky-400",
@@ -577,6 +593,8 @@ export function CopyCardPopover({
           {createMutation.isPending ? "Creating…" : "Create card"}
         </Button>
       </div>
+        </>
+      )}
     </div>
   );
 }

@@ -16,9 +16,16 @@ import {
 import { createPortal } from "react-dom";
 
 import { fetchBoardDetailClient } from "@/lib/api/boards/fetch-board-detail-client";
+import {
+  computePortalAnchorPosition,
+  type AnchorViewportRect,
+} from "@/lib/ui/portal-panel-viewport";
 import { boardDetailQueryKey } from "@/queries/board-detail-query";
 
 import { CopyCardPopover } from "./copy-card-popover";
+
+/** Matches {@link CopyCardPopover} `w-[min(...,360px)]`. */
+const COPY_PANEL_MAX_WIDTH_PX = 360;
 
 export type CopyCardPopoverTriggerProps = Omit<
   ComponentProps<typeof Button>,
@@ -46,7 +53,13 @@ export function CopyCardPopoverTrigger({
   const { getToken } = useAuth();
   const [panelOpen, setPanelOpen] = useState(false);
   const anchorReference = useRef<HTMLDivElement>(null);
-  const [panelPosition, setPanelPosition] = useState({ top: 0, left: 0 });
+  const [panelPlacement, setPanelPlacement] = useState<{
+    position: { left: number; top: number };
+    anchorViewport: AnchorViewportRect;
+  }>(() => ({
+    position: { left: 0, top: 0 },
+    anchorViewport: { top: 0, bottom: 0, left: 0, right: 0 },
+  }));
 
   const { data: board } = useQuery({
     queryKey: boardDetailQueryKey(boardKey),
@@ -60,34 +73,35 @@ export function CopyCardPopoverTrigger({
     staleTime: 60 * 1000,
   });
 
-  const updatePanelPosition = useCallback(() => {
+  const updatePanelPlacement = useCallback(() => {
     const node = anchorReference.current;
     if (!node) {
       return;
     }
-    const rect = node.getBoundingClientRect();
-    setPanelPosition({ top: rect.bottom + 4, left: rect.left });
+    setPanelPlacement(
+      computePortalAnchorPosition(node, COPY_PANEL_MAX_WIDTH_PX)
+    );
   }, []);
 
   useLayoutEffect(() => {
     if (!panelOpen) {
       return;
     }
-    updatePanelPosition();
-  }, [panelOpen, updatePanelPosition]);
+    updatePanelPlacement();
+  }, [panelOpen, updatePanelPlacement]);
 
   useEffect(() => {
     if (!panelOpen) {
       return;
     }
-    const handle = () => updatePanelPosition();
+    const handle = () => updatePanelPlacement();
     window.addEventListener("scroll", handle, true);
     window.addEventListener("resize", handle);
     return () => {
       window.removeEventListener("scroll", handle, true);
       window.removeEventListener("resize", handle);
     };
-  }, [panelOpen, updatePanelPosition]);
+  }, [panelOpen, updatePanelPlacement]);
 
   const closePanel = useCallback(() => {
     setPanelOpen(false);
@@ -112,12 +126,13 @@ export function CopyCardPopoverTrigger({
       ? createPortal(
           <CopyCardPopover
             key={cardId}
+            anchorViewport={panelPlacement.anchorViewport}
             board={board}
             boardKey={boardKey}
             cardId={cardId}
             ignorePointerOutsideRef={anchorReference}
             onClose={closePanel}
-            position={panelPosition}
+            position={panelPlacement.position}
           />,
           document.body
         )

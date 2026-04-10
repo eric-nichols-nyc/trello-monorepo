@@ -15,36 +15,20 @@ import {
 } from "react";
 import { createPortal } from "react-dom";
 
-import { CARD_COVER_PICKER_ATTR } from "./card-cover-picker-dom";
+import { computePortalAnchorPosition } from "@/lib/ui/portal-panel-viewport";
+
+import {
+  CARD_COVER_PICKER_ATTR,
+  type CardCoverPickerAnchorViewport,
+} from "./card-cover-picker-dom";
 
 const LazyCardCoverPicker = lazy(async () => {
   const { CardCoverPicker } = await import("./card-cover-picker");
   return { default: CardCoverPicker };
 });
 
-/** Space from viewport left/right when clamping the docked panel. */
-const VIEWPORT_MARGIN_PX = 16;
 /** Matches {@link CardCoverPicker} `w-[min(...,320px)]`. */
 const PANEL_MAX_WIDTH_PX = 320;
-
-/**
- * Horizontal position for `position: fixed; left: …` on the portaled picker.
- *
- * 1. **`getBoundingClientRect().left`** — same coordinate system as `fixed`, so the
- *    panel’s left edge lines up with the trigger wrapper (the “Change cover” row).
- * 2. **Clamp** — if `rect.left` is too far right, the panel would overflow the viewport.
- *    We keep `left` between `[margin, viewportWidth - panelWidth - margin]` so the
- *    whole sheet stays visible (panel width ≈ `min(320, viewport - 2×margin)`).
- */
-function clampedAnchorLeftPx(anchor: HTMLElement): number {
-  const rect = anchor.getBoundingClientRect();
-  const viewportW =
-    typeof window !== "undefined" ? window.innerWidth : PANEL_MAX_WIDTH_PX;
-  const panelW = Math.min(PANEL_MAX_WIDTH_PX, viewportW - VIEWPORT_MARGIN_PX * 2);
-  const minLeft = VIEWPORT_MARGIN_PX;
-  const maxLeft = viewportW - panelW - VIEWPORT_MARGIN_PX;
-  return Math.min(Math.max(rect.left, minLeft), maxLeft);
-}
 
 export type CardCoverPickerTriggerProps = Omit<
   ComponentProps<typeof Button>,
@@ -65,7 +49,8 @@ export type CardCoverPickerTriggerProps = Omit<
 };
 
 /**
- * Button that toggles the bottom-docked {@link CardCoverPicker} in a portal.
+ * Button that toggles the {@link CardCoverPicker} in a portal (anchored under the
+ * trigger, clamped to the viewport — same pattern as edit-dates / copy-card).
  */
 export function CardCoverPickerTrigger({
   boardKey,
@@ -84,15 +69,22 @@ export function CardCoverPickerTrigger({
   const [pickerOpen, setPickerOpen] = useState(false);
   /** Measured from this wrapper so alignment follows the menu row, not just the icon button. */
   const anchorReference = useRef<HTMLDivElement>(null);
-  /** Viewport X passed to {@link CardCoverPicker} as `style.left` (see `clampedAnchorLeftPx`). */
-  const [anchorLeft, setAnchorLeft] = useState(0);
+  const [pickerPlacement, setPickerPlacement] = useState<{
+    position: { left: number; top: number };
+    anchorViewport: CardCoverPickerAnchorViewport;
+  }>(() => ({
+    position: { left: 0, top: 0 },
+    anchorViewport: { top: 0, bottom: 0, left: 0, right: 0 },
+  }));
 
-  const updateAnchorLeft = useCallback(() => {
+  const updatePickerPlacement = useCallback(() => {
     const node = anchorReference.current;
     if (!node) {
       return;
     }
-    setAnchorLeft(clampedAnchorLeftPx(node));
+    setPickerPlacement(
+      computePortalAnchorPosition(node, PANEL_MAX_WIDTH_PX)
+    );
   }, []);
 
   // Sync before paint when opening so the first frame already matches the anchor (no flicker).
@@ -100,22 +92,22 @@ export function CardCoverPickerTrigger({
     if (!pickerOpen) {
       return;
     }
-    updateAnchorLeft();
-  }, [pickerOpen, updateAnchorLeft]);
+    updatePickerPlacement();
+  }, [pickerOpen, updatePickerPlacement]);
 
   // Board columns and the dropdown menu scroll; `capture: true` catches nested scrollers too.
   useEffect(() => {
     if (!pickerOpen) {
       return;
     }
-    const handle = () => updateAnchorLeft();
+    const handle = () => updatePickerPlacement();
     window.addEventListener("scroll", handle, true);
     window.addEventListener("resize", handle);
     return () => {
       window.removeEventListener("scroll", handle, true);
       window.removeEventListener("resize", handle);
     };
-  }, [pickerOpen, updateAnchorLeft]);
+  }, [pickerOpen, updatePickerPlacement]);
 
   const togglePicker = useCallback(() => {
     setPickerOpen((prev) => {
@@ -135,22 +127,24 @@ export function CardCoverPickerTrigger({
       ? createPortal(
           <Suspense
             fallback={
-              <div
-                aria-busy
-                aria-label="Loading cover options"
+              <output
+                aria-live="polite"
                 className={cn(
-                  "fixed bottom-4 z-200 flex h-48 w-[min(100vw-2rem,320px)] max-h-[min(100dvh-2rem,100vh-2rem)] items-center justify-center rounded-xl border border-zinc-600/80 bg-zinc-800 text-sm text-zinc-400 shadow-lg"
+                  "fixed z-200 flex h-48 w-[min(100vw-2rem,320px)] max-h-[min(100dvh-2rem,100vh-2rem)] items-center justify-center rounded-xl border border-zinc-600/80 bg-zinc-800 text-sm text-zinc-400 shadow-lg"
                 )}
                 // Same marker as {@link CardCoverPicker} so overflow `onInteractOutside` ignores this shell.
                 {...{ [CARD_COVER_PICKER_ATTR]: "" }}
-                style={{ left: anchorLeft }}
+                style={{
+                  left: pickerPlacement.position.left,
+                  top: pickerPlacement.position.top,
+                }}
               >
-                Loading…
-              </div>
+                Loading cover options…
+              </output>
             }
           >
             <LazyCardCoverPicker
-              anchorLeft={anchorLeft}
+              anchorViewport={pickerPlacement.anchorViewport}
               boardKey={boardKey}
               cardId={cardId}
               coverColor={coverColor}
@@ -158,6 +152,7 @@ export function CardCoverPickerTrigger({
               hasCover={hasCover}
               ignorePointerOutsideRef={anchorReference}
               onClose={closePicker}
+              position={pickerPlacement.position}
             />
           </Suspense>,
           document.body
