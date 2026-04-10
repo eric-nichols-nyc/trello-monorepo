@@ -19,8 +19,8 @@ export const AuthProvider = ({
   ...properties
 }: AuthProviderProperties) => {
   const { resolvedTheme } = useTheme();
-  const isDark = resolvedTheme === "dark";
-  const baseTheme = isDark ? dark : undefined;
+  const isLight = resolvedTheme === "light";
+  const baseTheme = isLight ? dark : undefined;
 
   const variables: Theme["variables"] = {
     fontFamily: "var(--font-sans)",
