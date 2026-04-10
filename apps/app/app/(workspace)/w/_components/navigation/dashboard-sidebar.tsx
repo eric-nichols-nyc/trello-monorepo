@@ -7,7 +7,13 @@ import {
   AccordionTrigger,
 } from "@repo/design-system/components/ui/accordion";
 import { Separator } from "@repo/design-system/components/ui/separator";
-import { Home, LayoutGrid, LayoutTemplate, Settings, Users } from "lucide-react";
+import {
+  Home,
+  LayoutGrid,
+  LayoutTemplate,
+  Settings,
+  Users,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useMemo } from "react";
@@ -55,17 +61,17 @@ export const DashboardSidebar = () => {
           <li>
             <Link className={linkClassName} href="/w">
               <LayoutGrid aria-hidden />
-              Board
+              Boards
             </Link>
           </li>
           <li>
-            <Link className={linkClassName} href="/w/templates">
+            <Link className={linkClassName} href="#">
               <LayoutTemplate aria-hidden />
               Templates
             </Link>
           </li>
           <li>
-            <Link className={linkClassName} href="/">
+            <Link className={linkClassName} href="#">
               <Home aria-hidden />
               Home
             </Link>
@@ -81,9 +87,7 @@ export const DashboardSidebar = () => {
           type="single"
         >
           <AccordionItem className="border-0" value="workspace">
-            <AccordionTrigger
-              className="items-center rounded-md py-2 pr-1 pl-0 text-left hover:bg-sidebar-accent/40 hover:no-underline [&>svg]:size-4 [&>svg]:shrink-0 [&>svg]:translate-y-0 [&>svg]:text-sidebar-foreground/60 data-[state=open]:[&>svg]:text-sidebar-foreground/60"
-            >
+            <AccordionTrigger className="items-center rounded-md py-2 pr-1 pl-0 text-left hover:bg-sidebar-accent/40 hover:no-underline [&>svg]:size-4 [&>svg]:shrink-0 [&>svg]:translate-y-0 [&>svg]:text-sidebar-foreground/60 data-[state=open]:[&>svg]:text-sidebar-foreground/60">
               <span className="flex min-w-0 flex-1 items-center gap-2.5">
                 <span
                   aria-hidden
