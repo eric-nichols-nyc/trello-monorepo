@@ -12,7 +12,7 @@ import { boardDetailQueryKey } from "@/queries/board-detail-query";
 
 import { type CardBadgesProps, CardBadges } from "../CardBadges/card-badges";
 import { CardFrontCover } from "./card-front-cover";
-import { CardOverflowMenu } from "./card-overflow-menu";
+import { CardEditorPopover } from "../CardEditorPopover/card-editor-popover";
 import { ListCardTitle } from "./list-card-title";
 
 /** Outer shell shared by {@link ListCardFront} and {@link ListCardDragPreview}. */
@@ -26,7 +26,7 @@ export const LIST_CARD_CONTENT_ROW_CLASSNAME =
 export type ListCardDragPreviewProps = {
   title: string;
   showEditIcon?: boolean;
-  /** Required when `showEditIcon` is true so {@link CardOverflowMenu} can target this card. */
+  /** Required when `showEditIcon` is true so {@link CardEditorPopover} can target this card. */
   cardId?: string;
   boardKey?: string;
   onOpenCard?: () => void;
@@ -54,7 +54,7 @@ export function ListCardDragPreview({
   return (
     <div className={cn(LIST_CARD_SURFACE_CLASSNAME, "cursor-grabbing")}>
       {showActions ? (
-        <CardOverflowMenu
+        <CardEditorPopover
           boardKey={boardKey}
           cardId={cardId}
           cardTitle={title}
@@ -233,7 +233,7 @@ export const ListCardFront = memo(function ListCardFrontFrame({
         ref={handleRef}
       >
         <CardFrontCover coverColor={coverColor} coverImage={coverImage} />
-          <CardOverflowMenu
+          <CardEditorPopover
             boardKey={boardKey}
             cardId={cardId}
             cardTitle={title}

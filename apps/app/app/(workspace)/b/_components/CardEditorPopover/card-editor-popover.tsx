@@ -16,7 +16,7 @@ import { DeleteCardButton } from "./delete-card-button";
 import { EditDatesButton } from "./edit-dates-button";
 import { isWithinEditDatesPanel } from "./edit-dates-panel";
 
-export type CardOverflowMenuProps = {
+export type CardEditorPopoverProps = {
   readonly boardKey: string;
   readonly cardId: string;
   readonly cardTitle: string;
@@ -35,7 +35,7 @@ export type CardOverflowMenuProps = {
  * Pencil trigger opening a dropdown of card commands (open, cover, dates, move, copy, delete).
  * Pinned to the card chrome so it does not move with list-card hover motion.
  */
-export function CardOverflowMenu({
+export function CardEditorPopover({
   boardKey,
   cardId,
   cardTitle,
@@ -46,7 +46,7 @@ export function CardOverflowMenu({
   onChangeCover,
   onEditDates,
   onMove,
-}: CardOverflowMenuProps) {
+}: CardEditorPopoverProps) {
   return (
     <DropdownMenu modal={false}>
       <TitleTooltipDropdownTrigger side="bottom" title="More options">
