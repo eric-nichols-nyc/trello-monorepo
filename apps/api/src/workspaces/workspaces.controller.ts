@@ -68,8 +68,19 @@ export class WorkspacesController {
   }
 
   @Patch(":id")
-  update(@Param("id") id: string, @Body() body: UpdateWorkspaceDto) {
-    return this.workspacesService.update(id, body);
+  @UseGuards(ClerkAuthGuard)
+  async update(
+    @Param("id") id: string,
+    @Body() body: UpdateWorkspaceDto,
+    @CurrentUser("sub") clerkUserId: string
+  ) {
+    const user = await this.usersService.findByClerkId(clerkUserId);
+    if (!user) {
+      throw new NotFoundException(
+        "User not found after authentication (provisioning failed)."
+      );
+    }
+    return this.workspacesService.updateForOwner(user.id, id, body);
   }
 
   @Delete(":id")

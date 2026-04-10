@@ -1,13 +1,21 @@
-import { IsOptional, IsString, MaxLength, MinLength } from "class-validator";
+import {
+  IsOptional,
+  IsString,
+  MaxLength,
+  MinLength,
+  ValidateIf,
+} from "class-validator";
 
 export class UpdateWorkspaceDto {
   @IsOptional()
   @IsString()
   name?: string;
 
+  /** Omit to leave unchanged; send `null` or `""` to clear. */
   @IsOptional()
+  @ValidateIf((_, v) => v !== null)
   @IsString()
-  description?: string;
+  description?: string | null;
 
   @IsOptional()
   @IsString()

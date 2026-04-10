@@ -1,4 +1,9 @@
-import { Inject, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { desc, eq } from 'drizzle-orm';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { randomUUID } from 'node:crypto';
@@ -54,5 +59,51 @@ export class WorkspacesService {
       .from(workspace)
       .where(eq(workspace.ownerId, userId))
       .orderBy(desc(workspace.updatedAt));
+  }
+
+  async updateForOwner(
+    userId: string,
+    workspaceId: string,
+    patch: { name?: string; description?: string | null },
+  ) {
+    const [existing] = await this.db
+      .select()
+      .from(workspace)
+      .where(eq(workspace.id, workspaceId))
+      .limit(1);
+    if (!existing) {
+      return null;
+    }
+    if (existing.ownerId !== userId) {
+      throw new ForbiddenException();
+    }
+
+    const now = new Date();
+    const nextName =
+      patch.name !== undefined ? patch.name.trim() : existing.name;
+    if (nextName === '') {
+      throw new BadRequestException('Name cannot be empty');
+    }
+
+    let nextDescription = existing.description;
+    if (patch.description !== undefined) {
+      const trimmed =
+        typeof patch.description === 'string'
+          ? patch.description.trim()
+          : '';
+      nextDescription =
+        patch.description === null || trimmed === '' ? null : trimmed;
+    }
+
+    const [row] = await this.db
+      .update(workspace)
+      .set({
+        name: nextName,
+        description: nextDescription,
+        updatedAt: now,
+      })
+      .where(eq(workspace.id, workspaceId))
+      .returning();
+    return row ?? null;
   }
 }

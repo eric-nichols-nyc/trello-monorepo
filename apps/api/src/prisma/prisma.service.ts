@@ -16,7 +16,17 @@ export class PrismaService
     if (!connectionString) {
       throw new Error("DATABASE_URL environment variable is required");
     }
-    const pool = new Pool({ connectionString });
+    // Neon/serverless: use the *pooler* DATABASE_URL when possible. ETIMEDOUT on
+    // `workspace.update` is almost always DB connectivity (wrong URL, cold start,
+    // or firewall) — a longer connect timeout reduces flaky local dev failures.
+    const pool = new Pool({
+      connectionString,
+      max: Number(process.env.DATABASE_POOL_MAX ?? 10),
+      connectionTimeoutMillis: Number(
+        process.env.DATABASE_CONNECT_TIMEOUT_MS ?? 20_000
+      ),
+      idleTimeoutMillis: 30_000,
+    });
     const adapter = new PrismaPg(pool);
     super({ adapter });
     this.pool = pool;

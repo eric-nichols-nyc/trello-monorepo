@@ -46,7 +46,11 @@ export default async function WorkspaceIdPage({ params }: WorkspaceIdPageProps) 
   return (
     <WorkspaceBoardsDashboard
       boards={boards}
-      workspace={{ id: workspace.id, name: workspace.name }}
+      workspace={{
+        id: workspace.id,
+        name: workspace.name,
+        description: workspace.description,
+      }}
     />
   );
 }

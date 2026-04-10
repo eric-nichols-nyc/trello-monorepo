@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
 // biome-ignore lint/style/useImportType: value import needed so PrismaService type includes PrismaClient (.workspace)
 import { PrismaService } from "../prisma/prisma.service";
 import { allocateUniqueWorkspaceShortLink } from "./allocate-workspace-short-link";
@@ -20,7 +24,7 @@ export class WorkspacesService {
     return this.prisma.workspace.findMany({
       where: { ownerId },
       orderBy: { createdAt: "desc" },
-      select: { id: true, name: true, shortLink: true },
+      select: { id: true, name: true, shortLink: true, description: true },
     });
   }
 
@@ -50,10 +54,48 @@ export class WorkspacesService {
     });
   }
 
-  update(id: string, data: UpdateWorkspaceDto) {
+  async updateForOwner(ownerId: string, id: string, data: UpdateWorkspaceDto) {
+    const existing = await this.prisma.workspace.findFirst({
+      where: { id, ownerId },
+    });
+    if (!existing) {
+      throw new NotFoundException(`Workspace ${id} not found`);
+    }
+
+    const patch: {
+      name?: string;
+      description?: string | null;
+      shortLink?: string | null;
+    } = {};
+
+    if (data.name !== undefined) {
+      const trimmed = data.name.trim();
+      if (trimmed === "") {
+        throw new BadRequestException("Name cannot be empty");
+      }
+      patch.name = trimmed;
+    }
+
+    if (data.description !== undefined) {
+      if (data.description === null) {
+        patch.description = null;
+      } else {
+        const trimmed = data.description.trim();
+        patch.description = trimmed === "" ? null : trimmed;
+      }
+    }
+
+    if (data.shortLink !== undefined) {
+      patch.shortLink = data.shortLink.trim();
+    }
+
+    if (Object.keys(patch).length === 0) {
+      return existing;
+    }
+
     return this.prisma.workspace.update({
       where: { id },
-      data,
+      data: patch,
     });
   }
 

@@ -2,10 +2,21 @@ import { auth } from "@repo/clerk/server";
 
 import { BoardApiError } from "@/lib/api/boards/board-api-error";
 
+function optionalStringOrNull(value: unknown): string | null {
+  if (value === null || value === undefined) {
+    return null;
+  }
+  if (typeof value === "string") {
+    return value;
+  }
+  return null;
+}
+
 export type MyWorkspaceSummary = {
   readonly id: string;
   readonly name: string;
   readonly shortLink: string | null;
+  readonly description: string | null;
 };
 
 /**
@@ -63,14 +74,9 @@ export async function getMyWorkspaces(): Promise<MyWorkspaceSummary[]> {
       if (typeof id !== "string" || typeof name !== "string") {
         return null;
       }
-      const raw = row.shortLink;
-      const shortLink =
-        raw === null || raw === undefined
-          ? null
-          : typeof raw === "string"
-            ? raw
-            : null;
-      return { id, name, shortLink };
+      const shortLink = optionalStringOrNull(row.shortLink);
+      const description = optionalStringOrNull(row.description);
+      return { id, name, shortLink, description };
     })
     .filter((row): row is MyWorkspaceSummary => row !== null);
 
