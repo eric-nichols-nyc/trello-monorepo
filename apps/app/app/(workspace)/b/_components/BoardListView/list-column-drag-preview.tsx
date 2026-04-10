@@ -1,5 +1,5 @@
 import { CardQuickAddChrome } from "../CardQuickAdd/card-quick-add-trigger";
-import { ListCardDragPreview } from "../ListCard/list-card-front";
+import { ListCardDragPreview } from "../ListCard/list-card";
 import { ListHeader } from "../ListHeader/list-header";
 
 type ListColumnDragPreviewProps = {

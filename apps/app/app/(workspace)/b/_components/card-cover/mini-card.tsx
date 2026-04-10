@@ -3,7 +3,7 @@
 import { cn } from "@repo/design-system/lib/utils";
 import type { CSSProperties } from "react";
 
-/** Matches list-card-front `LIST_CARD_SURFACE_CLASSNAME` fill for a scaled-down preview. */
+/** Matches list-card `LIST_CARD_SURFACE_CLASSNAME` fill for a scaled-down preview. */
 const MINI_CARD_SURFACE =
   "rounded-[8px] bg-[rgb(36,37,40)] text-left text-zinc-200 shadow-sm";
 

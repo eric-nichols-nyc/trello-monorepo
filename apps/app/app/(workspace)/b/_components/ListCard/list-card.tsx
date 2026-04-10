@@ -15,7 +15,7 @@ import { CardFrontCover } from "./card-front-cover";
 import { CardEditorPopover } from "../CardEditorPopover/card-editor-popover";
 import { ListCardTitle } from "./list-card-title";
 
-/** Outer shell shared by {@link ListCardFront} and {@link ListCardDragPreview}. */
+/** Outer shell shared by {@link ListCard} and {@link ListCardDragPreview}. */
 export const LIST_CARD_SURFACE_CLASSNAME =
   "relative flex w-full min-w-0 flex-1 flex-col overflow-hidden rounded-[8px] bg-[rgb(36,37,40)]";
 
@@ -34,7 +34,7 @@ export type ListCardDragPreviewProps = {
 };
 
 /**
- * Non-interactive card shell for drag overlays — matches {@link ListCardFront}
+ * Non-interactive card shell for drag overlays — matches {@link ListCard}
  * visuals (surface + title) without sortable wiring, checkbox, or mutations.
  */
 export function ListCardDragPreview({
@@ -73,7 +73,7 @@ export function ListCardDragPreview({
   );
 }
 
-export type ListCardFrontProps = {
+export type ListCardProps = {
   boardKey: string;
   cardId: string;
   columnId: string;
@@ -101,7 +101,7 @@ export type ListCardFrontProps = {
  * Sortable list card for the nested `@dnd-kit/react` board (title, badges,
  * actions, persisted completion).
  */
-export const ListCardFront = memo(function ListCardFrontFrame({
+export const ListCard = memo(function ListCardFrame({
   boardKey,
   cardId,
   columnId,
@@ -121,7 +121,7 @@ export const ListCardFront = memo(function ListCardFrontFrame({
   onArchive,
   coverColor,
   coverImage,
-}: ListCardFrontProps) {
+}: ListCardProps) {
   const queryClient = useQueryClient();
   const { getToken } = useAuth();
 
@@ -233,19 +233,19 @@ export const ListCardFront = memo(function ListCardFrontFrame({
         ref={handleRef}
       >
         <CardFrontCover coverColor={coverColor} coverImage={coverImage} />
-          <CardEditorPopover
-            boardKey={boardKey}
-            cardId={cardId}
-            cardTitle={title}
-            coverColor={coverColor ?? null}
-            coverImage={coverImage ?? null}
-            hasCover={
-              (coverImage != null && String(coverImage).trim() !== "") ||
-              (coverColor != null && String(coverColor).trim() !== "")
-            }
-            onArchive={onArchive}
-            onOpenCard={onOpenCard}
-          />
+        <CardEditorPopover
+          boardKey={boardKey}
+          cardId={cardId}
+          cardTitle={title}
+          coverColor={coverColor ?? null}
+          coverImage={coverImage ?? null}
+          hasCover={
+            String(coverImage ?? "").trim() !== "" ||
+            String(coverColor ?? "").trim() !== ""
+          }
+          onArchive={onArchive}
+          onOpenCard={onOpenCard}
+        />
         <div className={LIST_CARD_CONTENT_ROW_CLASSNAME}>
           <div className="relative z-2 flex min-w-0 flex-1 flex-col">
             <ListCardTitle

@@ -27,7 +27,7 @@ Keeping these separate avoids mixing pointer logic with DB `pos` math (where mis
 - **`nested-board-types.ts`** — Serializable initial state for the demo (`NestedBoardInitialState`).
 - **`sample-nested-board.ts`** — `SAMPLE_NESTED_BOARD` fixture (two lists, three cards, `listPosById`).
 - **`use-nested-board-drag.ts`** — Local state, sensors, `move()`, snapshot restore; **no** React Query or API.
-- **`demo-sortable-column.tsx` / `demo-sortable-card.tsx`** — Minimal sortable UI (not `BoardColumn` / `ListCardFront`).
+- **`demo-sortable-column.tsx` / `demo-sortable-card.tsx`** — Minimal sortable UI (not `BoardColumn` / `ListCard`).
 - **`nested-board-demo.tsx`** — `DragDropProvider`, column list, `DragOverlay`.
 
 ## Related production code
@@ -42,6 +42,6 @@ The demo is **not** a drop-in replacement for `BoardLists`. To reuse the ideas:
 
 1. Share or align the **interaction** hook with `useBoardListsDrag` (same `move()` + snapshot pattern).
 2. Keep **position** logic in **`lib/board/*`** pure functions with tests/fixtures.
-3. Swap **demo chrome** for real components (`ListHeader`, `ListFooter`, `ListCardFront`, etc.) once behavior matches.
+3. Swap **demo chrome** for real components (`ListHeader`, `ListFooter`, `ListCard`, etc.) once behavior matches.
 
 Pointing an assistant at **this README + one fixture** (e.g. `SAMPLE_NESTED_BOARD`) plus “only change layer 1 or only layer 3” reduces bad cross-edits.
