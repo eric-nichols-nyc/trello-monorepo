@@ -90,7 +90,7 @@ export function Hero() {
               workflow.
             </p>
             <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center">
-              <SignUpButton mode="modal">
+              <SignUpButton mode="redirect">
                 <Button className="gap-2" size="lg">
                   Start for free
                   <ArrowRight className="h-4 w-4" />

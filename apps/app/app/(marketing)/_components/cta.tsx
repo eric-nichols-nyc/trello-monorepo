@@ -18,7 +18,7 @@ export function CTA() {
               Join millions of teams using App to ship better products, faster.
             </p>
             <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-              <SignUpButton mode="modal">
+              <SignUpButton mode="redirect">
                 <Button className="gap-2" size="lg">
                   Start free today
                   <ArrowRight className="h-4 w-4" />

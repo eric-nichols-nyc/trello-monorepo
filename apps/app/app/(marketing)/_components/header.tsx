@@ -40,7 +40,7 @@ function AuthActions({ className }: { className?: string }) {
   return (
     <div className={className}>
       <SignedOut>
-        <SignInButton mode="modal">
+        <SignInButton mode="redirect">
           <Button
             className="text-muted-foreground hover:text-foreground"
             variant="ghost"
@@ -48,7 +48,7 @@ function AuthActions({ className }: { className?: string }) {
             Log in
           </Button>
         </SignInButton>
-        <SignUpButton mode="modal">
+        <SignUpButton mode="redirect">
           <Button>Get started free</Button>
         </SignUpButton>
       </SignedOut>
