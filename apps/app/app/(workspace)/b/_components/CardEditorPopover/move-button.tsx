@@ -8,14 +8,19 @@ export type MoveButtonProps = Omit<
   ComponentProps<typeof Button>,
   "children" | "size" | "variant"
 > & {
+  /** Reserved for move-card flow; not passed to the underlying button. */
+  readonly boardKey?: string;
+  readonly cardId?: string;
   /** @default "Move" */
   label?: string;
 };
 
 export function MoveButton({
+  boardKey: _boardKey,
+  cardId: _cardId,
   className,
   label = "Move",
-  ...props
+  ...buttonProps
 }: MoveButtonProps) {
   return (
     <Button
@@ -25,7 +30,7 @@ export function MoveButton({
       title={label}
       type="button"
       variant="ghost"
-      {...props}
+      {...buttonProps}
     >
       <ArrowRightLeft aria-hidden className="size-4" strokeWidth={2} />
     </Button>

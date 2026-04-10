@@ -7,10 +7,10 @@ import {
   DropdownMenuSeparator,
 } from "@repo/design-system/components/ui/dropdown-menu";
 import { cn } from "@repo/design-system/lib/utils";
+import { SquareArrowOutUpRight, SquarePen } from "lucide-react";
 import { TitleTooltipDropdownTrigger } from "@/components/ui/title-tooltip";
-import { ArrowRightLeft, SquareArrowOutUpRight, SquarePen } from "lucide-react";
-import { isWithinCardCoverPicker } from "../card-cover/card-cover-picker-dom";
-import { CardCoverPickerTrigger } from "../card-cover/card-cover-picker-trigger";
+import { isWithinCardCoverPicker } from "../CardCoverPickerPopover/card-cover-picker-dom";
+import { CardCoverPickerTrigger } from "../CardCoverPickerPopover/card-cover-picker-trigger";
 import { CopyCardButton } from "./copy-card-button";
 import { DeleteCardButton } from "./delete-card-button";
 import { EditDatesButton } from "./edit-dates-button";
@@ -48,7 +48,7 @@ export function CardEditorPopover({
   onOpenCard,
   onChangeCover,
   onEditDates,
-  onMove,
+  onMove: _onMove,
 }: CardEditorPopoverProps) {
   return (
     <DropdownMenu modal={false}>
@@ -130,13 +130,9 @@ export function CardEditorPopover({
           />
         </DropdownMenuItem>
         <DropdownMenuItem
-          onSelect={() => {
-            onMove?.();
-          }}
-        >
-          <ArrowRightLeft aria-hidden className="size-4" strokeWidth={2} />
-          Move
-        </DropdownMenuItem>
+          className="p-0"
+          onSelect={(event) => event.preventDefault()}
+        ></DropdownMenuItem>
         <CopyCardButton boardKey={boardKey} cardId={cardId} kind="menu" />
         <DropdownMenuSeparator />
         <DeleteCardButton boardKey={boardKey} cardId={cardId} kind="menu" />

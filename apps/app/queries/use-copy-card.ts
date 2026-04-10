@@ -19,7 +19,7 @@ type CopyCardMutationContext = {
   previous: BoardDetail | undefined;
 };
 
-function findCardInBoard(
+export function findCardInBoard(
   board: BoardDetail,
   cardId: string
 ): { list: BoardList; card: BoardCard } | null {
@@ -33,7 +33,7 @@ function findCardInBoard(
 }
 
 /** POST body for a duplicate in the same list (derived from cached source card). */
-function buildCopyInput(source: BoardCard): CreateCardInput {
+export function buildCopyInput(source: BoardCard): CreateCardInput {
   const baseName = source.name.trim() || "Card";
   const input: CreateCardInput = {
     name: `${baseName} (copy)`,
