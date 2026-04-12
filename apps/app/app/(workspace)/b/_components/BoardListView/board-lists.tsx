@@ -17,8 +17,13 @@ type BoardListsProps = {
 };
 
 /**
- * Nested sortable board (columns + cards). Drag state and persistence live in
- * {@link useBoardListsDrag}.
+ * Renders the horizontal list of columns plus the trailing “add list” composer.
+ *
+ * Wraps everything in `@dnd-kit/react`’s {@link DragDropProvider}: local order
+ * (`listIds`, `cardsByList`, titles, completion) and API persistence are owned
+ * by {@link useBoardListsDrag}. Child {@link BoardColumn} / {@link ListCard}
+ * wires `useSortable`; this file only supplies {@link DragOverlay} previews so
+ * the cursor ghost is not a live clone of the DOM (see `ListCardDragPreview`).
  */
 export const BoardLists = ({ board, boardKey }: BoardListsProps) => {
   const router = useRouter();
@@ -36,6 +41,11 @@ export const BoardLists = ({ board, boardKey }: BoardListsProps) => {
     handleDragOver,
     handleDragEnd,
   } = useBoardListsDrag(board, boardKey);
+
+  // ---------------------------------------------------------------------------
+  // Card id → field maps for BoardColumn / ListCard. Built from `board.lists`
+  // (server shape) so we don’t thread whole card objects through every row.
+  // ---------------------------------------------------------------------------
 
   const cardPathSegments = useMemo(() => {
     const map: Record<string, string> = {};
@@ -157,6 +167,8 @@ export const BoardLists = ({ board, boardKey }: BoardListsProps) => {
     return map;
   }, [board.lists]);
 
+  // `/c/[shortLink]` (fallback id) — keeps navigation stable while drag state
+  // mutates column/card order client-side.
   const handleOpenCard = useCallback(
     (cardId: string) => {
       const segment = cardPathSegments[cardId];
@@ -175,8 +187,10 @@ export const BoardLists = ({ board, boardKey }: BoardListsProps) => {
       onDragStart={handleDragStart}
       sensors={sensors}
     >
+      {/* Scroll width follows content; columns are fixed ~270px + gap. */}
       <div className="flex w-max items-start gap-4">
         <ul className="m-0 flex list-none gap-4 p-0">
+          {/* Order is `listIds` from useBoardListsDrag (optimistic + server sync). */}
           {listIds.map((id, columnIndex) => (
             <BoardColumn
               boardKey={boardKey}
@@ -204,6 +218,8 @@ export const BoardLists = ({ board, boardKey }: BoardListsProps) => {
         </ul>
         <ListComposer boardId={board.id} boardKey={boardKey} />
       </div>
+      {/* Portal’d layer under the pointer; not hit-tested. `source` matches the
+          active sortable (column vs card). Width matches column inner track. */}
       <DragOverlay dropAnimation={{ duration: 180, easing: "ease-out" }}>
         {(source) => {
           if (!source) {
@@ -219,10 +235,15 @@ export const BoardLists = ({ board, boardKey }: BoardListsProps) => {
               />
             );
           }
+          const cover = cardCovers[id];
           return (
             <div className="pointer-events-none w-[262px] max-w-[calc(270px-8px)] cursor-grabbing">
               <div className="overflow-hidden rounded-[8px] shadow-lg ring-2 ring-white/20">
-                <ListCardDragPreview title={cardTitles[id] ?? "Card"} />
+                <ListCardDragPreview
+                  coverColor={cover?.coverColor ?? null}
+                  coverImage={cover?.coverImage ?? null}
+                  title={cardTitles[id] ?? "Card"}
+                />
               </div>
             </div>
           );

@@ -15,6 +15,10 @@ import { CardFrontCover } from "./card-front-cover";
 import { CardEditorPopover } from "../CardEditorPopover/card-editor-popover";
 import { ListCardTitle } from "./list-card-title";
 
+// -----------------------------------------------------------------------------
+// Shared layout tokens — keep ListCard and ListCardDragPreview visually aligned.
+// -----------------------------------------------------------------------------
+
 /** Outer shell shared by {@link ListCard} and {@link ListCardDragPreview}. */
 export const LIST_CARD_SURFACE_CLASSNAME =
   "relative flex w-full min-w-0 flex-1 flex-col overflow-hidden rounded-[8px] bg-[rgb(36,37,40)]";
@@ -25,6 +29,8 @@ export const LIST_CARD_CONTENT_ROW_CLASSNAME =
 
 export type ListCardDragPreviewProps = {
   title: string;
+  coverColor?: string | null;
+  coverImage?: string | null;
   showEditIcon?: boolean;
   /** Required when `showEditIcon` is true so {@link CardEditorPopover} can target this card. */
   cardId?: string;
@@ -34,11 +40,16 @@ export type ListCardDragPreviewProps = {
 };
 
 /**
- * Non-interactive card shell for drag overlays — matches {@link ListCard}
- * visuals (surface + title) without sortable wiring, checkbox, or mutations.
+ * Non-interactive card shell used inside {@link BoardLists}’s `DragOverlay`
+ * (and column preview shells in {@link ListColumnDragPreview}).
+ *
+ * Matches {@link ListCard} chrome for cover + title; badges stay omitted to
+ * keep the ghost light.
  */
 export function ListCardDragPreview({
   title,
+  coverColor,
+  coverImage,
   showEditIcon = false,
   boardKey,
   cardId,
@@ -53,6 +64,7 @@ export function ListCardDragPreview({
 
   return (
     <div className={cn(LIST_CARD_SURFACE_CLASSNAME, "cursor-grabbing")}>
+      <CardFrontCover coverColor={coverColor} coverImage={coverImage} />
       {showActions ? (
         <CardEditorPopover
           boardKey={boardKey}
@@ -98,8 +110,12 @@ export type ListCardProps = {
 >;
 
 /**
- * Sortable list card for the nested `@dnd-kit/react` board (title, badges,
- * actions, persisted completion).
+ * Production board card: sortable row inside a list column (`group` = list id).
+ *
+ * DnD: `ref`/`targetRef` on the outer `<li>` participate in layout/collision;
+ * `handleRef` on the inner surface is the drag activator (see `@dnd-kit` sortable).
+ * While dragging, this node is hidden (`opacity-0`); the cursor ghost is
+ * `ListCardDragPreview` in `board-lists.tsx`, not a pixel clone of this tree.
  */
 export const ListCard = memo(function ListCardFrame({
   boardKey,
@@ -125,6 +141,7 @@ export const ListCard = memo(function ListCardFrame({
   const queryClient = useQueryClient();
   const { getToken } = useAuth();
 
+  // Checkbox → PATCH card.completed; optimistic UI with rollback on error.
   const saveMutation = useMutation({
     mutationFn: async (nextCompleted: boolean) => {
       const token = await getToken();
@@ -163,6 +180,8 @@ export const ListCard = memo(function ListCardFrame({
     });
   };
 
+  // Card is a sortable "item" scoped to this list; reorder vs other items,
+  // or move to another list when the column sortable accepts "item".
   const { ref, targetRef, handleRef, isDragging } = useSortable({
     id: cardId,
     index,
@@ -172,6 +191,7 @@ export const ListCard = memo(function ListCardFrame({
     feedback: "clone",
   });
 
+  // Single callback: dnd-kit wants both refs on the measured list row.
   const setLiRef = useCallback(
     (node: HTMLLIElement | null) => {
       ref(node);
@@ -180,6 +200,8 @@ export const ListCard = memo(function ListCardFrame({
     [ref, targetRef]
   );
 
+  // Leaving the card while the completion checkbox is focused avoids a stuck
+  // focus ring when the row re-renders (e.g. after toggle).
   const handleMouseLeave = (event: MouseEvent<HTMLDivElement>) => {
     if (completed) {
       return;
@@ -190,6 +212,8 @@ export const ListCard = memo(function ListCardFrame({
     }
   };
 
+  // Whole-card click opens the card drawer unless the click began on an
+  // interactive child (popover trigger, checkbox, links, form controls).
   const handleSurfaceClick = useCallback(
     (event: MouseEvent<HTMLDivElement>) => {
       if (!onOpenCard) {
@@ -216,6 +240,7 @@ export const ListCard = memo(function ListCardFrame({
       data-testid="list-card"
       className={cn(
         "group relative flex list-none",
+        // Hide in-list placeholder while dragging; overlay shows ListCardDragPreview.
         isDragging ? "opacity-0" : ""
       )}
       ref={setLiRef}

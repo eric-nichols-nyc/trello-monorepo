@@ -6,7 +6,7 @@ import { cn } from "@repo/design-system/lib/utils";
 import { memo, useCallback, useState } from "react";
 import { ListCard } from "../ListCard/list-card";
 import { ListHeader } from "../ListHeader/list-header";
-import { ListFooter } from "../ListWrapper/list-footer";
+import { ListFooter } from "../ListFooter/list-footer";
 
 export type BoardColumnProps = {
   boardKey: string;
