@@ -33,6 +33,7 @@ export const BoardLists = ({ board, boardKey }: BoardListsProps) => {
     cardTitles,
     cardCompleted,
     setCardCompletedForId,
+    setCardTitleForId,
     listPosById,
     suggestedListPosById,
     sensors,
@@ -82,6 +83,7 @@ export const BoardLists = ({ board, boardKey }: BoardListsProps) => {
                 suggested: suggestedListPosById[id] ?? listPosById[id] ?? 0,
               }}
               onCardCompletedChange={setCardCompletedForId}
+              onCardTitleChange={setCardTitleForId}
               onOpenCard={handleOpenCard}
               title={listTitles[id] ?? "List"}
             />

@@ -7,7 +7,7 @@ import {
   DropdownMenuSeparator,
 } from "@repo/design-system/components/ui/dropdown-menu";
 import { cn } from "@repo/design-system/lib/utils";
-import { SquareArrowOutUpRight, SquarePen } from "lucide-react";
+import { Pencil, SquareArrowOutUpRight, SquarePen } from "lucide-react";
 import { TitleTooltipDropdownTrigger } from "@/components/ui/title-tooltip";
 import {
   CopyCardPopoverTrigger,
@@ -30,6 +30,8 @@ export type CardEditorPopoverProps = {
   readonly coverColor?: string | null;
   readonly coverImage?: string | null;
   readonly onOpenCard?: () => void;
+  /** Toggles inline title edit on the list card (from “Edit title” menu item). */
+  readonly onEditTitle?: () => void;
   readonly onChangeCover?: () => void;
   readonly onEditDates?: () => void;
   readonly onMove?: () => void;
@@ -49,6 +51,7 @@ export function CardEditorPopover({
   coverColor = null,
   coverImage = null,
   onOpenCard,
+  onEditTitle,
   onChangeCover,
   onEditDates,
   onMove: _onMove,
@@ -98,6 +101,14 @@ export function CardEditorPopover({
             strokeWidth={2}
           />
           Open card
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          onSelect={() => {
+            onEditTitle?.();
+          }}
+        >
+          <Pencil aria-hidden className="size-4" strokeWidth={2} />
+          Edit title
         </DropdownMenuItem>
         <DropdownMenuItem
           className="p-0"

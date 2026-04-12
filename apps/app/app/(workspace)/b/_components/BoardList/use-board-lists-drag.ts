@@ -189,6 +189,10 @@ export function useBoardListsDrag(board: BoardDetail, boardKey: string) {
     [],
   );
 
+  const setCardTitleForId = useCallback((cardId: string, nextTitle: string) => {
+    setCardTitles((prev) => ({ ...prev, [cardId]: nextTitle }));
+  }, []);
+
   const listIdsRef = useRef(listIds);
   const cardsByListRef = useRef(cardsByList);
   listIdsRef.current = listIds;
@@ -306,6 +310,7 @@ export function useBoardListsDrag(board: BoardDetail, boardKey: string) {
     cardTitles,
     cardCompleted,
     setCardCompletedForId,
+    setCardTitleForId,
     listPosById,
     suggestedListPosById,
     sensors,

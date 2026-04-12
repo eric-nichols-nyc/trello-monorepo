@@ -4,7 +4,7 @@ import { useSortable } from "@dnd-kit/react/sortable";
 import { useAuth } from "@repo/clerk/client";
 import { cn } from "@repo/design-system/lib/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { type MouseEvent, memo, useCallback } from "react";
+import { type MouseEvent, memo, useCallback, useEffect, useState } from "react";
 
 import { updateCardClient } from "@/lib/api/cards/update-card-client";
 import { toast } from "@/lib/toast";
@@ -93,6 +93,8 @@ export type ListCardProps = {
   title: string;
   completed: boolean;
   onCardCompletedChange: (completed: boolean) => void;
+  /** Updates optimistic list title after a successful rename PATCH. */
+  onCardTitleChange?: (nextTitle: string) => void;
   onOpenCard?: () => void;
   onArchive?: () => void;
   coverColor?: string | null;
@@ -133,6 +135,7 @@ export const ListCard = memo(function ListCardFrame({
   dueDate,
   startDate,
   onCardCompletedChange,
+  onCardTitleChange,
   onOpenCard,
   onArchive,
   coverColor,
@@ -140,6 +143,15 @@ export const ListCard = memo(function ListCardFrame({
 }: ListCardProps) {
   const queryClient = useQueryClient();
   const { getToken } = useAuth();
+
+  const [titleEditing, setTitleEditing] = useState(false);
+  const [draftTitle, setDraftTitle] = useState(title);
+
+  useEffect(() => {
+    if (!titleEditing) {
+      setDraftTitle(title);
+    }
+  }, [title, titleEditing]);
 
   // Checkbox → PATCH card.completed; optimistic UI with rollback on error.
   const saveMutation = useMutation({
@@ -180,6 +192,63 @@ export const ListCard = memo(function ListCardFrame({
     });
   };
 
+  const titleMutation = useMutation({
+    mutationFn: async (name: string) => {
+      const token = await getToken();
+      if (!token) {
+        throw new Error("Not authenticated");
+      }
+      return updateCardClient(cardId, { name }, token);
+    },
+    onSuccess: (data, submittedName) => {
+      const record = data as Record<string, unknown>;
+      const resolved =
+        typeof record.name === "string" && record.name.trim().length > 0
+          ? String(record.name).trim()
+          : submittedName.trim();
+      onCardTitleChange?.(resolved);
+      setTitleEditing(false);
+      queryClient
+        .invalidateQueries({
+          queryKey: boardDetailQueryKey(boardKey),
+        })
+        .catch(() => {
+          /* best-effort refresh */
+        });
+    },
+    onError: () => {
+      toast.error("Could not update card title");
+    },
+  });
+
+  const toggleTitleEdit = useCallback(() => {
+    setTitleEditing((open) => {
+      if (open) {
+        return false;
+      }
+      setDraftTitle(title);
+      return true;
+    });
+  }, [title]);
+
+  const cancelTitleEdit = useCallback(() => {
+    setDraftTitle(title);
+    setTitleEditing(false);
+  }, [title]);
+
+  const commitTitle = useCallback(() => {
+    const trimmed = draftTitle.trim();
+    if (trimmed.length === 0) {
+      toast.error("Title is required");
+      return;
+    }
+    if (trimmed === title.trim()) {
+      setTitleEditing(false);
+      return;
+    }
+    titleMutation.mutate(trimmed);
+  }, [draftTitle, title, titleMutation]);
+
   // Card is a sortable "item" scoped to this list; reorder vs other items,
   // or move to another list when the column sortable accepts "item".
   const { ref, targetRef, handleRef, isDragging } = useSortable({
@@ -203,7 +272,7 @@ export const ListCard = memo(function ListCardFrame({
   // Leaving the card while the completion checkbox is focused avoids a stuck
   // focus ring when the row re-renders (e.g. after toggle).
   const handleMouseLeave = (event: MouseEvent<HTMLDivElement>) => {
-    if (completed) {
+    if (completed || titleEditing) {
       return;
     }
     const active = document.activeElement;
@@ -216,7 +285,7 @@ export const ListCard = memo(function ListCardFrame({
   // interactive child (popover trigger, checkbox, links, form controls).
   const handleSurfaceClick = useCallback(
     (event: MouseEvent<HTMLDivElement>) => {
-      if (!onOpenCard) {
+      if (!onOpenCard || titleEditing) {
         return;
       }
       const target = event.target;
@@ -232,7 +301,7 @@ export const ListCard = memo(function ListCardFrame({
       }
       onOpenCard();
     },
-    [onOpenCard]
+    [onOpenCard, titleEditing]
   );
 
   return (
@@ -270,18 +339,28 @@ export const ListCard = memo(function ListCardFrame({
             String(coverColor ?? "").trim() !== ""
           }
           onArchive={onArchive}
+          onEditTitle={toggleTitleEdit}
           onOpenCard={onOpenCard}
         />
         <div className={LIST_CARD_CONTENT_ROW_CLASSNAME}>
           <div className="relative z-2 flex min-w-0 flex-1 flex-col">
             <ListCardTitle
+              className={titleEditing ? "translate-x-0" : undefined}
               completed={completed}
               completion={{
                 checked: completed,
-                disabled: saveMutation.isPending,
+                disabled:
+                  saveMutation.isPending === true ||
+                  titleMutation.isPending === true,
                 onCheckedChange: handleCheckedChange,
               }}
+              draftTitle={draftTitle}
+              editMode={titleEditing}
+              onDraftTitleChange={setDraftTitle}
+              onTitleEditCancel={cancelTitleEdit}
+              onTitleFormSubmit={commitTitle}
               title={title}
+              titleSavePending={titleMutation.isPending}
             />
             <div>
               <CardBadges

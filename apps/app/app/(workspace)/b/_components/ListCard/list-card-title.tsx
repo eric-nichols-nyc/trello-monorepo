@@ -1,7 +1,10 @@
 "use client";
 
+import { Button } from "@repo/design-system/components/ui/button";
 import { Checkbox } from "@repo/design-system/components/ui/checkbox";
+import { Input } from "@repo/design-system/components/ui/input";
 import { cn } from "@repo/design-system/lib/utils";
+import { useEffect, useRef } from "react";
 
 /** Matches {@link LIST_CARD_SURFACE_CLASSNAME} so the title band fully covers the checkbox when collapsed. */
 const TITLE_MASK_BG = "bg-[rgb(36,37,40)]";
@@ -24,6 +27,13 @@ export type ListCardTitleProps = {
    * `group-focus-within` slides the title aside to reveal it (checked stays revealed).
    */
   completion?: ListCardCompletionControl;
+  /** Inline rename: form with input + Save; submit on Enter or Save. */
+  editMode?: boolean;
+  draftTitle?: string;
+  onDraftTitleChange?: (value: string) => void;
+  onTitleFormSubmit?: () => void;
+  onTitleEditCancel?: () => void;
+  titleSavePending?: boolean;
 };
 
 export function listCardContentRevealTranslateClass(
@@ -40,12 +50,33 @@ export function ListCardTitle({
   contentGutterForEdit = true,
   completed = false,
   completion,
+  editMode = false,
+  draftTitle = "",
+  onDraftTitleChange,
+  onTitleFormSubmit,
+  onTitleEditCancel,
+  titleSavePending = false,
 }: ListCardTitleProps) {
   const showCheckbox = completion !== undefined;
   const revealClass =
     showCheckbox === false
       ? null
       : listCardContentRevealTranslateClass(completed);
+
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (editMode) {
+      const id = requestAnimationFrame(() => {
+        const el = inputRef.current;
+        if (el) {
+          el.focus();
+          el.select();
+        }
+      });
+      return () => cancelAnimationFrame(id);
+    }
+  }, [editMode]);
 
   return (
     <div
@@ -58,7 +89,7 @@ export function ListCardTitle({
       {showCheckbox ? (
         <span
           className={cn(
-            "-translate-y-1/2 absolute top-1/2 left-0 z-[1] transition-opacity duration-150",
+            "-translate-y-1/2 absolute top-1/2 left-0 z-1 transition-opacity duration-150",
             completion.checked
               ? "pointer-events-auto opacity-100"
               : "pointer-events-none opacity-0 group-focus-within:pointer-events-auto group-focus-within:opacity-100 group-hover:pointer-events-auto group-hover:opacity-100"
@@ -79,19 +110,58 @@ export function ListCardTitle({
       ) : null}
       <div
         className={cn(
-          "relative z-[2] min-h-4 min-w-0 transition-transform duration-200 ease-out",
+          "relative z-2 min-h-4 min-w-0 transition-transform duration-200 ease-out",
           showCheckbox ? TITLE_MASK_BG : null,
-          revealClass
+          editMode ? "translate-x-0" : revealClass
         )}
       >
-        <span
-          className={cn(
-            "block truncate font-medium text-white/85 text-sm",
-            completed ? "text-white/45 line-through" : null
-          )}
-        >
-          {title}
-        </span>
+        {editMode ? (
+          <form
+            className="flex min-w-0 items-center gap-1.5"
+            onSubmit={(event) => {
+              event.preventDefault();
+              onTitleFormSubmit?.();
+            }}
+          >
+            <Input
+              ref={inputRef}
+              aria-label="Card title"
+              className={cn(
+                "h-8 min-w-0 flex-1 border-white/15 bg-white/5 py-1 text-sm text-white shadow-none",
+                "focus-visible:border-[#8AB4F8] focus-visible:ring-2 focus-visible:ring-[#8AB4F8]/35"
+              )}
+              disabled={titleSavePending}
+              onChange={(event) => {
+                onDraftTitleChange?.(event.target.value);
+              }}
+              onKeyDown={(event) => {
+                if (event.key === "Escape") {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  onTitleEditCancel?.();
+                }
+              }}
+              value={draftTitle}
+            />
+            <Button
+              className="h-8 shrink-0 px-2.5 text-xs"
+              disabled={titleSavePending}
+              type="submit"
+              variant="secondary"
+            >
+              Save
+            </Button>
+          </form>
+        ) : (
+          <span
+            className={cn(
+              "block truncate font-medium text-white/85 text-sm",
+              completed ? "text-white/45 line-through" : null
+            )}
+          >
+            {title}
+          </span>
+        )}
       </div>
     </div>
   );

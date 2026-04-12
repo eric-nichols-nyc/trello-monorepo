@@ -29,6 +29,7 @@ export type BoardColumnProps = {
   >;
   cardCompleted: Record<string, boolean>;
   onCardCompletedChange: (cardId: string, completed: boolean) => void;
+  onCardTitleChange: (cardId: string, title: string) => void;
   /** Optional header debug: suggested vs server `pos` for this column. */
   listPosDebug?: { suggested: number; stored: number };
   onOpenCard?: (cardId: string) => void;
@@ -49,6 +50,7 @@ export const BoardColumn = memo(function BoardColumnFrame({
   cardCovers,
   cardCompleted,
   onCardCompletedChange,
+  onCardTitleChange,
   listPosDebug,
   onOpenCard,
 }: BoardColumnProps) {
@@ -95,6 +97,9 @@ export const BoardColumn = memo(function BoardColumnFrame({
               key={cardId}
               onCardCompletedChange={(next) =>
                 onCardCompletedChange(cardId, next)
+              }
+              onCardTitleChange={(nextTitle) =>
+                onCardTitleChange(cardId, nextTitle)
               }
               onOpenCard={
                 onOpenCard === undefined
