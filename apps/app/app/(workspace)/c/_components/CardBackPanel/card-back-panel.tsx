@@ -1,18 +1,25 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 
 import type { CardRouteBoardList } from "@/lib/api/cards/load-card-route";
 import type { BoardCard } from "@/types/board-detail";
 
 import { CardBackChecklist } from "../CardBackChecklist/card-back-checklist";
+import { CardBackCover } from "../CardBackCover/card-back-cover";
 import { CardBackDescription } from "../CardBackDescription/card-back-description";
 import { CardBackDueDate } from "../CardBackDueDate/card-back-due-date";
 import { CardBackFooter } from "../CardBackFooter/card-back-footer";
-import { CardBackHeader } from "../CardBackHeader/card-back-header";
 import { CardBackQuickAdd } from "../CardBackQuickAdd/card-back-quickadd";
 import { CardBackTitle } from "../CardBackTitle/card-back-title";
-import { CardBackComments } from "../Comments/card-back-comments";
+
+const CardBackCommentsLazy = lazy(async () => {
+  const m = await import("../Comments/card-back-comments");
+  return { default: m.CardBackComments };
+});
+
+const commentsPanelClassName =
+  "max-h-[min(40vh,360px)] shrink-0 border-zinc-800 border-t lg:max-h-none lg:w-[min(100%,380px)] lg:border-t-0 lg:border-l";
 
 export type CardBackPanelProps = {
   boardLists: CardRouteBoardList[];
@@ -53,10 +60,12 @@ export function CardBackPanel({
 
   return (
     <div className="w-full max-w-2xl overflow-hidden rounded-xl bg-zinc-900 text-zinc-100 shadow-2xl lg:max-w-5xl">
-      <CardBackHeader
+      <CardBackCover
         backHref={backHref}
         boardLists={boardLists}
         boardName={boardName}
+        coverColor={card.coverColor}
+        coverImage={card.coverImage}
         currentListId={card.listId}
         listName={listName}
         mode={mode}
@@ -90,14 +99,24 @@ export function CardBackPanel({
           )}
         </div>
 
-        <CardBackComments
-          boardRouteKey={boardRouteKey}
-          cardId={card.id}
-          className="max-h-[min(40vh,360px)] shrink-0 border-zinc-800 border-t lg:max-h-none lg:w-[min(100%,380px)] lg:border-t-0 lg:border-l"
-          initialComments={card.comments}
-          onPanelOpenChange={setCommentsPanelOpen}
-          panelOpen={commentsPanelOpen}
-        />
+        <Suspense
+          fallback={
+            <div
+              className={`${commentsPanelClassName} flex min-h-[min(40vh,240px)] items-center justify-center bg-zinc-900/80 px-4`}
+            >
+              <p className="text-sm text-zinc-500">Loading comments…</p>
+            </div>
+          }
+        >
+          <CardBackCommentsLazy
+            boardRouteKey={boardRouteKey}
+            cardId={card.id}
+            className={commentsPanelClassName}
+            initialComments={card.comments}
+            onPanelOpenChange={setCommentsPanelOpen}
+            panelOpen={commentsPanelOpen}
+          />
+        </Suspense>
       </div>
 
       <CardBackFooter

@@ -14,6 +14,7 @@ import {
   SelectValue,
 } from "@repo/design-system/components/ui/select";
 import type { CardRouteBoardList } from "@/lib/api/cards/load-card-route";
+import { cn } from "@repo/design-system/lib/utils";
 import { ChevronDown, X } from "lucide-react";
 import { useMemo, useState } from "react";
 
@@ -24,6 +25,8 @@ export type CardBackActionsMenuProps = {
   boardName: string;
   currentListId: string;
   listName: string;
+  /** Wider pill trigger + typography for {@link CardBackCover} top bar. */
+  variant?: "default" | "cover";
 };
 
 export function CardBackActionsMenu({
@@ -31,6 +34,7 @@ export function CardBackActionsMenu({
   boardName,
   currentListId,
   listName,
+  variant = "default",
 }: CardBackActionsMenuProps) {
   const [open, setOpen] = useState(false);
 
@@ -45,18 +49,42 @@ export function CardBackActionsMenu({
     <Popover onOpenChange={setOpen} open={open}>
       <PopoverTrigger asChild>
         <Button
-          className="card-back-actions-menu__trigger h-auto min-h-8 max-w-full items-start gap-2 whitespace-normal py-1.5 text-left text-zinc-300 hover:text-zinc-100"
+          className={cn(
+            "card-back-actions-menu__trigger h-auto max-w-full gap-2 text-left",
+            variant === "cover"
+              ? "min-h-10 items-center rounded-lg bg-[#2a2d35] px-4 py-2 font-normal text-white hover:bg-[#3a3d45] hover:text-white"
+              : "min-h-8 max-w-full items-start whitespace-normal py-1.5 text-zinc-300 hover:text-zinc-100",
+          )}
           size="sm"
           title={`${listName}`}
           type="button"
           variant="ghost"
         >
-          <span className="min-w-0 max-w-44 flex-1 text-left leading-tight">
-            <span className="block wrap-break-word font-medium text-sm text-zinc-100">
+          <span
+            className={cn(
+              "min-w-0 flex-1 text-left leading-tight",
+              variant === "cover" ? "max-w-[min(100%,600px)]" : "max-w-44",
+            )}
+          >
+            <span
+              className={cn(
+                "block",
+                variant === "cover"
+                  ? "truncate text-base font-normal text-white"
+                  : "wrap-break-word font-medium text-sm text-zinc-100",
+              )}
+            >
               {listName}
             </span>
           </span>
-          <ChevronDown className="mt-0.5 size-4 shrink-0 self-start" />
+          <ChevronDown
+            className={cn(
+              "size-4 shrink-0",
+              variant === "cover"
+                ? "opacity-70"
+                : "mt-0.5 self-start",
+            )}
+          />
         </Button>
       </PopoverTrigger>
       <PopoverContent
