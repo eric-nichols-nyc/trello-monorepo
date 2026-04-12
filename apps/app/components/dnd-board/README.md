@@ -32,7 +32,7 @@ Keeping these separate avoids mixing pointer logic with DB `pos` math (where mis
 
 ## Related production code
 
-- **DnD + persist**: `app/(workspace)/b/_components/BoardListView/use-board-lists-drag.ts`, `board-lists.tsx`, `board-column.tsx`
+- **DnD + persist**: `app/(workspace)/b/_components/BoardList/use-board-lists-drag.ts`, `board-lists.tsx`, `board-column.tsx`
 - **List fractional pos**: `lib/board/list-column-pos.ts` — `suggestedListPositionsForOrder`
 - **Card moves / payloads**: `lib/board/card-list-pos.ts` — e.g. `cardMovePersistPayload`
 

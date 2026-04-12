@@ -5,12 +5,13 @@ import { useState } from "react";
 import { AddListButton } from "./add-list-button";
 import { AddListForm } from "./add-list-form";
 
-type ListComposerProps = {
+type AddListColumnProps = {
   boardId: string;
   boardKey: string;
 };
 
-export const ListComposer = ({ boardId, boardKey }: ListComposerProps) => {
+/** Trailing board column: “Add list” control that expands into the create form. */
+export const AddListColumn = ({ boardId, boardKey }: AddListColumnProps) => {
   const [formOpen, setFormOpen] = useState(false);
 
   return (
