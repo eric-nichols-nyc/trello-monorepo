@@ -1,0 +1,91 @@
+{
+  "id": "remote-team-meeting",
+  "title": "Remote team meeting",
+  "description": "Weekly stand-up style lists with cover colors and image placeholders (add files under public/images/template/).",
+  "board": {
+    "backgroundImage": "/images/template/placeholder-remote-team-meeting-board-bg.png",
+    "backgroundBrightness": "dark"
+  },
+  "lists": [
+    {
+      "name": "This Week",
+      "cards": [
+        {
+          "name": "How to use this list",
+          "description": "Tip: use list actions to rename, archive, or reorder.",
+          "coverColor": "#2e7d32"
+        },
+        {
+          "name": "--- Discuss During Next Meeting ---",
+          "description": "Agenda items for the next sync."
+        },
+        {
+          "name": "Meeting Lead",
+          "description": "Assign a lead before each meeting."
+        },
+        {
+          "name": "Team Updates (2 mins per team)",
+          "description": "Keep updates short; use checklists for follow-ups."
+        },
+        {
+          "name": "Wednesday Woes",
+          "description": "Share blockers mid-week."
+        },
+        {
+          "name": "Team bravo 👏",
+          "description": "Shout-outs and wins."
+        }
+      ]
+    },
+    {
+      "name": "Previous Meetings 🔝",
+      "cards": [
+        {
+          "name": "Create a new list for each meeting and move cards over after they are discussed ------ >",
+          "coverColor": "#1565c0"
+        }
+      ]
+    },
+    {
+      "name": "January 25th",
+      "cards": [
+        {
+          "name": "#embraceremote campaign update",
+          "description": "Marketing / remote-work campaign notes."
+        },
+        {
+          "name": "Remote Work Campaign: The Scoop",
+          "description": "Replace cover with your campaign hero image.",
+          "coverImage": "/images/template/placeholder-remote-campaign-scoop.png"
+        },
+        {
+          "name": "Brief Discussion on Artificial Harmony",
+          "description": "Replace cover with your quote or team photo.",
+          "coverImage": "/images/template/placeholder-remote-trust-quote.png"
+        },
+        {
+          "name": "Strategic Influence At Work: Bootcamp Takeaways",
+          "description": "Summary of training / reading group."
+        }
+      ]
+    },
+    {
+      "name": "January 18th",
+      "cards": [
+        {
+          "name": "Nordic Launch Update",
+          "description": "Regional launch status."
+        },
+        {
+          "name": "Remote Work Campaign: The Scoop",
+          "description": "Same asset as January 25th or swap for a variant.",
+          "coverImage": "/images/template/placeholder-remote-campaign-scoop.png"
+        },
+        {
+          "name": "Webinar Post-Mortem",
+          "description": "What worked, what to change next time."
+        }
+      ]
+    }
+  ]
+}

@@ -1,10 +1,16 @@
 import {
-  boardTemplateDefinitionSchema,
   type BoardTemplateDefinition,
+  boardTemplateDefinitionSchema,
 } from "./board-template.schema";
+import remoteTeamMeeting from "./data/remote-team-meeting.template.json";
 import simpleKanban from "./data/simple-kanban.template.json";
+import teachinWeeklyPlanning101 from "./data/teachin-weekly-planning-101.template.json";
 
-const rawTemplates = [simpleKanban];
+const rawTemplates = [
+  simpleKanban,
+  remoteTeamMeeting,
+  teachinWeeklyPlanning101,
+];
 
 const definitions = new Map<string, BoardTemplateDefinition>();
 
@@ -26,16 +32,14 @@ export function listBoardTemplateCatalog(): {
   description?: string;
   backgroundImage?: string;
 }[] {
-  return [...definitions.values()].map(
-    ({ id, title, description, board }) => ({
-      id,
-      title,
-      ...(description !== undefined ? { description } : {}),
-      ...(board?.backgroundImage !== undefined && board.backgroundImage !== ""
-        ? { backgroundImage: board.backgroundImage }
-        : {}),
-    })
-  );
+  return [...definitions.values()].map(({ id, title, description, board }) => ({
+    id,
+    title,
+    ...(description !== undefined ? { description } : {}),
+    ...(board?.backgroundImage !== undefined && board.backgroundImage !== ""
+      ? { backgroundImage: board.backgroundImage }
+      : {}),
+  }));
 }
 
 export function getBoardTemplateById(

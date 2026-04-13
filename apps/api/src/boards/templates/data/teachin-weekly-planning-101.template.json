@@ -1,0 +1,102 @@
+{
+  "id": "teachin-weekly-planning-101",
+  "title": "Teachin weekly planning 101",
+  "description": "Term setup, weekly rhythm, and wrap-up — board background and sample card art under /images/template3/.",
+  "board": {
+    "backgroundImage": "/images/template3/asset_3.png",
+    "backgroundBrightness": "dark"
+  },
+  "lists": [
+    {
+      "name": "Beginning of Term",
+      "cards": [
+        {
+          "name": "Reserve Labs/Special Rooms",
+          "description": "Book shared spaces before the term starts."
+        },
+        {
+          "name": "Set up Trello Boards",
+          "description": "Checklist: six onboarding steps for your class boards (0/6 when new)."
+        },
+        {
+          "name": "Set up dropbox folders",
+          "description": "Shared folders for handouts and submissions."
+        },
+        {
+          "name": "Web Enhance Class",
+          "description": "Optional hero image under /images/template3/.",
+          "coverImage": "/images/template3/asset_3.png"
+        },
+        {
+          "name": "Set up Google Drive",
+          "description": "Mirror key materials from Dropbox if needed."
+        },
+        {
+          "name": "Set up Learning Management System",
+          "description": "Checklist: one LMS pass/fail gate (0/1 when new)."
+        },
+        {
+          "name": "Set up Online Textbook",
+          "description": "Access codes and student roster sync."
+        },
+        {
+          "name": "Make Semester Plan",
+          "description": "Checklist: four planning milestones (0/4 when new)."
+        },
+        {
+          "name": "Write Syllabus",
+          "description": "Policies, outcomes, and grading overview."
+        }
+      ]
+    },
+    {
+      "name": "Week 1 (copy for remaining weeks)",
+      "cards": [
+        {
+          "name": "Lesson Plan",
+          "description": "Checklist: seven prep items (0/7 when new).",
+          "coverColor": "#f57c00"
+        },
+        {
+          "name": "After Class",
+          "description": "Checklist: six follow-ups (0/6 when new).",
+          "coverColor": "#1976d2"
+        },
+        {
+          "name": "Weekly Schedule",
+          "description": "Checklist: six schedule blocks (0/6 when new).",
+          "coverColor": "#388e3c"
+        },
+        {
+          "name": "Make Assignment 1",
+          "description": "Draft, publish, and link from LMS."
+        },
+        {
+          "name": "Correct Assignment 1",
+          "description": "Rubric + feedback loop."
+        }
+      ]
+    },
+    {
+      "name": "End of Term",
+      "cards": [
+        {
+          "name": "Reflection Meeting",
+          "description": "Team retro on what to change next term."
+        },
+        {
+          "name": "Complete Curriculum Development Chart",
+          "description": "Close the loop on standards coverage."
+        },
+        {
+          "name": "Make Final Exam",
+          "description": "Blueprint + item bank."
+        },
+        {
+          "name": "Correct Final Exam",
+          "description": "Grading window and appeals."
+        }
+      ]
+    }
+  ]
+}
