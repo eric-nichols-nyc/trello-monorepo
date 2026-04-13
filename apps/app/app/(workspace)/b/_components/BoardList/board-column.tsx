@@ -74,10 +74,13 @@ export const BoardColumn = memo(function BoardColumnFrame({
 
   return (
     <li
-      className={cn("w-[270px] shrink-0", isDragging ? "opacity-0" : "")}
+      className={cn(
+        "flex max-h-full w-[270px] shrink-0 flex-col min-h-0",
+        isDragging ? "opacity-0" : ""
+      )}
       ref={setColRef}
     >
-      <div className="flex flex-col gap-2 rounded-lg bg-[rgb(16,18,4)]">
+      <div className="flex max-h-full min-h-0 flex-1 flex-col gap-2 overflow-hidden rounded-lg bg-[rgb(16,18,4)]">
         <ListHeader
           boardKey={boardKey}
           dragHandleRef={handleRef}
@@ -86,7 +89,7 @@ export const BoardColumn = memo(function BoardColumnFrame({
           onOpenCardQuickAdd={() => setQuickAddOpen(true)}
           title={title}
         />
-        <ol className="mx-[4px] my-0 flex min-h-0 list-none flex-col gap-2 p-0">
+        <ol className="mx-[4px] my-0 flex min-h-0 flex-1 list-none flex-col gap-2 overflow-y-auto overscroll-y-contain p-0">
           {cardIds.map((cardId, index) => (
             <ListCard
               boardKey={boardKey}

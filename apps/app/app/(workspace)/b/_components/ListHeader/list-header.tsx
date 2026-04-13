@@ -27,7 +27,7 @@ export const ListHeader = ({
   dragHandleRef,
   onOpenCardQuickAdd,
 }: ListHeaderProps) => (
-  <header className="mx-[4px] flex h-[32px] items-center gap-1 pt-[8px] pr-[8px] pl-[8px]">
+  <header className="mx-[4px] flex h-[32px] shrink-0 items-center gap-1 pt-[8px] pr-[8px] pl-[8px]">
     <button
       aria-label="Drag list"
       className="-ml-1 flex shrink-0 cursor-grab touch-none items-center justify-center rounded p-0.5 text-white/50 hover:bg-white/10 hover:text-white/80 active:cursor-grabbing"

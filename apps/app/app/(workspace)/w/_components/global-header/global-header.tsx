@@ -22,7 +22,7 @@ export const GlobalHeader = ({
   workspaceSummaries = [],
 }: GlobalHeaderProperties) => (
   <header
-    className="flex min-h-14 min-w-0 w-full items-center justify-between gap-2 overflow-x-auto border-chrome-divider border-b bg-background px-2 sm:gap-3 sm:px-4 md:px-8"
+    className="flex min-h-12 min-w-0 w-full items-center justify-between gap-2 overflow-x-auto border-chrome-divider border-b bg-background px-2 sm:gap-3 sm:px-4 md:px-8"
     data-testid="global-header"
   >
     <div className="shrink-0">
