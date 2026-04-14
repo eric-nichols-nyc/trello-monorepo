@@ -1,7 +1,7 @@
 import { CircleUser } from "lucide-react";
 import { getStableBoardKey } from "@/lib/boards/board-list-utils";
 import { BoardTile } from "../board-tile/board-tile";
-import { CreateNewBoardTile } from "../createNewBoardTile/create-new-board-tile";
+import { CreateNewBoardTile } from "../create-new-board-tile";
 import { WorkspaceHeader } from "../workspace-header/workspace-header";
 
 type WorkspaceBoardsHomeProperties = {

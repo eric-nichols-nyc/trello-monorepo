@@ -14,7 +14,7 @@ import {
   CREATE_BOARD_CARD_WIDTH,
   CREATE_BOARD_POPOVER_LAYOUT_ESTIMATE_PX,
   CreateBoardCard,
-} from "../create-board-popover/create-board-card";
+} from "./create-board-popover/create-board-card";
 
 const POPOVER_OFFSET_X = 8;
 const POPOVER_VERTICAL_ANCHOR = 0.52;
