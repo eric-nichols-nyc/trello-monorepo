@@ -2,9 +2,10 @@
 
 import { Button } from "@repo/design-system/components/ui/button";
 import { cn } from "@repo/design-system/lib/utils";
-import type { CSSProperties } from "react";
-import { ArrowLeft, Image, MoreHorizontal, X } from "lucide-react";
+import { ArrowLeft, Image as ImageIcon, MoreHorizontal, X } from "lucide-react";
+import NextImage from "next/image";
 import Link from "next/link";
+import type { CSSProperties } from "react";
 
 import type { CardRouteBoardList } from "@/lib/api/cards/load-card-route";
 
@@ -36,17 +37,14 @@ export function CardBackCover({
   backHref,
   onRequestClose,
 }: CardBackCoverProps) {
-  const hasImage =
-    coverImage != null && String(coverImage).trim().length > 0;
-  const hasColor =
-    coverColor != null && String(coverColor).trim().length > 0;
+  const hasImage = coverImage !== null && String(coverImage).trim().length > 0;
+  const hasColor = coverColor !== null && String(coverColor).trim().length > 0;
+  const resolvedCoverImage = hasImage ? String(coverImage).trim() : null;
 
-  const fillStyle: CSSProperties | undefined =
-    hasImage === true
-      ? undefined
-      : hasColor === true
-        ? { backgroundColor: String(coverColor) }
-        : undefined;
+  let fillStyle: CSSProperties | undefined;
+  if (!hasImage && hasColor) {
+    fillStyle = { backgroundColor: String(coverColor) };
+  }
 
   const showCoverMedia = hasImage || hasColor;
 
@@ -68,7 +66,7 @@ export function CardBackCover({
             type="button"
             variant="ghost"
           >
-            <Image className="size-5" />
+            <ImageIcon className="size-5" />
           </Button>
           <Button
             className={chromeIconButtonClass}
@@ -109,22 +107,19 @@ export function CardBackCover({
           <div
             className={cn(
               "h-[160px] w-full max-w-[400px] overflow-hidden rounded-lg",
-              hasImage ? "relative" : "bg-zinc-800/50",
+              hasImage ? "relative" : "bg-zinc-800/50"
             )}
           >
-            {hasImage ? (
+            {resolvedCoverImage ? (
               // eslint-disable-next-line @next/next/no-img-element -- remote card cover URLs from API
-              <img
+              <NextImage
                 alt=""
                 className="size-full object-cover object-bottom"
-                src={coverImage!}
+                fill
+                src={resolvedCoverImage}
               />
             ) : (
-              <div
-                aria-hidden
-                className="size-full"
-                style={fillStyle}
-              />
+              <div aria-hidden className="size-full" style={fillStyle} />
             )}
           </div>
         </div>
