@@ -8,7 +8,7 @@ import {
   getStableBoardKey,
 } from "@/lib/boards/board-list-utils";
 import { BoardTile } from "../board-tile/board-tile";
-import { CreateNewBoardButton } from "../CreateNewBoardButton/create-new-board-button";
+import { CreateNewBoardTile } from "../createNewBoardTile/create-new-board-tile";
 import { WorkspaceHeader } from "../workspace-header/workspace-header";
 import { StarredBoardsSection } from "./starred-boards-section";
 
@@ -60,7 +60,7 @@ export const WorkspaceBoardsWorkspacePanel = ({
               key={getStableBoardKey(board, index)}
             />
           ))}
-          <CreateNewBoardButton workspaceId={workspaceId} />
+          <CreateNewBoardTile workspaceId={workspaceId} />
         </div>
       </section>
     </div>

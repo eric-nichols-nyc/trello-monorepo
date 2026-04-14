@@ -46,17 +46,17 @@ function getPopoverPosition(
   };
 }
 
-export type CreateNewBoardButtonProps = {
+export type CreateNewBoardTileProps = {
   readonly className?: string;
   readonly boardsRemaining?: number;
   readonly workspaceId: string | null;
 };
 
-export function CreateNewBoardButton({
+export function CreateNewBoardTile({
   className,
   boardsRemaining = 3,
   workspaceId,
-}: CreateNewBoardButtonProps) {
+}: CreateNewBoardTileProps) {
   const [mounted, setMounted] = useState(false);
   const [open, setOpen] = useState(false);
   const [popoverPosition, setPopoverPosition] = useState({ top: 0, left: 0 });

@@ -1,7 +1,7 @@
 import { CircleUser } from "lucide-react";
 import { getStableBoardKey } from "@/lib/boards/board-list-utils";
 import { BoardTile } from "../board-tile/board-tile";
-import { CreateNewBoardButton } from "../CreateNewBoardButton/create-new-board-button";
+import { CreateNewBoardTile } from "../createNewBoardTile/create-new-board-tile";
 import { WorkspaceHeader } from "../workspace-header/workspace-header";
 
 type WorkspaceBoardsHomeProperties = {
@@ -39,7 +39,7 @@ export const WorkspaceBoardsHome = ({
         {list.map((board, index) => (
           <BoardTile board={board} key={getStableBoardKey(board, index)} />
         ))}
-        <CreateNewBoardButton workspaceId={workspaceId} />
+        <CreateNewBoardTile workspaceId={workspaceId} />
       </div>
     </section>
   );
