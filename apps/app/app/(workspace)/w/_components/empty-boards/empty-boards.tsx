@@ -2,11 +2,6 @@
 
 import { Button } from "@repo/design-system/components/ui/button";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@repo/design-system/components/ui/popover";
-import {
   useCallback,
   useEffect,
   useLayoutEffect,
@@ -19,7 +14,7 @@ import {
   CREATE_BOARD_POPOVER_LAYOUT_ESTIMATE_PX,
   CreateBoardCard,
 } from "../create-board-popover/create-board-card";
-import { TemplateGallery } from "../TemplateGallery/template-gallery";
+import { StartWithTemplatePopover } from "./start-with-template-popover";
 
 /** Horizontal offset from the trigger’s right edge (LTR); positive moves the card right. */
 const POPOVER_OFFSET_X = 8;
@@ -66,7 +61,6 @@ export type EmptyBoardsProps = {
 export function EmptyBoards({ workspaceId }: EmptyBoardsProps) {
   const [mounted, setMounted] = useState(false);
   const [open, setOpen] = useState(false);
-  const [templateOpen, setTemplateOpen] = useState(false);
   const [popoverPosition, setPopoverPosition] = useState({ top: 0, left: 0 });
   const triggerReference = useRef<HTMLButtonElement>(null);
 
@@ -180,28 +174,7 @@ export function EmptyBoards({ workspaceId }: EmptyBoardsProps) {
           <Button onClick={openPopover} ref={triggerReference} type="button">
             Create your first board
           </Button>
-          <Popover onOpenChange={setTemplateOpen} open={templateOpen}>
-            <PopoverTrigger asChild>
-              <Button type="button" variant="secondary">
-                Start with a template
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent
-              align="start"
-              className="max-h-[min(90dvh,720px)] w-[min(calc(100vw-2rem),22rem)] overflow-y-auto p-0 shadow-2xl ring-1 ring-black/25"
-              side="right"
-              sideOffset={10}
-            >
-              <div className="bg-(--card-back-actions-menu-bg)">
-                <TemplateGallery
-                  onBoardCreated={() => {
-                    setTemplateOpen(false);
-                  }}
-                  workspaceId={workspaceId}
-                />
-              </div>
-            </PopoverContent>
-          </Popover>
+          <StartWithTemplatePopover workspaceId={workspaceId} />
         </div>
       </section>
       {portal}
