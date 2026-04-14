@@ -40,6 +40,15 @@ type HeaderCreateStackedPopoverProps = {
   >;
   /** Passed through to the create-board form; null blocks submit until a workspace exists. */
   readonly workspaceId: string | null;
+  /** Trigger label text; defaults to "Create". */
+  triggerLabel?: string;
+  /** Opens directly to a stacked screen when set. */
+  initialScreen?: "create-board" | "template";
+  /** Optional placement overrides for the popover content. */
+  popoverContentProps?: Pick<
+    ComponentProps<typeof PopoverContent>,
+    "side" | "align" | "sideOffset" | "alignOffset"
+  >;
 };
 
 /** Stacked screen `create-board`: {@link CreateNewBoard}. */
@@ -137,6 +146,9 @@ export function HeaderCreateStackedPopover({
   templateDisabled = false,
   triggerProps,
   workspaceId,
+  triggerLabel = "Create",
+  initialScreen,
+  popoverContentProps,
 }: HeaderCreateStackedPopoverProps) {
   const {
     className: triggerClassName,
@@ -171,14 +183,20 @@ export function HeaderCreateStackedPopover({
           variant="default"
           {...restTrigger}
         >
-          Create
+          {triggerLabel}
         </Button>
       </PopoverTrigger>
       <PopoverContent
-        align="end"
+        align={popoverContentProps?.align ?? "end"}
         className="max-h-[min(90dvh,720px)] w-[min(calc(100vw-2rem),22rem)] overflow-y-auto p-0 shadow-2xl ring-1 ring-black/25"
+        alignOffset={popoverContentProps?.alignOffset}
+        side={popoverContentProps?.side}
+        sideOffset={popoverContentProps?.sideOffset}
       >
-        <StackedPopoverProvider key={menuGeneration}>
+        <StackedPopoverProvider
+          initialStack={initialScreen === undefined ? [] : [initialScreen]}
+          key={menuGeneration}
+        >
           <StackedPopoverRoot>
             <StackedPopoverHeader
               className="bg-(--card-back-actions-menu-bg)"
