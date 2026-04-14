@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@repo/design-system/components/ui/button";
 import {
   useCallback,
   useEffect,
@@ -14,6 +13,7 @@ import {
   CREATE_BOARD_POPOVER_LAYOUT_ESTIMATE_PX,
   CreateBoardCard,
 } from "../create-board-popover/create-board-card";
+import { CreateNewBoardButton } from "../CreateNewBoardButton/create-new-board-button";
 import { StartWithTemplatePopover } from "./start-with-template-popover";
 
 /** Horizontal offset from the trigger’s right edge (LTR); positive moves the card right. */
@@ -171,9 +171,10 @@ export function EmptyBoards({ workspaceId }: EmptyBoardsProps) {
           Create a board to organize lists and cards for this workspace.
         </p>
         <div className="flex flex-col items-center justify-center gap-3">
-          <Button onClick={openPopover} ref={triggerReference} type="button">
-            Create your first board
-          </Button>
+          <CreateNewBoardButton
+            buttonRef={triggerReference}
+            onClick={openPopover}
+          />
           <StartWithTemplatePopover workspaceId={workspaceId} />
         </div>
       </section>

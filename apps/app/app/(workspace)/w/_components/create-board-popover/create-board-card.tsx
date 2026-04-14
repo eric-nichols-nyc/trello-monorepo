@@ -7,8 +7,12 @@ import { CreateBoardHeader } from "./create-board-header";
 
 /** Used when anchoring the popover to the trigger button. */
 export const CREATE_BOARD_CARD_WIDTH = 288;
-/** Approximate height for popover anchor math in `empty-boards` (card uses auto height). */
-export const CREATE_BOARD_POPOVER_LAYOUT_ESTIMATE_PX = 520;
+/**
+ * Approximate card height used by anchored popover positioning.
+ * Keep this aligned with the card max height (`min(90dvh, 720px)`), where
+ * 90dvh is the limiting value on shorter viewports (e.g. 712px -> ~640px).
+ */
+export const CREATE_BOARD_POPOVER_LAYOUT_ESTIMATE_PX = 640;
 
 export type CreateBoardCardProps = {
   readonly onClose: () => void;
