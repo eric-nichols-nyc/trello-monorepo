@@ -1,9 +1,9 @@
 {
   "id": "remote-team-meeting",
   "title": "Remote team meeting",
-  "description": "Weekly stand-up style lists with cover colors and image placeholders (add files under public/images/template/).",
+  "description": "Weekly stand-up style lists with cover colors and image placeholders (add files under public/images/template2/).",
   "board": {
-    "backgroundImage": "/images/template/placeholder-remote-team-meeting-board-bg.png",
+    "backgroundImage": "/images/template2/photo-1516553174826-d05833723cd4.png",
     "backgroundBrightness": "dark"
   },
   "lists": [
@@ -56,12 +56,12 @@
         {
           "name": "Remote Work Campaign: The Scoop",
           "description": "Replace cover with your campaign hero image.",
-          "coverImage": "/images/template/placeholder-remote-campaign-scoop.png"
+          "coverImage": "/images/template2/placeholder-remote-campaign-scoop.png"
         },
         {
           "name": "Brief Discussion on Artificial Harmony",
           "description": "Replace cover with your quote or team photo.",
-          "coverImage": "/images/template/placeholder-remote-trust-quote.png"
+          "coverImage": "/images/template2/placeholder-remote-trust-quote.png"
         },
         {
           "name": "Strategic Influence At Work: Bootcamp Takeaways",
@@ -79,7 +79,7 @@
         {
           "name": "Remote Work Campaign: The Scoop",
           "description": "Same asset as January 25th or swap for a variant.",
-          "coverImage": "/images/template/placeholder-remote-campaign-scoop.png"
+          "coverImage": "/images/template2/placeholder-remote-campaign-scoop.png"
         },
         {
           "name": "Webinar Post-Mortem",
