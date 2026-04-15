@@ -56,12 +56,12 @@
         {
           "name": "Remote Work Campaign: The Scoop",
           "description": "Replace cover with your campaign hero image.",
-          "coverImage": "/images/template2/placeholder-remote-campaign-scoop.png"
+          "coverImage": "/images/template2/asset32.png"
         },
         {
           "name": "Brief Discussion on Artificial Harmony",
           "description": "Replace cover with your quote or team photo.",
-          "coverImage": "/images/template2/placeholder-remote-trust-quote.png"
+          "coverImage": "/images/template2/placeholder-remote-campaign-scoop.gif"
         },
         {
           "name": "Strategic Influence At Work: Bootcamp Takeaways",
@@ -79,7 +79,7 @@
         {
           "name": "Remote Work Campaign: The Scoop",
           "description": "Same asset as January 25th or swap for a variant.",
-          "coverImage": "/images/template2/placeholder-remote-campaign-scoop.png"
+          "coverImage": "/images/template2/placeholder-remote-campaign-scoop.gif"
         },
         {
           "name": "Webinar Post-Mortem",
