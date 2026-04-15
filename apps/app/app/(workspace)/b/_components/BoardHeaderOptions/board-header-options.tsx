@@ -27,7 +27,10 @@ export function BoardHeaderOptions({
   const currentUserInitials = useWorkspaceShellCurrentUserInitials();
 
   return (
-    <div className="flex shrink-0 items-center gap-1 sm:gap-2">
+    <div
+      className="flex shrink-0 items-center gap-1 sm:gap-2"
+      data-testid="board-header-options"
+    >
       <ProfilePopup
         initials={currentUserInitials}
         trigger={<NameFacepileMember initials={currentUserInitials} />}
