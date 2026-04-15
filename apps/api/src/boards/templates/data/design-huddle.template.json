@@ -1,0 +1,80 @@
+{
+  "id": "design-huddle",
+  "title": "Design huddle",
+  "description": "Structured design-review lists — board and card art under /images/template4/.",
+  "board": {
+    "backgroundImage": "/images/template4/asset24.jpeg",
+    "backgroundBrightness": "dark",
+    "backgroundTopColor": "#fb7185",
+    "backgroundBottomColor": "#7c3aed"
+  },
+  "lists": [
+    {
+      "name": "Concept",
+      "cards": [
+        {
+          "name": "Huddle Template :: [Presenter(s)] - [Project]",
+          "description": "Replace the cover with your session hero image if you like.",
+          "coverImage": "/images/template4/design-huddle-hero.jpg"
+        },
+        {
+          "name": "Video Call Link",
+          "description": "Paste your meeting URL here."
+        },
+        {
+          "name": "Design Prototype Link",
+          "description": "Link to Figma, prototype, or deck."
+        }
+      ]
+    },
+    {
+      "name": "📝 Notes",
+      "cards": [
+        {
+          "name": "General Notes:",
+          "description": "—"
+        },
+        {
+          "name": "Action Items",
+          "description": "—"
+        }
+      ]
+    },
+    {
+      "name": "👍 Positives",
+      "cards": [
+        {
+          "name": "👍 Positive [I really liked...]",
+          "description": "Duplicate this card for each piece of positive feedback."
+        }
+      ]
+    },
+    {
+      "name": "👎 Negatives",
+      "cards": [
+        {
+          "name": "👎 Negative [I'm not sure about...]",
+          "description": "Duplicate this card for each concern."
+        }
+      ]
+    },
+    {
+      "name": "🧐 Questions",
+      "cards": [
+        {
+          "name": "🧐 Question [What about...?]",
+          "description": "Duplicate this card for open questions."
+        }
+      ]
+    },
+    {
+      "name": "🤔 Have You Considered?",
+      "cards": [
+        {
+          "name": "🤔 Have you considered...",
+          "description": "Suggestions and alternative directions."
+        }
+      ]
+    }
+  ]
+}

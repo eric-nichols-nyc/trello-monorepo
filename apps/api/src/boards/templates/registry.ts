@@ -2,6 +2,7 @@ import {
   type BoardTemplateDefinition,
   boardTemplateDefinitionSchema,
 } from "./board-template.schema";
+import designHuddle from "./data/design-huddle.template.json";
 import remoteTeamMeeting from "./data/remote-team-meeting.template.json";
 import simpleKanban from "./data/simple-kanban.template.json";
 import teachinWeeklyPlanning101 from "./data/teachin-weekly-planning-101.template.json";
@@ -11,6 +12,7 @@ const rawTemplates = [
   simpleKanban,
   remoteTeamMeeting,
   teachinWeeklyPlanning101,
+  designHuddle,
 ];
 
 // Runtime registry keyed by template id.

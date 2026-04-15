@@ -5,6 +5,7 @@ import { Button } from "@repo/design-system/components/ui/button";
 import { ListFilter, UserPlus, Users } from "lucide-react";
 import { BoardHeaderStarButton } from "./board-header-star-button";
 import { NameFacepileMember } from "./name-facepile-member";
+import { ProfilePopup } from "../ProfilePopup";
 
 export type BoardHeaderOptionsProps = {
   readonly boardId: string;
@@ -27,7 +28,10 @@ export function BoardHeaderOptions({
 
   return (
     <div className="flex shrink-0 items-center gap-1 sm:gap-2">
-      <NameFacepileMember initials={currentUserInitials} />
+      <ProfilePopup
+        initials={currentUserInitials}
+        trigger={<NameFacepileMember initials={currentUserInitials} />}
+      />
       <Button
         aria-label="Filter board"
         className="size-8 text-white/90 hover:bg-white/10 hover:text-white"
