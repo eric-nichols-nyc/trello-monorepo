@@ -14,6 +14,22 @@ pnpm dev
 
 Requires a Postgres database. Set `DATABASE_URL` in `apps/api/.env`, then run `pnpm db:push` to apply the schema.
 
+### Why some tables are missing in Neon
+
+`prisma/schema.prisma` is the **full** data model (`Workspace`, `Label`, `Comment`, `Checklist`, `CheckItem`, card–label join, etc.). The files under `prisma/migrations/` only describe an **older, partial** evolution (initial `User` / `Board` / `List` / `Card`, a few column changes, and `Attachment`). They do **not** recreate every table in the current schema.
+
+So if you only run **`prisma migrate deploy`** (or reset) and never **`db push`**, the database can end up with a small subset of tables—while the app and Prisma client expect the whole schema.
+
+**Fix (development / when you can afford schema changes):** from `apps/api`, with `DATABASE_URL` pointing at the right Neon branch:
+
+```bash
+pnpm db:push
+```
+
+That syncs the live database to `schema.prisma` (creates missing tables and columns). Use a **non-production** branch first if you are unsure. **`migrate reset`** alone will not add `Workspace` and friends until the migration history is brought in line with the schema (a larger cleanup / baseline task).
+
+If `db push` reports conflicts, paste the error—often it is a type rename or NOT NULL column that needs a one-off SQL backfill.
+
 **Demo data:** `pnpm db:seed` creates a synthetic user (`user_seed_local_demo`) plus workspace + **Seed board** graph. Use `pnpm db:seed -- --fresh` to wipe and recreate that synthetic user.
 
 **Your real Clerk user:** if you already have a row (e.g. from `GET /users/me`), attach the same demo board to that account:
