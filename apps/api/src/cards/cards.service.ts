@@ -4,9 +4,13 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from "@nestjs/common";
+import * as path from "node:path";
+import type { Express } from "express";
 import { randomShortLink } from "../common/short-link";
 // biome-ignore lint/style/useImportType: value import needed for PrismaService delegate types
 import { PrismaService } from "../prisma/prisma.service";
+// biome-ignore lint/style/useImportType: Nest DI needs CloudinaryService
+import { CloudinaryService } from "../uploads/cloudinary.service";
 import type { UpdateCardDto } from "./dto/update-card.dto";
 import type { CreateCardInput } from "./schemas/create-card.schema";
 
@@ -45,7 +49,10 @@ function applyCardCoverExclusivity(patch: UpdateCardDto): void {
 
 @Injectable()
 export class CardsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly cloudinaryService: CloudinaryService
+  ) {}
 
   /** Picks a fresh `shortLink` not yet used by any card (retries on rare collisions). */
   private async allocateUniqueCardShortLink(): Promise<string> {
@@ -236,5 +243,72 @@ export class CardsService {
     }
     await this.prisma.card.delete({ where: { id: card.id } });
     return { id: card.id, deleted: true };
+  }
+
+  /**
+   * Uploads a file to Cloudinary and persists an `Attachment` on the card.
+   * Caller must pass a Multer memory file (`buffer` set).
+   */
+  async addAttachmentFromUploadForUser(
+    cardKey: string,
+    clerkUserId: string,
+    file: Express.Multer.File
+  ) {
+    const card = await this.prisma.card.findFirst({
+      where: {
+        board: { user: { clerkUserId } },
+        OR: [{ id: cardKey }, { shortLink: cardKey }],
+      },
+      select: { id: true },
+    });
+    if (!card) {
+      throw new NotFoundException(`Card ${cardKey} not found`);
+    }
+
+    const uploader = await this.prisma.user.findUnique({
+      where: { clerkUserId },
+      select: { id: true },
+    });
+    if (!uploader) {
+      throw new NotFoundException("User not found");
+    }
+
+    const rawName = file.originalname?.trim();
+    const safeName = (rawName ? path.basename(rawName) : "file").slice(
+      0,
+      255
+    );
+
+    let secureUrl: string;
+    try {
+      const uploaded = await this.cloudinaryService.uploadAttachmentBuffer(
+        file.buffer,
+        file.mimetype
+      );
+      secureUrl = uploaded.secureUrl;
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Upload failed";
+      throw new BadRequestException(message);
+    }
+
+    const agg = await this.prisma.attachment.aggregate({
+      where: { cardId: card.id },
+      _max: { pos: true },
+    });
+    const nextPos =
+      agg._max.pos == null ? 65536 : agg._max.pos + 65536;
+
+    return this.prisma.attachment.create({
+      data: {
+        name: safeName || "file",
+        url: secureUrl,
+        cardId: card.id,
+        uploadedById: uploader.id,
+        mimeType: file.mimetype,
+        sizeBytes: file.size,
+        isUpload: true,
+        pos: nextPos,
+      },
+    });
   }
 }

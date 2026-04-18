@@ -1,12 +1,19 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
   Get,
   Param,
   Patch,
+  Post,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from "@nestjs/common";
+import { FileInterceptor } from "@nestjs/platform-express";
+import type { Express } from "express";
+import { memoryStorage } from "multer";
 import { ClerkAuthGuard } from "../auth/clerk-auth.guard";
 import { CurrentUser } from "../auth/current-user.decorator";
 // biome-ignore lint/style/useImportType: Nest DI needs CardsService as a runtime constructor token
@@ -14,9 +21,36 @@ import { CardsService } from "./cards.service";
 // biome-ignore lint/style/useImportType: ValidationPipe needs the class at runtime for @Body() metadata
 import { UpdateCardDto } from "./dto/update-card.dto";
 
+const MAX_ATTACHMENT_UPLOAD_BYTES = 25 * 1024 * 1024;
+
 @Controller("cards")
 export class CardsController {
   constructor(private readonly cardsService: CardsService) {}
+
+  @Post(":id/attachments")
+  @UseGuards(ClerkAuthGuard)
+  @UseInterceptors(
+    FileInterceptor("file", {
+      storage: memoryStorage(),
+      limits: { fileSize: MAX_ATTACHMENT_UPLOAD_BYTES },
+    })
+  )
+  async uploadAttachment(
+    @Param("id") cardKey: string,
+    @UploadedFile() file: Express.Multer.File | undefined,
+    @CurrentUser("sub") clerkUserId: string
+  ) {
+    if (!file?.buffer) {
+      throw new BadRequestException(
+        'Missing file: send multipart field "file"'
+      );
+    }
+    return this.cardsService.addAttachmentFromUploadForUser(
+      cardKey,
+      clerkUserId,
+      file
+    );
+  }
 
   @Get(":id")
   @UseGuards(ClerkAuthGuard)

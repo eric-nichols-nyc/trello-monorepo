@@ -7,6 +7,7 @@ All routes live under the **`/api`** prefix (see `main.ts`). Replace placeholder
 | `API` | API origin, e.g. `http://localhost:3000` |
 | `TOKEN` | Clerk **session** JWT (`Authorization: Bearer …`) |
 | `WORKSPACE_ID` | UUID from `GET …/users/me` → `workspaces[].id` or create workspace |
+| `CARD_KEY` | Card `id` or `shortLink` |
 
 Obtain a test JWT from `apps/api`: `pnpm get-token` (see `scripts/get-clerk-token.ts` and `.env`). For a fuller request set, import `postman/Trello-API.postman_collection.json`.
 
@@ -92,12 +93,26 @@ curl -sS -X DELETE -H "Authorization: Bearer $TOKEN" "$API/api/boards/$BOARD_ID"
 
 ---
 
+## Cards
+
+**Upload attachment** (multipart field `file`; PDF, images, and other allowed types per API — max 25 MB):
+
+```bash
+curl -sS -X POST \
+  -H "Authorization: Bearer $TOKEN" \
+  -F "file=@/path/to/document.pdf" \
+  "$API/api/cards/$CARD_KEY/attachments"
+```
+
+---
+
 ## Shell helpers
 
 ```bash
 export API=http://localhost:3000
 export TOKEN='eyJ...'   # paste JWT
 export WORKSPACE_ID='xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+export CARD_KEY='xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
 ```
 
 Pretty-print JSON if you have `jq`:

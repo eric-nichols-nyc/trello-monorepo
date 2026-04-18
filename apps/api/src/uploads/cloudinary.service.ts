@@ -73,12 +73,33 @@ const ALLOWED_MIME = new Set([
   "image/webp",
 ]);
 
+/** Card attachments: images + common documents (Cloudinary `resource_type: "auto"`). */
+const ALLOWED_ATTACHMENT_MIME = new Set([
+  ...ALLOWED_MIME,
+  "application/pdf",
+  "text/plain",
+  "text/csv",
+  "application/zip",
+  "application/x-zip-compressed",
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "application/vnd.ms-excel",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+]);
+
+const MAX_ATTACHMENT_BYTES = 25 * 1024 * 1024;
+
 export type CloudinaryUploadResult = {
   secureUrl: string;
   publicId: string;
   width: number;
   height: number;
   format: string;
+};
+
+export type CloudinaryAttachmentUploadResult = {
+  secureUrl: string;
+  publicId: string;
 };
 
 @Injectable()
@@ -120,6 +141,19 @@ export class CloudinaryService implements OnModuleInit {
     }
   }
 
+  assertAttachmentUpload(mimetype: string, size: number): void {
+    if (!ALLOWED_ATTACHMENT_MIME.has(mimetype)) {
+      throw new Error(
+        `Unsupported file type: ${mimetype}. Allowed types include PDF, images, Office docs, zip.`
+      );
+    }
+    if (size > MAX_ATTACHMENT_BYTES) {
+      throw new Error(
+        `File too large (max ${MAX_ATTACHMENT_BYTES / (1024 * 1024)} MB)`
+      );
+    }
+  }
+
   uploadImageBuffer(buffer: Buffer, mimetype: string): Promise<CloudinaryUploadResult> {
     this.assertImageUpload(mimetype, buffer.length);
 
@@ -146,6 +180,47 @@ export class CloudinaryService implements OnModuleInit {
             width: result.width ?? 0,
             height: result.height ?? 0,
             format: result.format ?? "",
+          });
+        }
+      );
+
+      stream.on("error", fail);
+      Readable.from(buffer).pipe(stream);
+    });
+  }
+
+  /**
+   * Uploads a card attachment (PDF, images, common office formats) to Cloudinary.
+   * Uses `resource_type: "auto"` so images stay optimized and non-images are stored appropriately.
+   */
+  uploadAttachmentBuffer(
+    buffer: Buffer,
+    mimetype: string
+  ): Promise<CloudinaryAttachmentUploadResult> {
+    this.assertAttachmentUpload(mimetype, buffer.length);
+
+    return new Promise((resolve, reject) => {
+      const fail = (e: unknown) => reject(toCloudinaryUploadError(e));
+
+      const stream = cloudinary.uploader.upload_stream(
+        {
+          folder: "trellnode/attachments",
+          resource_type: "auto",
+          use_filename: true,
+          unique_filename: true,
+        },
+        (err, result) => {
+          if (err) {
+            fail(err);
+            return;
+          }
+          if (!result?.secure_url || !result.public_id) {
+            fail(new Error("Cloudinary returned an incomplete response"));
+            return;
+          }
+          resolve({
+            secureUrl: result.secure_url,
+            publicId: result.public_id,
           });
         }
       );

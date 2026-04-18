@@ -9,20 +9,16 @@ import {
 import { cn } from "@repo/design-system/lib/utils";
 import { X } from "lucide-react";
 import { useMemo, useState, type ReactNode } from "react";
+import {
+  displayNameFromPersonNameFields,
+  handleFromUserFields,
+} from "@/lib/user/user-display";
 
 type ProfilePopupProps = {
   readonly initials: string;
   readonly trigger: ReactNode;
   readonly className?: string;
 };
-
-function normalizeHandle(raw: string | null | undefined): string {
-  if (!raw || raw.trim().length === 0) {
-    return "@member";
-  }
-  const trimmed = raw.trim();
-  return trimmed.startsWith("@") ? trimmed : `@${trimmed}`;
-}
 
 export function ProfilePopup({ initials, trigger, className }: ProfilePopupProps) {
   const [open, setOpen] = useState(false);
@@ -32,27 +28,21 @@ export function ProfilePopup({ initials, trigger, className }: ProfilePopupProps
     if (!isLoaded) {
       return "Loading…";
     }
-    const fromFullName = user?.fullName?.trim();
-    if (fromFullName) {
-      return fromFullName;
-    }
-    const fromSplit = [user?.firstName, user?.lastName].filter(Boolean).join(" ").trim();
-    if (fromSplit) {
-      return fromSplit;
-    }
-    return "Member";
+    return displayNameFromPersonNameFields({
+      firstName: user?.firstName,
+      fullName: user?.fullName,
+      lastName: user?.lastName,
+    });
   }, [isLoaded, user?.firstName, user?.fullName, user?.lastName]);
 
   const displayHandle = useMemo(() => {
     if (!isLoaded) {
       return "@…";
     }
-    const username = user?.username;
-    if (username) {
-      return normalizeHandle(username);
-    }
-    const emailPrefix = user?.primaryEmailAddress?.emailAddress?.split("@")[0];
-    return normalizeHandle(emailPrefix);
+    return handleFromUserFields({
+      email: user?.primaryEmailAddress?.emailAddress,
+      username: user?.username,
+    });
   }, [isLoaded, user?.primaryEmailAddress?.emailAddress, user?.username]);
 
   return (

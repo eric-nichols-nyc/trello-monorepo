@@ -120,6 +120,8 @@ async function seedBoardGraph(
     data: {
       name: "Example link",
       url: "https://example.com",
+      pos: 65536,
+      isUpload: false,
       cardId: card1.id,
       uploadedById: user.id,
     },

@@ -12510,8 +12510,20 @@ export namespace Prisma {
 
   export type AggregateAttachment = {
     _count: AttachmentCountAggregateOutputType | null
+    _avg: AttachmentAvgAggregateOutputType | null
+    _sum: AttachmentSumAggregateOutputType | null
     _min: AttachmentMinAggregateOutputType | null
     _max: AttachmentMaxAggregateOutputType | null
+  }
+
+  export type AttachmentAvgAggregateOutputType = {
+    pos: number | null
+    sizeBytes: number | null
+  }
+
+  export type AttachmentSumAggregateOutputType = {
+    pos: number | null
+    sizeBytes: number | null
   }
 
   export type AttachmentMinAggregateOutputType = {
@@ -12519,6 +12531,10 @@ export namespace Prisma {
     name: string | null
     url: string | null
     edgeColor: string | null
+    pos: number | null
+    mimeType: string | null
+    sizeBytes: number | null
+    isUpload: boolean | null
     cardId: string | null
     uploadedById: string | null
     createdAt: Date | null
@@ -12529,6 +12545,10 @@ export namespace Prisma {
     name: string | null
     url: string | null
     edgeColor: string | null
+    pos: number | null
+    mimeType: string | null
+    sizeBytes: number | null
+    isUpload: boolean | null
     cardId: string | null
     uploadedById: string | null
     createdAt: Date | null
@@ -12539,6 +12559,10 @@ export namespace Prisma {
     name: number
     url: number
     edgeColor: number
+    pos: number
+    mimeType: number
+    sizeBytes: number
+    isUpload: number
     cardId: number
     uploadedById: number
     createdAt: number
@@ -12546,11 +12570,25 @@ export namespace Prisma {
   }
 
 
+  export type AttachmentAvgAggregateInputType = {
+    pos?: true
+    sizeBytes?: true
+  }
+
+  export type AttachmentSumAggregateInputType = {
+    pos?: true
+    sizeBytes?: true
+  }
+
   export type AttachmentMinAggregateInputType = {
     id?: true
     name?: true
     url?: true
     edgeColor?: true
+    pos?: true
+    mimeType?: true
+    sizeBytes?: true
+    isUpload?: true
     cardId?: true
     uploadedById?: true
     createdAt?: true
@@ -12561,6 +12599,10 @@ export namespace Prisma {
     name?: true
     url?: true
     edgeColor?: true
+    pos?: true
+    mimeType?: true
+    sizeBytes?: true
+    isUpload?: true
     cardId?: true
     uploadedById?: true
     createdAt?: true
@@ -12571,6 +12613,10 @@ export namespace Prisma {
     name?: true
     url?: true
     edgeColor?: true
+    pos?: true
+    mimeType?: true
+    sizeBytes?: true
+    isUpload?: true
     cardId?: true
     uploadedById?: true
     createdAt?: true
@@ -12615,6 +12661,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: AttachmentAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: AttachmentSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: AttachmentMinAggregateInputType
@@ -12645,6 +12703,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: AttachmentCountAggregateInputType | true
+    _avg?: AttachmentAvgAggregateInputType
+    _sum?: AttachmentSumAggregateInputType
     _min?: AttachmentMinAggregateInputType
     _max?: AttachmentMaxAggregateInputType
   }
@@ -12654,10 +12714,16 @@ export namespace Prisma {
     name: string
     url: string
     edgeColor: string | null
+    pos: number
+    mimeType: string | null
+    sizeBytes: number | null
+    isUpload: boolean
     cardId: string
     uploadedById: string | null
     createdAt: Date
     _count: AttachmentCountAggregateOutputType | null
+    _avg: AttachmentAvgAggregateOutputType | null
+    _sum: AttachmentSumAggregateOutputType | null
     _min: AttachmentMinAggregateOutputType | null
     _max: AttachmentMaxAggregateOutputType | null
   }
@@ -12681,6 +12747,10 @@ export namespace Prisma {
     name?: boolean
     url?: boolean
     edgeColor?: boolean
+    pos?: boolean
+    mimeType?: boolean
+    sizeBytes?: boolean
+    isUpload?: boolean
     cardId?: boolean
     uploadedById?: boolean
     createdAt?: boolean
@@ -12693,6 +12763,10 @@ export namespace Prisma {
     name?: boolean
     url?: boolean
     edgeColor?: boolean
+    pos?: boolean
+    mimeType?: boolean
+    sizeBytes?: boolean
+    isUpload?: boolean
     cardId?: boolean
     uploadedById?: boolean
     createdAt?: boolean
@@ -12705,6 +12779,10 @@ export namespace Prisma {
     name?: boolean
     url?: boolean
     edgeColor?: boolean
+    pos?: boolean
+    mimeType?: boolean
+    sizeBytes?: boolean
+    isUpload?: boolean
     cardId?: boolean
     uploadedById?: boolean
     createdAt?: boolean
@@ -12717,12 +12795,16 @@ export namespace Prisma {
     name?: boolean
     url?: boolean
     edgeColor?: boolean
+    pos?: boolean
+    mimeType?: boolean
+    sizeBytes?: boolean
+    isUpload?: boolean
     cardId?: boolean
     uploadedById?: boolean
     createdAt?: boolean
   }
 
-  export type AttachmentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "url" | "edgeColor" | "cardId" | "uploadedById" | "createdAt", ExtArgs["result"]["attachment"]>
+  export type AttachmentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "url" | "edgeColor" | "pos" | "mimeType" | "sizeBytes" | "isUpload" | "cardId" | "uploadedById" | "createdAt", ExtArgs["result"]["attachment"]>
   export type AttachmentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     card?: boolean | CardDefaultArgs<ExtArgs>
     uploadedBy?: boolean | Attachment$uploadedByArgs<ExtArgs>
@@ -12747,6 +12829,22 @@ export namespace Prisma {
       name: string
       url: string
       edgeColor: string | null
+      /**
+       * Sort key within the card (Trello-style midpoint ordering).
+       */
+      pos: number
+      /**
+       * MIME type when known (e.g. application/pdf); null for bare links.
+       */
+      mimeType: string | null
+      /**
+       * Byte size for uploads; null for link-only attachments.
+       */
+      sizeBytes: number | null
+      /**
+       * True for file uploads; false for pasted or linked URLs.
+       */
+      isUpload: boolean
       cardId: string
       uploadedById: string | null
       createdAt: Date
@@ -13179,6 +13277,10 @@ export namespace Prisma {
     readonly name: FieldRef<"Attachment", 'String'>
     readonly url: FieldRef<"Attachment", 'String'>
     readonly edgeColor: FieldRef<"Attachment", 'String'>
+    readonly pos: FieldRef<"Attachment", 'Float'>
+    readonly mimeType: FieldRef<"Attachment", 'String'>
+    readonly sizeBytes: FieldRef<"Attachment", 'Int'>
+    readonly isUpload: FieldRef<"Attachment", 'Boolean'>
     readonly cardId: FieldRef<"Attachment", 'String'>
     readonly uploadedById: FieldRef<"Attachment", 'String'>
     readonly createdAt: FieldRef<"Attachment", 'DateTime'>
@@ -13759,6 +13861,10 @@ export namespace Prisma {
     name: 'name',
     url: 'url',
     edgeColor: 'edgeColor',
+    pos: 'pos',
+    mimeType: 'mimeType',
+    sizeBytes: 'sizeBytes',
+    isUpload: 'isUpload',
     cardId: 'cardId',
     uploadedById: 'uploadedById',
     createdAt: 'createdAt'
@@ -14574,6 +14680,10 @@ export namespace Prisma {
     name?: StringFilter<"Attachment"> | string
     url?: StringFilter<"Attachment"> | string
     edgeColor?: StringNullableFilter<"Attachment"> | string | null
+    pos?: FloatFilter<"Attachment"> | number
+    mimeType?: StringNullableFilter<"Attachment"> | string | null
+    sizeBytes?: IntNullableFilter<"Attachment"> | number | null
+    isUpload?: BoolFilter<"Attachment"> | boolean
     cardId?: StringFilter<"Attachment"> | string
     uploadedById?: StringNullableFilter<"Attachment"> | string | null
     createdAt?: DateTimeFilter<"Attachment"> | Date | string
@@ -14586,6 +14696,10 @@ export namespace Prisma {
     name?: SortOrder
     url?: SortOrder
     edgeColor?: SortOrderInput | SortOrder
+    pos?: SortOrder
+    mimeType?: SortOrderInput | SortOrder
+    sizeBytes?: SortOrderInput | SortOrder
+    isUpload?: SortOrder
     cardId?: SortOrder
     uploadedById?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -14601,6 +14715,10 @@ export namespace Prisma {
     name?: StringFilter<"Attachment"> | string
     url?: StringFilter<"Attachment"> | string
     edgeColor?: StringNullableFilter<"Attachment"> | string | null
+    pos?: FloatFilter<"Attachment"> | number
+    mimeType?: StringNullableFilter<"Attachment"> | string | null
+    sizeBytes?: IntNullableFilter<"Attachment"> | number | null
+    isUpload?: BoolFilter<"Attachment"> | boolean
     cardId?: StringFilter<"Attachment"> | string
     uploadedById?: StringNullableFilter<"Attachment"> | string | null
     createdAt?: DateTimeFilter<"Attachment"> | Date | string
@@ -14613,12 +14731,18 @@ export namespace Prisma {
     name?: SortOrder
     url?: SortOrder
     edgeColor?: SortOrderInput | SortOrder
+    pos?: SortOrder
+    mimeType?: SortOrderInput | SortOrder
+    sizeBytes?: SortOrderInput | SortOrder
+    isUpload?: SortOrder
     cardId?: SortOrder
     uploadedById?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     _count?: AttachmentCountOrderByAggregateInput
+    _avg?: AttachmentAvgOrderByAggregateInput
     _max?: AttachmentMaxOrderByAggregateInput
     _min?: AttachmentMinOrderByAggregateInput
+    _sum?: AttachmentSumOrderByAggregateInput
   }
 
   export type AttachmentScalarWhereWithAggregatesInput = {
@@ -14629,6 +14753,10 @@ export namespace Prisma {
     name?: StringWithAggregatesFilter<"Attachment"> | string
     url?: StringWithAggregatesFilter<"Attachment"> | string
     edgeColor?: StringNullableWithAggregatesFilter<"Attachment"> | string | null
+    pos?: FloatWithAggregatesFilter<"Attachment"> | number
+    mimeType?: StringNullableWithAggregatesFilter<"Attachment"> | string | null
+    sizeBytes?: IntNullableWithAggregatesFilter<"Attachment"> | number | null
+    isUpload?: BoolWithAggregatesFilter<"Attachment"> | boolean
     cardId?: StringWithAggregatesFilter<"Attachment"> | string
     uploadedById?: StringNullableWithAggregatesFilter<"Attachment"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Attachment"> | Date | string
@@ -15377,6 +15505,10 @@ export namespace Prisma {
     name: string
     url: string
     edgeColor?: string | null
+    pos?: number
+    mimeType?: string | null
+    sizeBytes?: number | null
+    isUpload?: boolean
     createdAt?: Date | string
     card: CardCreateNestedOneWithoutAttachmentsInput
     uploadedBy?: UserCreateNestedOneWithoutUploadedAttachmentsInput
@@ -15387,6 +15519,10 @@ export namespace Prisma {
     name: string
     url: string
     edgeColor?: string | null
+    pos?: number
+    mimeType?: string | null
+    sizeBytes?: number | null
+    isUpload?: boolean
     cardId: string
     uploadedById?: string | null
     createdAt?: Date | string
@@ -15397,6 +15533,10 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
     edgeColor?: NullableStringFieldUpdateOperationsInput | string | null
+    pos?: FloatFieldUpdateOperationsInput | number
+    mimeType?: NullableStringFieldUpdateOperationsInput | string | null
+    sizeBytes?: NullableIntFieldUpdateOperationsInput | number | null
+    isUpload?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     card?: CardUpdateOneRequiredWithoutAttachmentsNestedInput
     uploadedBy?: UserUpdateOneWithoutUploadedAttachmentsNestedInput
@@ -15407,6 +15547,10 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
     edgeColor?: NullableStringFieldUpdateOperationsInput | string | null
+    pos?: FloatFieldUpdateOperationsInput | number
+    mimeType?: NullableStringFieldUpdateOperationsInput | string | null
+    sizeBytes?: NullableIntFieldUpdateOperationsInput | number | null
+    isUpload?: BoolFieldUpdateOperationsInput | boolean
     cardId?: StringFieldUpdateOperationsInput | string
     uploadedById?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -15417,6 +15561,10 @@ export namespace Prisma {
     name: string
     url: string
     edgeColor?: string | null
+    pos?: number
+    mimeType?: string | null
+    sizeBytes?: number | null
+    isUpload?: boolean
     cardId: string
     uploadedById?: string | null
     createdAt?: Date | string
@@ -15427,6 +15575,10 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
     edgeColor?: NullableStringFieldUpdateOperationsInput | string | null
+    pos?: FloatFieldUpdateOperationsInput | number
+    mimeType?: NullableStringFieldUpdateOperationsInput | string | null
+    sizeBytes?: NullableIntFieldUpdateOperationsInput | number | null
+    isUpload?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -15435,6 +15587,10 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
     edgeColor?: NullableStringFieldUpdateOperationsInput | string | null
+    pos?: FloatFieldUpdateOperationsInput | number
+    mimeType?: NullableStringFieldUpdateOperationsInput | string | null
+    sizeBytes?: NullableIntFieldUpdateOperationsInput | number | null
+    isUpload?: BoolFieldUpdateOperationsInput | boolean
     cardId?: StringFieldUpdateOperationsInput | string
     uploadedById?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -16069,14 +16225,34 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
   export type AttachmentCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
     url?: SortOrder
     edgeColor?: SortOrder
+    pos?: SortOrder
+    mimeType?: SortOrder
+    sizeBytes?: SortOrder
+    isUpload?: SortOrder
     cardId?: SortOrder
     uploadedById?: SortOrder
     createdAt?: SortOrder
+  }
+
+  export type AttachmentAvgOrderByAggregateInput = {
+    pos?: SortOrder
+    sizeBytes?: SortOrder
   }
 
   export type AttachmentMaxOrderByAggregateInput = {
@@ -16084,6 +16260,10 @@ export namespace Prisma {
     name?: SortOrder
     url?: SortOrder
     edgeColor?: SortOrder
+    pos?: SortOrder
+    mimeType?: SortOrder
+    sizeBytes?: SortOrder
+    isUpload?: SortOrder
     cardId?: SortOrder
     uploadedById?: SortOrder
     createdAt?: SortOrder
@@ -16094,9 +16274,34 @@ export namespace Prisma {
     name?: SortOrder
     url?: SortOrder
     edgeColor?: SortOrder
+    pos?: SortOrder
+    mimeType?: SortOrder
+    sizeBytes?: SortOrder
+    isUpload?: SortOrder
     cardId?: SortOrder
     uploadedById?: SortOrder
     createdAt?: SortOrder
+  }
+
+  export type AttachmentSumOrderByAggregateInput = {
+    pos?: SortOrder
+    sizeBytes?: SortOrder
+  }
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type BoardCreateNestedManyWithoutUserInput = {
@@ -16977,6 +17182,14 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type CardUpdateOneRequiredWithoutAttachmentsNestedInput = {
     create?: XOR<CardCreateWithoutAttachmentsInput, CardUncheckedCreateWithoutAttachmentsInput>
     connectOrCreate?: CardCreateOrConnectWithoutAttachmentsInput
@@ -17186,6 +17399,33 @@ export namespace Prisma {
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
   export type BoardCreateWithoutUserInput = {
     id?: string
     name: string
@@ -17297,6 +17537,10 @@ export namespace Prisma {
     name: string
     url: string
     edgeColor?: string | null
+    pos?: number
+    mimeType?: string | null
+    sizeBytes?: number | null
+    isUpload?: boolean
     createdAt?: Date | string
     card: CardCreateNestedOneWithoutAttachmentsInput
   }
@@ -17306,6 +17550,10 @@ export namespace Prisma {
     name: string
     url: string
     edgeColor?: string | null
+    pos?: number
+    mimeType?: string | null
+    sizeBytes?: number | null
+    isUpload?: boolean
     cardId: string
     createdAt?: Date | string
   }
@@ -17490,6 +17738,10 @@ export namespace Prisma {
     name?: StringFilter<"Attachment"> | string
     url?: StringFilter<"Attachment"> | string
     edgeColor?: StringNullableFilter<"Attachment"> | string | null
+    pos?: FloatFilter<"Attachment"> | number
+    mimeType?: StringNullableFilter<"Attachment"> | string | null
+    sizeBytes?: IntNullableFilter<"Attachment"> | number | null
+    isUpload?: BoolFilter<"Attachment"> | boolean
     cardId?: StringFilter<"Attachment"> | string
     uploadedById?: StringNullableFilter<"Attachment"> | string | null
     createdAt?: DateTimeFilter<"Attachment"> | Date | string
@@ -18326,6 +18578,10 @@ export namespace Prisma {
     name: string
     url: string
     edgeColor?: string | null
+    pos?: number
+    mimeType?: string | null
+    sizeBytes?: number | null
+    isUpload?: boolean
     createdAt?: Date | string
     uploadedBy?: UserCreateNestedOneWithoutUploadedAttachmentsInput
   }
@@ -18335,6 +18591,10 @@ export namespace Prisma {
     name: string
     url: string
     edgeColor?: string | null
+    pos?: number
+    mimeType?: string | null
+    sizeBytes?: number | null
+    isUpload?: boolean
     uploadedById?: string | null
     createdAt?: Date | string
   }
@@ -19291,6 +19551,10 @@ export namespace Prisma {
     name: string
     url: string
     edgeColor?: string | null
+    pos?: number
+    mimeType?: string | null
+    sizeBytes?: number | null
+    isUpload?: boolean
     cardId: string
     createdAt?: Date | string
   }
@@ -19427,6 +19691,10 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
     edgeColor?: NullableStringFieldUpdateOperationsInput | string | null
+    pos?: FloatFieldUpdateOperationsInput | number
+    mimeType?: NullableStringFieldUpdateOperationsInput | string | null
+    sizeBytes?: NullableIntFieldUpdateOperationsInput | number | null
+    isUpload?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     card?: CardUpdateOneRequiredWithoutAttachmentsNestedInput
   }
@@ -19436,6 +19704,10 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
     edgeColor?: NullableStringFieldUpdateOperationsInput | string | null
+    pos?: FloatFieldUpdateOperationsInput | number
+    mimeType?: NullableStringFieldUpdateOperationsInput | string | null
+    sizeBytes?: NullableIntFieldUpdateOperationsInput | number | null
+    isUpload?: BoolFieldUpdateOperationsInput | boolean
     cardId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -19445,6 +19717,10 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
     edgeColor?: NullableStringFieldUpdateOperationsInput | string | null
+    pos?: FloatFieldUpdateOperationsInput | number
+    mimeType?: NullableStringFieldUpdateOperationsInput | string | null
+    sizeBytes?: NullableIntFieldUpdateOperationsInput | number | null
+    isUpload?: BoolFieldUpdateOperationsInput | boolean
     cardId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -19817,6 +20093,10 @@ export namespace Prisma {
     name: string
     url: string
     edgeColor?: string | null
+    pos?: number
+    mimeType?: string | null
+    sizeBytes?: number | null
+    isUpload?: boolean
     uploadedById?: string | null
     createdAt?: Date | string
   }
@@ -19891,6 +20171,10 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
     edgeColor?: NullableStringFieldUpdateOperationsInput | string | null
+    pos?: FloatFieldUpdateOperationsInput | number
+    mimeType?: NullableStringFieldUpdateOperationsInput | string | null
+    sizeBytes?: NullableIntFieldUpdateOperationsInput | number | null
+    isUpload?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     uploadedBy?: UserUpdateOneWithoutUploadedAttachmentsNestedInput
   }
@@ -19900,6 +20184,10 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
     edgeColor?: NullableStringFieldUpdateOperationsInput | string | null
+    pos?: FloatFieldUpdateOperationsInput | number
+    mimeType?: NullableStringFieldUpdateOperationsInput | string | null
+    sizeBytes?: NullableIntFieldUpdateOperationsInput | number | null
+    isUpload?: BoolFieldUpdateOperationsInput | boolean
     uploadedById?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -19909,6 +20197,10 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
     edgeColor?: NullableStringFieldUpdateOperationsInput | string | null
+    pos?: FloatFieldUpdateOperationsInput | number
+    mimeType?: NullableStringFieldUpdateOperationsInput | string | null
+    sizeBytes?: NullableIntFieldUpdateOperationsInput | number | null
+    isUpload?: BoolFieldUpdateOperationsInput | boolean
     uploadedById?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

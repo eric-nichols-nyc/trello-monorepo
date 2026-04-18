@@ -223,6 +223,10 @@ exports.Prisma.AttachmentScalarFieldEnum = {
   name: 'name',
   url: 'url',
   edgeColor: 'edgeColor',
+  pos: 'pos',
+  mimeType: 'mimeType',
+  sizeBytes: 'sizeBytes',
+  isUpload: 'isUpload',
   cardId: 'cardId',
   uploadedById: 'uploadedById',
   createdAt: 'createdAt'
