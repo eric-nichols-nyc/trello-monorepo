@@ -34,6 +34,16 @@ export type BoardChecklist = {
   items: BoardChecklistItem[];
 };
 
+export type BoardAttachment = {
+  id: string;
+  name: string;
+  url: string;
+  mimeType: string | null;
+  sizeBytes: number | null;
+  isUpload: boolean;
+  createdAt: string;
+};
+
 /** Card row from the API; ordering fields match Prisma `Card` and {@link CardOrderingRow}. */
 export type BoardCard = CardOrderingRow & {
   name: string;
@@ -54,6 +64,7 @@ export type BoardCard = CardOrderingRow & {
   updatedAt: string;
   comments: BoardComment[];
   checklists: BoardChecklist[];
+  attachments: BoardAttachment[];
 };
 
 /** List column from the API; ordering fields match Prisma `List` and {@link ListOrderingRow}. */
@@ -133,6 +144,22 @@ function normalizeBoardChecklist(raw: unknown): BoardChecklist {
   };
 }
 
+function normalizeBoardAttachment(raw: unknown): BoardAttachment {
+  const a = raw as Record<string, unknown>;
+  return {
+    id: String(a.id),
+    name: String(a.name ?? ""),
+    url: String(a.url ?? ""),
+    mimeType:
+      a.mimeType === null || a.mimeType === undefined
+        ? null
+        : String(a.mimeType),
+    sizeBytes: typeof a.sizeBytes === "number" ? a.sizeBytes : null,
+    isUpload: Boolean(a.isUpload),
+    createdAt: String(a.createdAt ?? ""),
+  };
+}
+
 export function normalizeBoardCard(raw: unknown): BoardCard {
   const c = raw as Record<string, unknown>;
   return {
@@ -181,6 +208,9 @@ export function normalizeBoardCard(raw: unknown): BoardCard {
       : [],
     checklists: Array.isArray(c.checklists)
       ? c.checklists.map(normalizeBoardChecklist)
+      : [],
+    attachments: Array.isArray(c.attachments)
+      ? c.attachments.map(normalizeBoardAttachment)
       : [],
   };
 }

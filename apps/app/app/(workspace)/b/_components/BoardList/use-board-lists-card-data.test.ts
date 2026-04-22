@@ -34,6 +34,7 @@ function boardCard(overrides: Partial<BoardCard> = {}): BoardCard {
     updatedAt: "2020-01-01T00:00:00.000Z",
     comments: [],
     checklists: [],
+    attachments: [],
   };
   return { ...base, ...overrides };
 }

@@ -4,6 +4,8 @@ import { Badge } from "@repo/design-system/components/ui/badge";
 import { Button } from "@repo/design-system/components/ui/button";
 import { CheckSquare, Plus, Tag, Users } from "lucide-react";
 
+import { UploadAttachmentsPopover } from "../UploadAttachmentsPopover/upload-attachments-popover";
+
 const outlineChipClass =
   "gap-2 border-zinc-700 bg-transparent text-zinc-300 hover:bg-zinc-800 hover:text-zinc-100";
 
@@ -14,9 +16,15 @@ export type CardLabelChip = {
 
 export type CardBackQuickAddProps = {
   labels?: readonly CardLabelChip[];
+  cardId: string;
+  boardRouteKey: string;
 };
 
-export function CardBackQuickAdd({ labels = [] }: CardBackQuickAddProps) {
+export function CardBackQuickAdd({
+  labels = [],
+  cardId,
+  boardRouteKey,
+}: CardBackQuickAddProps) {
   return (
     <div className="mb-6">
       <div className="mb-3 flex flex-wrap gap-2">
@@ -38,6 +46,10 @@ export function CardBackQuickAdd({ labels = [] }: CardBackQuickAddProps) {
           <Tag className="size-4" />
           Labels
         </Button>
+        <UploadAttachmentsPopover
+          boardRouteKey={boardRouteKey}
+          cardId={cardId}
+        />
         <Button
           className={outlineChipClass}
           size="sm"

@@ -5,6 +5,7 @@ import { lazy, Suspense, useEffect, useState } from "react";
 import type { CardRouteBoardList } from "@/lib/api/cards/load-card-route";
 import type { BoardCard } from "@/types/board-detail";
 
+import { CardBackAttachments } from "../CardBackAttachments/card-back-attachments";
 import { CardBackChecklist } from "../CardBackChecklist/card-back-checklist";
 import { CardBackCover } from "../CardBackCover/card-back-cover";
 import { CardBackDescription } from "../CardBackDescription/card-back-description";
@@ -83,7 +84,10 @@ export function CardBackPanel({
             title={card.name}
           />
 
-          <CardBackQuickAdd />
+          <CardBackQuickAdd
+            boardRouteKey={boardRouteKey}
+            cardId={card.id}
+          />
 
           <CardBackDueDate dueDate={card.dueDate} />
 
@@ -93,6 +97,8 @@ export function CardBackPanel({
             onChange={setDescription}
             value={description}
           />
+
+          <CardBackAttachments attachments={card.attachments} />
 
           {card.checklists && card.checklists.length > 0 && (
             <CardBackChecklist card={card} />

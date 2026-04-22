@@ -60,6 +60,7 @@ export function buildOptimisticCard(
     updatedAt: now,
     comments: [],
     checklists: [],
+    attachments: [],
   };
 }
 

@@ -95,13 +95,24 @@ curl -sS -X DELETE -H "Authorization: Bearer $TOKEN" "$API/api/boards/$BOARD_ID"
 
 ## Cards
 
-**Upload attachment** (multipart field `file`; PDF, images, and other allowed types per API — max 25 MB):
+**Upload attachment** (multipart field `file`; optional `name` to override the stored display name; PDF, images, and other allowed types per API — max 25 MB):
 
 ```bash
 curl -sS -X POST \
   -H "Authorization: Bearer $TOKEN" \
   -F "file=@/path/to/document.pdf" \
+  -F "name=Q4 report" \
   "$API/api/cards/$CARD_KEY/attachments"
+```
+
+**Attach a link** (JSON body; optional `name` overrides the default hostname label):
+
+```bash
+curl -sS -X POST \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d "{\"url\":\"https://example.com/doc\",\"name\":\"Example doc\"}" \
+  "$API/api/cards/$CARD_KEY/attachments/link"
 ```
 
 ---

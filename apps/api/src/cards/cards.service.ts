@@ -14,6 +14,34 @@ import { CloudinaryService } from "../uploads/cloudinary.service";
 import type { UpdateCardDto } from "./dto/update-card.dto";
 import type { CreateCardInput } from "./schemas/create-card.schema";
 
+function normalizeHttpUrl(raw: string): string {
+  const trimmed = raw.trim();
+  if (!trimmed) {
+    throw new BadRequestException("URL is required");
+  }
+  const withScheme = /^https?:\/\//i.test(trimmed)
+    ? trimmed
+    : `https://${trimmed}`;
+  try {
+    const parsed = new URL(withScheme);
+    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+      throw new Error();
+    }
+    return parsed.href;
+  } catch {
+    throw new BadRequestException("Invalid URL");
+  }
+}
+
+function defaultNameForLinkUrl(normalizedUrl: string): string {
+  try {
+    const host = new URL(normalizedUrl).hostname.replace(/^www\./, "");
+    return host.length > 0 ? host : "Link";
+  } catch {
+    return "Link";
+  }
+}
+
 function createCardCoverRow(data: CreateCardInput): {
   coverColor: string | null;
   coverImage: string | null;
@@ -145,6 +173,7 @@ export class CardsService {
           orderBy: { pos: "asc" },
           include: { items: { orderBy: { pos: "asc" } } },
         },
+        attachments: { orderBy: { pos: "asc" } },
         labels: true,
         assignee: true,
       },
@@ -230,30 +259,10 @@ export class CardsService {
     return this.findByListForUser(listId, clerkUserId);
   }
 
-  async removeForUser(cardKey: string, clerkUserId: string) {
-    const card = await this.prisma.card.findFirst({
-      where: {
-        board: { user: { clerkUserId } },
-        OR: [{ id: cardKey }, { shortLink: cardKey }],
-      },
-      select: { id: true },
-    });
-    if (!card) {
-      throw new NotFoundException(`Card ${cardKey} not found`);
-    }
-    await this.prisma.card.delete({ where: { id: card.id } });
-    return { id: card.id, deleted: true };
-  }
-
-  /**
-   * Uploads a file to Cloudinary and persists an `Attachment` on the card.
-   * Caller must pass a Multer memory file (`buffer` set).
-   */
-  async addAttachmentFromUploadForUser(
+  private async resolveCardAndUploaderForAttachment(
     cardKey: string,
-    clerkUserId: string,
-    file: Express.Multer.File
-  ) {
+    clerkUserId: string
+  ): Promise<{ cardId: string; uploadedById: string }> {
     const card = await this.prisma.card.findFirst({
       where: {
         board: { user: { clerkUserId } },
@@ -273,11 +282,49 @@ export class CardsService {
       throw new NotFoundException("User not found");
     }
 
+    return { cardId: card.id, uploadedById: uploader.id };
+  }
+
+  async removeForUser(cardKey: string, clerkUserId: string) {
+    const card = await this.prisma.card.findFirst({
+      where: {
+        board: { user: { clerkUserId } },
+        OR: [{ id: cardKey }, { shortLink: cardKey }],
+      },
+      select: { id: true },
+    });
+    if (!card) {
+      throw new NotFoundException(`Card ${cardKey} not found`);
+    }
+    await this.prisma.card.delete({ where: { id: card.id } });
+    return { id: card.id, deleted: true };
+  }
+
+  /**
+   * Uploads a file to Cloudinary and persists an `Attachment` on the card.
+   * Caller must pass a Multer memory file (`buffer` set).
+   * Optional `nameRaw` overrides the stored `name` (otherwise derived from the filename).
+   */
+  async addAttachmentFromUploadForUser(
+    cardKey: string,
+    clerkUserId: string,
+    file: Express.Multer.File,
+    nameRaw?: string
+  ) {
+    const { cardId, uploadedById } =
+      await this.resolveCardAndUploaderForAttachment(cardKey, clerkUserId);
+
     const rawName = file.originalname?.trim();
     const safeName = (rawName ? path.basename(rawName) : "file").slice(
       0,
       255
     );
+
+    const trimmedDisplay = nameRaw?.trim();
+    const resolvedName =
+      trimmedDisplay && trimmedDisplay.length > 0
+        ? trimmedDisplay.slice(0, 255)
+        : safeName || "file";
 
     let secureUrl: string;
     try {
@@ -292,7 +339,7 @@ export class CardsService {
     }
 
     const agg = await this.prisma.attachment.aggregate({
-      where: { cardId: card.id },
+      where: { cardId },
       _max: { pos: true },
     });
     const nextPos =
@@ -300,13 +347,53 @@ export class CardsService {
 
     return this.prisma.attachment.create({
       data: {
-        name: safeName || "file",
+        name: resolvedName,
         url: secureUrl,
-        cardId: card.id,
-        uploadedById: uploader.id,
+        cardId,
+        uploadedById,
         mimeType: file.mimetype,
         sizeBytes: file.size,
         isUpload: true,
+        pos: nextPos,
+      },
+    });
+  }
+
+  /**
+   * Adds a link attachment (`isUpload: false`). `name` defaults from hostname when omitted.
+   */
+  async addAttachmentLinkForUser(
+    cardKey: string,
+    clerkUserId: string,
+    urlRaw: string,
+    nameRaw?: string
+  ) {
+    const { cardId, uploadedById } =
+      await this.resolveCardAndUploaderForAttachment(cardKey, clerkUserId);
+
+    const normalizedUrl = normalizeHttpUrl(urlRaw);
+    const trimmedName = nameRaw?.trim();
+    const resolvedName =
+      trimmedName && trimmedName.length > 0
+        ? trimmedName.slice(0, 255)
+        : defaultNameForLinkUrl(normalizedUrl);
+
+    const agg = await this.prisma.attachment.aggregate({
+      where: { cardId },
+      _max: { pos: true },
+    });
+    const nextPos =
+      agg._max.pos == null ? 65536 : agg._max.pos + 65536;
+
+    return this.prisma.attachment.create({
+      data: {
+        name: resolvedName,
+        url: normalizedUrl,
+        cardId,
+        uploadedById,
+        mimeType: null,
+        sizeBytes: null,
+        isUpload: false,
         pos: nextPos,
       },
     });

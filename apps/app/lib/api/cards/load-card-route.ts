@@ -67,6 +67,7 @@ export async function loadCardRoute(
   let raw: unknown;
   try {
     raw = await getCard(cardShortLink);
+    console.log("[loadCardRoute] getCard response:", raw);
   } catch (error) {
     if (error instanceof BoardApiError && error.status === 404) {
       notFound();
