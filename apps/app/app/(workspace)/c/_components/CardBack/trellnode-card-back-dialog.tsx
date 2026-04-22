@@ -4,9 +4,9 @@ import {
   Dialog,
   DialogContent,
 } from "@repo/design-system/components/ui/dialog";
-import Link from "next/link";
+import { cn } from "@repo/design-system/lib/utils";
 import { useRouter } from "next/navigation";
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import type { CardRouteBoardList } from "@/lib/api/cards/load-card-route";
 import type { BoardCard } from "@/types/board-detail";
@@ -31,10 +31,19 @@ export function TrellnodeCardBackDialog({
   mode,
 }: CardRouteDetailProps) {
   const router = useRouter();
+  const [commentsPanelOpen, setCommentsPanelOpen] = useState(false);
+
+  useEffect(() => {
+    setCommentsPanelOpen(false);
+  }, [card.id]);
 
   const handleClose = useCallback(() => {
     router.back();
   }, [router]);
+
+  const cardShellMaxWidthClass = commentsPanelOpen
+    ? "max-w-[min(100%,992px)]"
+    : "max-w-[min(100%,585px)]";
 
   if (mode === "modal") {
     return (
@@ -47,7 +56,10 @@ export function TrellnodeCardBackDialog({
         open
       >
         <DialogContent
-          className="top-[50px] max-h-[calc(100vh-50px-1rem)] w-full max-w-2xl translate-x-[-50%] translate-y-0 gap-0 overflow-y-auto border-zinc-800 bg-transparent p-0 text-zinc-100 shadow-none sm:max-w-2xl lg:max-w-5xl"
+          className={cn(
+            "top-[50px] max-h-[calc(100vh-50px-1rem)] w-full translate-x-[-50%] translate-y-0 gap-0 overflow-y-auto border-zinc-800 bg-transparent p-0 text-zinc-100 shadow-none",
+            cardShellMaxWidthClass,
+          )}
           showCloseButton={false}
         >
           <CardBackPanel
@@ -55,8 +67,10 @@ export function TrellnodeCardBackDialog({
             boardName={boardName}
             boardRouteKey={boardRouteKey}
             card={card}
+            commentsPanelOpen={commentsPanelOpen}
             listName={listName}
             mode="modal"
+            onCommentsPanelOpenChange={setCommentsPanelOpen}
             onRequestClose={handleClose}
           />
         </DialogContent>
@@ -66,20 +80,21 @@ export function TrellnodeCardBackDialog({
 
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-auto bg-background">
-      <div className="mx-auto flex w-full max-w-2xl flex-col gap-4 px-4 py-8 lg:max-w-5xl">
-        <Link
-          className="text-sm text-white/55 underline-offset-4 hover:text-white hover:underline"
-          href={`/b/${encodeURIComponent(boardRouteKey)}`}
-        >
-          ← Back to board
-        </Link>
+      <div
+        className={cn(
+          "mx-auto flex w-full flex-col gap-4 px-4 py-8",
+          cardShellMaxWidthClass,
+        )}
+      >
         <CardBackPanel
           boardLists={boardLists}
           boardName={boardName}
           boardRouteKey={boardRouteKey}
           card={card}
+          commentsPanelOpen={commentsPanelOpen}
           listName={listName}
           mode="page"
+          onCommentsPanelOpenChange={setCommentsPanelOpen}
           onRequestClose={handleClose}
         />
       </div>

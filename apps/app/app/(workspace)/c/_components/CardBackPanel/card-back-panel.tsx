@@ -30,6 +30,9 @@ export type CardBackPanelProps = {
   listName: string;
   mode: "modal" | "page";
   onRequestClose: () => void;
+  /** When false, comments are collapsed and the shell is narrower (~585px on large viewports). */
+  commentsPanelOpen: boolean;
+  onCommentsPanelOpenChange: (open: boolean) => void;
 };
 
 export function CardBackPanel({
@@ -40,12 +43,13 @@ export function CardBackPanel({
   listName,
   mode,
   onRequestClose,
+  commentsPanelOpen,
+  onCommentsPanelOpenChange,
 }: CardBackPanelProps) {
   const backHref = `/b/${encodeURIComponent(boardRouteKey)}`;
 
   const [description, setDescription] = useState(card.description ?? "");
   const [completed, setCompleted] = useState(card.completed);
-  const [commentsPanelOpen, setCommentsPanelOpen] = useState(true);
 
   useEffect(() => {
     setDescription(card.description ?? "");
@@ -55,12 +59,8 @@ export function CardBackPanel({
     setCompleted(card.completed);
   }, [card.id, card.updatedAt, card.completed]);
 
-  useEffect(() => {
-    setCommentsPanelOpen(true);
-  }, [card.id]);
-
   return (
-    <div className="w-full max-w-2xl overflow-hidden rounded-xl bg-zinc-900 shadow-2xl lg:max-w-5xl">
+    <div className="w-full overflow-hidden rounded-xl bg-zinc-900 shadow-2xl">
       <CardBackCover
         backHref={backHref}
         boardLists={boardLists}
@@ -119,7 +119,7 @@ export function CardBackPanel({
             cardId={card.id}
             className={commentsPanelClassName}
             initialComments={card.comments}
-            onPanelOpenChange={setCommentsPanelOpen}
+            onPanelOpenChange={onCommentsPanelOpenChange}
             panelOpen={commentsPanelOpen}
           />
         </Suspense>
@@ -128,7 +128,7 @@ export function CardBackPanel({
       <CardBackFooter
         commentsPanelOpen={commentsPanelOpen}
         onToggleCommentsPanel={() =>
-          setCommentsPanelOpen((open) => !open)
+          onCommentsPanelOpenChange(!commentsPanelOpen)
         }
       />
     </div>
