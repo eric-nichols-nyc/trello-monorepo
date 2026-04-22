@@ -2,6 +2,7 @@
 
 import { DropdownMenuItem } from "@repo/design-system/components/ui/dropdown-menu";
 
+import { cloudinaryForcedDownloadUrl } from "@/lib/cloudinary-forced-download-url";
 import type { BoardAttachment } from "@/types/board-detail";
 
 export type DownloadAttachmentMenuItemProps = {
@@ -11,9 +12,11 @@ export type DownloadAttachmentMenuItemProps = {
 export function DownloadAttachmentMenuItem({
   attachment,
 }: DownloadAttachmentMenuItemProps) {
+  const href = cloudinaryForcedDownloadUrl(attachment.url, attachment.name);
+
   return (
     <DropdownMenuItem asChild>
-      <a download href={attachment.url} rel="noreferrer" target="_blank">
+      <a download={attachment.name || undefined} href={href} rel="noreferrer" target="_blank">
         Download
       </a>
     </DropdownMenuItem>

@@ -1,11 +1,11 @@
 "use client";
 
-import { Button } from "@repo/design-system/components/ui/button";
-import { ExternalLink, FileText, Globe } from "lucide-react";
+import { FileText, Globe } from "lucide-react";
 
 import { formatCardDateTime } from "@/lib/datetime/format-card-date-time";
 import type { BoardAttachment } from "@/types/board-detail";
 import { CardBackAttachmentActions } from "./card-back-attachment-actions";
+import { OpenAttachmentExternalLinkButton } from "./open-attachment-external-link-button";
 
 function isImageAttachment(attachment: BoardAttachment): boolean {
   return attachment.mimeType?.startsWith("image/") === true;
@@ -41,21 +41,10 @@ export function FileAttachment({ attachment }: FileAttachmentProps) {
       </div>
 
       <div className="flex items-center gap-1">
-        <Button
-          asChild
-          className="h-8 w-8 text-zinc-500 hover:bg-zinc-800 hover:text-zinc-300"
-          size="icon"
-          variant="ghost"
-        >
-          <a
-            aria-label={`Open ${attachment.name}`}
-            href={attachment.url}
-            rel="noreferrer"
-            target="_blank"
-          >
-            <ExternalLink className="size-4" />
-          </a>
-        </Button>
+        <OpenAttachmentExternalLinkButton
+          fileName={attachment.name}
+          href={attachment.url}
+        />
 
         <CardBackAttachmentActions attachment={attachment} />
       </div>
