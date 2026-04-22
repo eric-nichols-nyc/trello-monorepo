@@ -60,7 +60,7 @@ export function CardBackPanel({
   }, [card.id]);
 
   return (
-    <div className="w-full max-w-2xl overflow-hidden rounded-xl bg-zinc-900 text-zinc-100 shadow-2xl lg:max-w-5xl">
+    <div className="w-full max-w-2xl overflow-hidden rounded-xl bg-zinc-900 shadow-2xl lg:max-w-5xl">
       <CardBackCover
         backHref={backHref}
         boardLists={boardLists}

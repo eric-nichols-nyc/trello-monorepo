@@ -21,7 +21,7 @@ export type CardBackTitleProps = {
 };
 
 const titleClass =
-  "font-semibold text-2xl text-zinc-100 leading-none tracking-tight";
+  "font-semibold text-2xl leading-none tracking-tight";
 
 const checkboxClassName =
   "size-5 shrink-0 rounded-full border-white/35 bg-transparent data-[state=checked]:border-emerald-500 data-[state=checked]:bg-emerald-600 [&_[data-slot=checkbox-indicator]_svg]:size-[18px]";
@@ -77,7 +77,7 @@ export function CardBackTitle({
 
   const titleVisualClass = cn(
     titleClass,
-    completed && "text-zinc-400 line-through decoration-zinc-500",
+    completed && "text-zinc-400 decoration-zinc-500",
   );
 
   return (

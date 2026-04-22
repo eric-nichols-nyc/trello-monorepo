@@ -49,6 +49,7 @@ body {
 body {
   position: relative;
   overflow: hidden;
+  color: var(--foreground);
 }
 
 /* CardBackActionsMenu — explicit !important so surfaces win over Button / Popover / Select. */
@@ -86,7 +87,10 @@ body {
  * List card completion checkbox: design-system + Tailwind v4 layering can block
  * per-instance utilities; these rules win for the checked face only.
  */
-.list-card-completion-checkbox:is([data-state="checked"], [aria-checked="true"]) {
+.list-card-completion-checkbox:is(
+  [data-state="checked"],
+  [aria-checked="true"]
+) {
   background-color: var(--list-card-complete-fill) !important;
   border-color: var(--list-card-complete-fill) !important;
   color: var(--list-card-complete-check) !important;

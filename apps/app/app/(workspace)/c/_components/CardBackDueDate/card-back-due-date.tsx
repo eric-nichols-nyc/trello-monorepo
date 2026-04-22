@@ -4,6 +4,7 @@ import { Badge } from "@repo/design-system/components/ui/badge";
 import { Button } from "@repo/design-system/components/ui/button";
 import { cn } from "@repo/design-system/lib/utils";
 import { ChevronDown } from "lucide-react";
+import { formatCardDateTime } from "@/lib/datetime/format-card-date-time";
 
 export type CardBackDueDateProps = {
   dueDate: string | null;
@@ -13,16 +14,7 @@ function formatDueLabel(iso: string | null): string | null {
   if (iso === null) {
     return null;
   }
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) {
-    return null;
-  }
-  return d.toLocaleString(undefined, {
-    month: "short",
-    day: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-  });
+  return formatCardDateTime(iso);
 }
 
 function dueSoonLabel(dueIso: string | null): string | null {
