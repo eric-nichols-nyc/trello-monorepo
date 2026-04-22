@@ -4,13 +4,14 @@ import { Button } from "@repo/design-system/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@repo/design-system/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
 
-import { toast } from "@/lib/toast";
 import type { BoardAttachment } from "@/types/board-detail";
+import { DownloadAttachmentMenuItem } from "./download-attachment-menu-item";
+import { EditAttachmentMenuItem } from "./edit-attachment-menu-item";
+import { RemoveAttachmentMenuItem } from "./remove-attachment-menu-item";
 
 export type CardBackAttachmentActionsProps = {
   attachment: BoardAttachment;
@@ -38,34 +39,15 @@ export function CardBackAttachmentActions({
         align="end"
         className="border-zinc-700 bg-zinc-800 text-zinc-100"
       >
-        <DropdownMenuItem
-          onClick={() => {
-            if (onEdit) {
-              onEdit(attachment);
-              return;
-            }
-            window.open(attachment.url, "_blank", "noopener,noreferrer");
-          }}
-        >
-          Edit
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <a download href={attachment.url} rel="noreferrer" target="_blank">
-            Download
-          </a>
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          className="text-red-400 focus:text-red-300"
-          onClick={() => {
-            if (onRemove) {
-              onRemove(attachment);
-              return;
-            }
-            toast.error("Remove attachment is not available yet");
-          }}
-        >
-          Remove
-        </DropdownMenuItem>
+        <EditAttachmentMenuItem
+          attachment={attachment}
+          onEdit={onEdit}
+        />
+        <DownloadAttachmentMenuItem attachment={attachment} />
+        <RemoveAttachmentMenuItem
+          attachment={attachment}
+          onRemove={onRemove}
+        />
       </DropdownMenuContent>
     </DropdownMenu>
   );
