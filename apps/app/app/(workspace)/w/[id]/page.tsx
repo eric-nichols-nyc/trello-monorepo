@@ -41,8 +41,6 @@ export default async function WorkspaceIdPage({ params }: WorkspaceIdPageProps) 
     boards = [];
   }
 
-  console.log("[workspace /w/[id]] workspaceId:", workspace.id);
-
   return (
     <WorkspaceBoardsDashboard
       boards={boards}

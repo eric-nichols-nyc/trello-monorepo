@@ -6,7 +6,7 @@ import Link from "next/link";
 
 import type { CardRouteBoardList } from "@/lib/api/cards/load-card-route";
 
-import { CardBackActionsMenu } from "../CardBackActionsMenu/card-back-actions-menu";
+import { MoveCardPopover } from "../MoveCardPopover/move-card-popover";
 
 export type CardBackHeaderProps = {
   boardLists: CardRouteBoardList[];
@@ -29,7 +29,7 @@ export function CardBackHeader({
 }: CardBackHeaderProps) {
   return (
     <div className="flex items-center justify-between border-zinc-800 border-b px-4 py-3">
-      <CardBackActionsMenu
+      <MoveCardPopover
         boardLists={boardLists}
         boardName={boardName}
         currentListId={currentListId}

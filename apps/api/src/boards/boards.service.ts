@@ -297,7 +297,6 @@ export class BoardsService {
   }
 
   async updateForUser(id: string, userId: string, data: UpdateBoardDto) {
-    console.log('[UPDATE FOR USER]',data)
     const board = await this.prisma.board.findFirst({
       where: { id, userId },
       select: { id: true },

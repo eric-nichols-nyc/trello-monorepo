@@ -4,7 +4,7 @@ import { useAuth } from "@repo/clerk/client";
 import { Input } from "@repo/design-system/components/ui/input";
 import { Label } from "@repo/design-system/components/ui/label";
 import { useRouter } from "next/navigation";
-import { type FormEvent, useCallback, useEffect, useState } from "react";
+import { type FormEvent, useCallback, useState } from "react";
 import { BoardApiError } from "@/lib/api/boards/board-api-error";
 import { createBoardClient } from "@/lib/api/boards/create-board-client";
 import {
@@ -39,21 +39,6 @@ export function CreateBoardForm({
     title.trim() !== "" &&
     background !== null &&
     !pending;
-
-  useEffect(() => {
-    if (process.env.NODE_ENV !== "development") {
-      return;
-    }
-    console.log("[CreateBoardForm] submit gates", {
-      workspaceId: workspaceId ?? "(missing)",
-      hasWorkspace: Boolean(workspaceId),
-      titleTrimmedLength: title.trim().length,
-      hasBackground: background !== null,
-      background,
-      pending,
-      canSubmit,
-    });
-  }, [workspaceId, title, background, pending, canSubmit]);
 
   const handleSubmit = useCallback(
     async (event: FormEvent<HTMLFormElement>) => {

@@ -9,7 +9,7 @@ import type { CSSProperties } from "react";
 
 import type { CardRouteBoardList } from "@/lib/api/cards/load-card-route";
 
-import { CardBackActionsMenu } from "../CardBackActionsMenu/card-back-actions-menu";
+import { MoveCardPopover } from "../MoveCardPopover/move-card-popover";
 
 const chromeIconButtonClass =
   "h-10 w-10 shrink-0 rounded-lg bg-[#2a2d35] text-white/70 hover:bg-[#3a3d45] hover:text-white";
@@ -51,7 +51,7 @@ export function CardBackCover({
   return (
     <div className="rounded-t-xl border-zinc-800 border-b bg-[#1a1d24] p-4 text-white">
       <div className="flex items-center justify-between gap-4">
-        <CardBackActionsMenu
+        <MoveCardPopover
           boardLists={boardLists}
           boardName={boardName}
           currentListId={currentListId}
