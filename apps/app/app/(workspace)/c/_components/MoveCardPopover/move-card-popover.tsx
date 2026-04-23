@@ -53,8 +53,8 @@ export function MoveCardPopover({
           className={cn(
             "card-back-actions-menu__trigger h-auto max-w-full gap-2 text-left",
             variant === "cover"
-              ? "min-h-10 items-center rounded-lg bg-[#2a2d35] px-4 py-2 font-normal text-white hover:bg-[#3a3d45] hover:text-white"
-              : "min-h-8 max-w-full items-start whitespace-normal py-1.5 text-zinc-300 hover:text-zinc-100",
+              ? "min-h-4 items-center rounded-lg bg-(--card-back-move-popover-bg) px-4 py-2 font-normal text-white hover:bg-(--card-back-actions-menu-hover-bg) hover:text-white"
+              : "min-h-4 max-w-full items-start whitespace-normal py-1.5 text-zinc-300 hover:text-zinc-100",
           )}
           size="sm"
           title={`${listName}`}
@@ -71,7 +71,7 @@ export function MoveCardPopover({
               className={cn(
                 "block",
                 variant === "cover"
-                  ? "truncate text-base font-normal text-white"
+                  ? "truncate text-sm font-normal text-white"
                   : "wrap-break-word font-medium text-sm text-zinc-100",
               )}
             >
