@@ -51,10 +51,10 @@ export function MoveCardPopover({
       <PopoverTrigger asChild>
         <Button
           className={cn(
-            "font-semibold text-sm card-back-actions-menu__trigger h-auto max-w-full gap-2 text-left",
+            "font-semibold text-sm card-back-actions-menu__trigger h-auto max-w-full gap-2 p-1 text-left",
             variant === "cover"
-              ? "min-h-4 items-center rounded-lg bg-(--card-back-move-popover-bg) px-4 py-2 text-white hover:bg-(--card-back-actions-menu-hover-bg) hover:text-white"
-              : "min-h-4 max-w-full items-start whitespace-normal py-1.5 text-zinc-300 hover:text-zinc-100",
+              ? "min-h-4 items-center rounded-lg bg-(--card-back-move-popover-bg) text-white hover:bg-(--card-back-actions-menu-hover-bg) hover:text-white"
+              : "min-h-4 max-w-full items-start whitespace-normal text-zinc-300 hover:text-zinc-100",
           )}
           size="sm"
           title={`${listName}`}
