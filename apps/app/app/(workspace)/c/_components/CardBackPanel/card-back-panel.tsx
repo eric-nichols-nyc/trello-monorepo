@@ -1,6 +1,6 @@
 "use client";
 
-import { lazy, Suspense, useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 
 import type { CardRouteBoardList } from "@/lib/api/cards/load-card-route";
 import type { BoardCard } from "@/types/board-detail";
@@ -18,9 +18,6 @@ const CardBackCommentsLazy = lazy(async () => {
   const m = await import("../Comments/card-back-comments");
   return { default: m.CardBackComments };
 });
-
-const commentsPanelClassName =
-  "max-h-[min(40vh,360px)] shrink-0 border-zinc-800 border-t lg:max-h-none lg:w-[min(100%,380px)] lg:border-t-0 lg:border-l";
 
 export type CardBackPanelProps = {
   boardLists: CardRouteBoardList[];
@@ -47,9 +44,12 @@ export function CardBackPanel({
   onCommentsPanelOpenChange,
 }: CardBackPanelProps) {
   const backHref = `/b/${encodeURIComponent(boardRouteKey)}`;
+  const commentsPanelClassName =
+    "max-h-[min(40vh,360px)] shrink-0 border-zinc-800 border-t lg:max-h-none lg:w-[min(100%,460px)] lg:border-t-0 lg:border-l";
 
   const [description, setDescription] = useState(card.description ?? "");
   const [completed, setCompleted] = useState(card.completed);
+  const panelRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     setDescription(card.description ?? "");
@@ -59,8 +59,24 @@ export function CardBackPanel({
     setCompleted(card.completed);
   }, [card.id, card.updatedAt, card.completed]);
 
+  useEffect(() => {
+    if (!commentsPanelOpen) {
+      return;
+    }
+    const raf = window.requestAnimationFrame(() => {
+      const width = panelRef.current?.getBoundingClientRect().width;
+      if (typeof width === "number") {
+        console.log("CardBackPanel width:", width);
+      }
+    });
+    return () => window.cancelAnimationFrame(raf);
+  }, [commentsPanelOpen]);
+
   return (
-    <div className="w-full overflow-hidden rounded-xl bg-zinc-900 shadow-2xl">
+    <div
+      className="w-full overflow-hidden rounded-xl bg-zinc-900 shadow-2xl"
+      ref={panelRef}
+    >
       <CardBackCover
         backHref={backHref}
         boardLists={boardLists}

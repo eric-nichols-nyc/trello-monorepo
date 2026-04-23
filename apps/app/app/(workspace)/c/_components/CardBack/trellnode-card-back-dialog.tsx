@@ -41,9 +41,9 @@ export function TrellnodeCardBackDialog({
     router.back();
   }, [router]);
 
-  const cardShellMaxWidthClass = commentsPanelOpen
-    ? "max-w-[min(100%,992px)]"
-    : "max-w-[min(100%,585px)]";
+  const cardShellWidthClass = commentsPanelOpen
+    ? "w-[min(100%,992px)]"
+    : "w-[min(100%,585px)]";
 
   if (mode === "modal") {
     return (
@@ -57,8 +57,8 @@ export function TrellnodeCardBackDialog({
       >
         <DialogContent
           className={cn(
-            "top-[50px] max-h-[calc(100vh-50px-1rem)] w-full translate-x-[-50%] translate-y-0 gap-0 overflow-y-auto border-zinc-800 bg-transparent p-0 text-zinc-100 shadow-none",
-            cardShellMaxWidthClass,
+            "top-[50px] max-h-[calc(100vh-50px-1rem)] translate-x-[-50%] translate-y-0 gap-0 overflow-y-auto border-zinc-800 bg-transparent p-0 text-zinc-100 shadow-none",
+            cardShellWidthClass,
           )}
           showCloseButton={false}
         >
@@ -83,7 +83,7 @@ export function TrellnodeCardBackDialog({
       <div
         className={cn(
           "mx-auto flex w-full flex-col gap-4 px-4 py-8",
-          cardShellMaxWidthClass,
+          cardShellWidthClass,
         )}
       >
         <CardBackPanel
