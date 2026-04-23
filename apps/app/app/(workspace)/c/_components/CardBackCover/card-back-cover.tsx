@@ -59,18 +59,18 @@ export function CardBackCover({
           variant="cover"
         />
 
-        <div className="flex shrink-0 items-center gap-1">
+        <div className="flex shrink-0 items-center gap-4">
           <Button
-            className={chromeIconButtonClass}
+            className={`${chromeIconButtonClass} size-4`}
             size="icon"
             type="button"
             variant="ghost"
           >
-            <ImageIcon className="size-5" />
+            <ImageIcon className="size-4" />
           </Button>
           <Button
-            className={chromeIconButtonClass}
-            size="icon"
+                className={`${chromeIconButtonClass} size-4`}
+                size="icon"
             type="button"
             variant="ghost"
           >
@@ -79,23 +79,23 @@ export function CardBackCover({
           {mode === "modal" ? (
             <Button
               aria-label="Close card"
-              className={chromeIconButtonClass}
+              className={`${chromeIconButtonClass} size-4`}
               onClick={onRequestClose}
               size="icon"
               type="button"
               variant="ghost"
             >
-              <X className="size-5" />
+              <X className="size-4" />
             </Button>
           ) : (
             <Button
               asChild
-              className={chromeIconButtonClass}
+                className={`${chromeIconButtonClass} size-4`}
               size="icon"
               variant="ghost"
             >
               <Link aria-label="Back to board" href={backHref}>
-                <ArrowLeft className="size-5" />
+                <X className="size-4" />
               </Link>
             </Button>
           )}
