@@ -47,7 +47,9 @@ describe("GlobalHeader", () => {
     render(<GlobalHeader />);
 
     expect(screen.getByTestId("header-search-input")).toBeVisible();
-    expect(screen.getByRole("searchbox", { name: "Search" })).toBeVisible();
+    expect(
+      screen.getByRole("searchbox", { name: "Search Trellnode" })
+    ).toBeVisible();
     expect(screen.getByRole("button", { name: "Create" })).toBeVisible();
   });
 });

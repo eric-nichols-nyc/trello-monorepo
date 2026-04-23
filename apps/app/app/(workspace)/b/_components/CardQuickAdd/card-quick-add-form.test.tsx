@@ -48,8 +48,7 @@ describe("CardQuickAddForm", () => {
     expect(screen.queryByRole("alert")).toBeNull();
   });
 
-  it("calls mutate with list, board key, and parsed input then closes on success", () => {
-    const logSpy = vi.spyOn(console, "log").mockImplementation(vi.fn());
+  it("calls mutate with list, board key, and parsed input then clears input on success", () => {
     const onClose = vi.fn();
 
     render(
@@ -70,11 +69,8 @@ describe("CardQuickAddForm", () => {
       },
       expect.any(Object)
     );
-    expect(logSpy).toHaveBeenCalledWith("Card created:", { id: "card-new" });
     expect(screen.getByRole("textbox", { name: "Card title" })).toHaveValue("");
-    expect(onClose).toHaveBeenCalledTimes(1);
-
-    logSpy.mockRestore();
+    expect(onClose).not.toHaveBeenCalled();
   });
 
   it("alerts on mutation error", () => {
