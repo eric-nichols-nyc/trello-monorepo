@@ -51,9 +51,9 @@ export function MoveCardPopover({
       <PopoverTrigger asChild>
         <Button
           className={cn(
-            "card-back-actions-menu__trigger h-auto max-w-full gap-2 text-left",
+            "font-semibold text-sm card-back-actions-menu__trigger h-auto max-w-full gap-2 text-left",
             variant === "cover"
-              ? "min-h-4 items-center rounded-lg bg-(--card-back-move-popover-bg) px-4 py-2 font-normal text-white hover:bg-(--card-back-actions-menu-hover-bg) hover:text-white"
+              ? "min-h-4 items-center rounded-lg bg-(--card-back-move-popover-bg) px-4 py-2 text-white hover:bg-(--card-back-actions-menu-hover-bg) hover:text-white"
               : "min-h-4 max-w-full items-start whitespace-normal py-1.5 text-zinc-300 hover:text-zinc-100",
           )}
           size="sm"
@@ -71,8 +71,8 @@ export function MoveCardPopover({
               className={cn(
                 "block",
                 variant === "cover"
-                  ? "truncate text-sm font-normal text-white"
-                  : "wrap-break-word font-medium text-sm text-zinc-100",
+                  ? "truncate text-sm font-semibold text-white"
+                  : "wrap-break-word font-semibold text-sm text-zinc-100",
               )}
             >
               {listName}
