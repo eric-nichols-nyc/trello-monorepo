@@ -1,6 +1,7 @@
 "use client";
 
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
+import { Card, CardHeader } from "@repo/design-system/components/ui/card";
 
 import type { CardRouteBoardList } from "@/lib/api/cards/load-card-route";
 import type { BoardCard } from "@/types/board-detail";
@@ -73,21 +74,23 @@ export function CardBackPanel({
   }, [commentsPanelOpen]);
 
   return (
-    <div
-      className="w-full overflow-hidden rounded-xl bg-zinc-900 shadow-2xl"
+    <Card
+      className="w-full overflow-hidden rounded-xl bg-zinc-900 p-0 shadow-2xl"
       ref={panelRef}
     >
-      <CardBackCover
-        backHref={backHref}
-        boardLists={boardLists}
-        boardName={boardName}
-        coverColor={card.coverColor}
-        coverImage={card.coverImage}
-        currentListId={card.listId}
-        listName={listName}
-        mode={mode}
-        onRequestClose={onRequestClose}
-      />
+      <CardHeader className="gap-0">
+        <CardBackCover
+          backHref={backHref}
+          boardLists={boardLists}
+          boardName={boardName}
+          coverColor={card.coverColor}
+          coverImage={card.coverImage}
+          currentListId={card.listId}
+          listName={listName}
+          mode={mode}
+          onRequestClose={onRequestClose}
+        />
+      </CardHeader>
 
       <div className="flex max-h-[min(70vh,720px)] min-h-0 flex-col lg:flex-row">
         <div className="min-h-0 flex-1 overflow-y-auto p-6 lg:min-w-0">
@@ -147,6 +150,6 @@ export function CardBackPanel({
           onCommentsPanelOpenChange(!commentsPanelOpen)
         }
       />
-    </div>
+    </Card>
   );
 }
