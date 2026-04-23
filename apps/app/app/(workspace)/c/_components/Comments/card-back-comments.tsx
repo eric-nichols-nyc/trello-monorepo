@@ -99,7 +99,7 @@ export function CardBackComments({
   cardId,
   boardRouteKey,
   initialComments,
-  panelOpen,
+  panelOpen = false,
   onPanelOpenChange,
 }: CardBackCommentsProps) {
   const [comments, setComments] = useState(initialComments);
