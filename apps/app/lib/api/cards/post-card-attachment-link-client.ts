@@ -6,6 +6,8 @@ import {
   parseCardAttachmentResult,
 } from "./post-card-attachment-client";
 
+export type { CardAttachmentResult };
+
 /** POST JSON `{ url, name? }` to `/api/cards/:id/attachments/link`. */
 export async function postCardAttachmentLinkClient(
   cardId: string,
